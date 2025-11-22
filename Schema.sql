@@ -169,10 +169,11 @@ CREATE INDEX IX_ApprovalWorkflowStep_Role ON ApprovalWorkflowStep(role_id);
 -- ================================
 -- LEAVE MODULE
 -- ================================
+
 CREATE TABLE LeaveType (
     leave_id INT PRIMARY KEY,
     leave_type VARCHAR(50),
-    leave_description TEXT
+    leave_description VARCHAR(MAX)
 );
 
 CREATE TABLE VacationLeave (
@@ -184,7 +185,7 @@ CREATE TABLE VacationLeave (
 
 CREATE TABLE SickLeave (
     leave_id INT PRIMARY KEY,
-    medical_cert_required BOOLEAN,
+    medical_cert_required BIT,
     physician_id INT,
     FOREIGN KEY (leave_id) REFERENCES LeaveType(leave_id)
 );
@@ -199,7 +200,7 @@ CREATE TABLE ProbationLeave (
 CREATE TABLE HolidayLeave (
     leave_id INT PRIMARY KEY,
     holiday_name VARCHAR(100),
-    official_recognition BOOLEAN,
+    official_recognition BIT,
     regional_scope VARCHAR(100),
     FOREIGN KEY (leave_id) REFERENCES LeaveType(leave_id)
 );
@@ -207,11 +208,11 @@ CREATE TABLE HolidayLeave (
 CREATE TABLE LeavePolicy (
     policy_id INT PRIMARY KEY,
     name VARCHAR(100),
-    purpose TEXT,
-    eligibility_rules TEXT,
+    purpose VARCHAR(MAX),
+    eligibility_rules VARCHAR(MAX),
     notice_period INT,
     special_leave_type INT,
-    reset_on_new_year BOOLEAN,
+    reset_on_new_year BIT,
     FOREIGN KEY (special_leave_type) REFERENCES LeaveType(leave_id)
 );
 
@@ -219,9 +220,9 @@ CREATE TABLE LeaveRequest (
     request_id INT PRIMARY KEY,
     employee_id INT,
     leave_id INT,
-    justification TEXT,
+    justification VARCHAR(MAX),
     duration INT,
-    approval_timing TIMESTAMP,
+    approval_timing DATETIME2,
     status VARCHAR(50),
     FOREIGN KEY (employee_id) REFERENCES Employee(employee_id),
     FOREIGN KEY (leave_id) REFERENCES LeaveType(leave_id)
@@ -240,7 +241,7 @@ CREATE TABLE LeaveDocument (
     document_id INT PRIMARY KEY,
     leave_request_id INT,
     file_path VARCHAR(255),
-    uploaded_at TIMESTAMP,
+    uploaded_at DATETIME2,
     FOREIGN KEY (leave_request_id) REFERENCES LeaveRequest(request_id)
 );
 
@@ -252,23 +253,23 @@ CREATE TABLE Attendance (
     attendance_id INT PRIMARY KEY,
     employee_id INT,
     shift_id INT,
-    entry_time TIMESTAMP,
-    exit_time TIMESTAMP,
+    entry_time DATETIME2,
+    exit_time DATETIME2,
     duration INT,
     login_method VARCHAR(50),
     logout_method VARCHAR(50),
     exception_id INT,
     FOREIGN KEY (employee_id) REFERENCES Employee(employee_id),
     FOREIGN KEY (shift_id) REFERENCES ShiftSchedule(shift_id),
-    FOREIGN KEY (exception_id) REFERENCES Exception(exception_id)
+    FOREIGN KEY (exception_id) REFERENCES [Exception](exception_id)
 );
 
 CREATE TABLE AttendanceLog (
     attendance_log_id INT PRIMARY KEY,
     attendance_id INT,
     actor VARCHAR(100),
-    timestamp TIMESTAMP,
-    reason TEXT,
+    [timestamp] DATETIME2,
+    reason VARCHAR(MAX),
     FOREIGN KEY (attendance_id) REFERENCES Attendance(attendance_id)
 );
 
@@ -277,7 +278,7 @@ CREATE TABLE AttendanceCorrectionRequest (
     employee_id INT,
     date DATE,
     correction_type VARCHAR(50),
-    reason TEXT,
+    reason VARCHAR(MAX),
     status VARCHAR(50),
     recorded_by INT,
     FOREIGN KEY (employee_id) REFERENCES Employee(employee_id),
@@ -314,7 +315,7 @@ CREATE TABLE ShiftAssignment (
 -- EXCEPTION MODULE
 -- ================================
 
-CREATE TABLE Exception (
+CREATE TABLE [Exception] (
     exception_id INT PRIMARY KEY,
     name VARCHAR(100),
     category VARCHAR(50),
@@ -327,7 +328,7 @@ CREATE TABLE Employee_Exception (
     exception_id INT,
     PRIMARY KEY(employee_id, exception_id),
     FOREIGN KEY (employee_id) REFERENCES Employee(employee_id),
-    FOREIGN KEY (exception_id) REFERENCES Exception(exception_id)
+    FOREIGN KEY (exception_id) REFERENCES [Exception](exception_id)
 );
 
 -- ================================
@@ -361,8 +362,8 @@ CREATE TABLE SalaryType (
     salary_type_id INT PRIMARY KEY,
     type VARCHAR(50),
     payment_frequency VARCHAR(50),
-    currency VARCHAR(50),
-    FOREIGN KEY (currency) REFERENCES Currency(CurrencyName)
+    currency VARCHAR(10),
+    FOREIGN KEY (currency) REFERENCES Currency(CurrencyCode)
 );
 
 CREATE TABLE HourlySalaryType (
@@ -374,15 +375,15 @@ CREATE TABLE HourlySalaryType (
 
 CREATE TABLE MonthlySalaryType (
     salary_type_id INT PRIMARY KEY,
-    tax_rule TEXT,
-    contribution_scheme TEXT,
+    tax_rule VARCHAR(MAX),
+    contribution_scheme VARCHAR(MAX),
     FOREIGN KEY (salary_type_id) REFERENCES SalaryType(salary_type_id)
 );
 
 CREATE TABLE ContractSalaryType (
     salary_type_id INT PRIMARY KEY,
     contract_value DECIMAL(10,2),
-    installment_details TEXT,
+    installment_details VARCHAR(MAX),
     FOREIGN KEY (salary_type_id) REFERENCES SalaryType(salary_type_id)
 );
 
@@ -392,19 +393,19 @@ CREATE TABLE AllowanceDeduction (
     employee_id INT,
     type VARCHAR(50),
     amount DECIMAL(10,2),
-    currency VARCHAR(50),
+    currency VARCHAR(10),
     duration VARCHAR(50),
     timezone VARCHAR(50),
     FOREIGN KEY (payroll_id) REFERENCES Payroll(payroll_id),
     FOREIGN KEY (employee_id) REFERENCES Employee(employee_id),
-    FOREIGN KEY (currency) REFERENCES Currency(CurrencyName)
+    FOREIGN KEY (currency) REFERENCES Currency(CurrencyCode)
 );
 
 CREATE TABLE PayrollPolicy (
     policy_id INT PRIMARY KEY,
     effective_date DATE,
     type VARCHAR(50),
-    description TEXT
+    description VARCHAR(MAX)
 );
 
 CREATE TABLE OvertimePolicy (
@@ -425,7 +426,7 @@ CREATE TABLE LatenessPolicy (
 CREATE TABLE BonusPolicy (
     policy_id INT PRIMARY KEY,
     bonus_type VARCHAR(50),
-    eligibility_criteria TEXT,
+    eligibility_criteria VARCHAR(MAX),
     FOREIGN KEY (policy_id) REFERENCES PayrollPolicy(policy_id)
 );
 
@@ -448,7 +449,7 @@ CREATE TABLE Payroll_Log (
     payroll_log_id INT PRIMARY KEY,
     payroll_id INT,
     actor VARCHAR(100),
-    change_date TIMESTAMP,
+    change_date DATETIME2,
     modification_type VARCHAR(50),
     FOREIGN KEY (payroll_id) REFERENCES Payroll(payroll_id)
 );
@@ -461,7 +462,7 @@ CREATE TABLE TaxForm (
     tax_form_id INT PRIMARY KEY,
     jurisdiction VARCHAR(100),
     validity_period VARCHAR(100),
-    form_content TEXT
+    form_content VARCHAR(MAX)
 );
 
 CREATE TABLE PayGrade (
@@ -482,10 +483,10 @@ CREATE TABLE PayrollPeriod (
 
 CREATE TABLE Notification (
     notification_id INT PRIMARY KEY,
-    message_content TEXT,
-    timestamp TIMESTAMP,
+    message_content VARCHAR(MAX),
+    [timestamp] DATETIME2,
     urgency VARCHAR(50),
-    read_status BOOLEAN,
+    read_status BIT,
     notification_type VARCHAR(50)
 );
 
@@ -493,7 +494,7 @@ CREATE TABLE Employee_Notification (
     employee_id INT,
     notification_id INT,
     delivery_status VARCHAR(50),
-    delivered_at TIMESTAMP,
+    delivered_at DATETIME2,
     PRIMARY KEY(employee_id, notification_id),
     FOREIGN KEY (employee_id) REFERENCES Employee(employee_id),
     FOREIGN KEY (notification_id) REFERENCES Notification(notification_id)
