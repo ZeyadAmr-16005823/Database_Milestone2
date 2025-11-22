@@ -2,23 +2,6 @@
 ------------------Ziad's Part-------------------
 -- =============================================
 
--- Table: Position (Referenced by Employee)
-CREATE TABLE Position (
-    position_id INT PRIMARY KEY IDENTITY(1,1),
-    position_title VARCHAR(100) NOT NULL,
-    responsibilities VARCHAR(500),
-    status VARCHAR(20) DEFAULT 'Active' CHECK (status IN ('Active', 'Inactive'))
-);
-
--- Table: Department (Referenced by Employee)
-CREATE TABLE Department (
-    department_id INT PRIMARY KEY IDENTITY(1,1),
-    department_name VARCHAR(100) NOT NULL,
-    purpose VARCHAR(200),
-    department_head_id INT NULL,
-    FOREIGN KEY (department_head_id) REFERENCES Employee(employee_id)
-);
-
 -- Table: Employee
 CREATE TABLE Employee (
     employee_id INT PRIMARY KEY IDENTITY(1,1),
