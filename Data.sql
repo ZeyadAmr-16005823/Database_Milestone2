@@ -471,3 +471,239 @@ INSERT INTO ApprovalWorkflowStep (workflow_id, step_number, role_id, action_requ
 -- =============================================
 ----------------Ziad END-------------------------------------------------------------------
 -- =============================================
+
+
+
+-- =============================================
+-- Tarek - Payroll, Salary Types & Policies
+-- Data Insertion Script
+-- =============================================
+
+-- Insert Currency Data
+INSERT INTO Currency (CurrencyCode, CurrencyName, ExchangeRate, CreatedDate, LastUpdated)
+VALUES 
+('USD', 'US Dollar', 1.0000, GETDATE(), GETDATE()),
+('EUR', 'Euro', 0.9200, GETDATE(), GETDATE()),
+('GBP', 'British Pound', 0.8000, GETDATE(), GETDATE()),
+('EGP', 'Egyptian Pound', 30.9000, GETDATE(), GETDATE()),
+('SAR', 'Saudi Riyal', 3.7500, GETDATE(), GETDATE());
+
+-- Insert Salary Types
+INSERT INTO SalaryType (type, payment_frequency, currency)
+VALUES 
+('Hourly', 'Weekly', 'Egyptian Pound'),
+('Monthly', 'Monthly', 'Egyptian Pound'),
+('Contract', 'Milestone', 'US Dollar'),
+('Monthly', 'Monthly', 'US Dollar'),
+('Hourly', 'Bi-Weekly', 'US Dollar'),
+('Monthly', 'Monthly', 'Saudi Riyal');
+
+-- Insert Hourly Salary Types
+INSERT INTO HourlySalaryType (salary_type_id, hourly_rate, max_monthly_hours)
+VALUES 
+(1, 50.00, 180),
+(5, 75.00, 160);
+
+-- Insert Monthly Salary Types
+INSERT INTO MonthlySalaryType (salary_type_id, tax_rule, contribution_scheme)
+VALUES 
+(2, 'Progressive 10-25%', 'Social Insurance 11%'),
+(4, 'Flat 15%', 'Social Insurance 11%'),
+(6, 'Progressive 5-20%', 'Social Insurance 9%');
+
+-- Insert Contract Salary Types
+INSERT INTO ContractSalaryType (salary_type_id, contract_value, installment_details)
+VALUES 
+(3, 120000.00, 'Quarterly payments based on milestones');
+
+-- Insert Pay Grades
+INSERT INTO PayGrade (grade_name, min_salary, max_salary)
+VALUES 
+('Entry Level', 3000.00, 6000.00),
+('Junior', 6000.00, 10000.00),
+('Mid Level', 10000.00, 18000.00),
+('Senior', 18000.00, 30000.00),
+('Executive', 30000.00, 60000.00),
+('C-Level', 60000.00, 120000.00);
+
+-- Insert Tax Forms
+INSERT INTO TaxForm (jurisdiction, validity_period, form_content)
+VALUES 
+('Egypt', '2025', 'Egyptian tax form for residents - progressive tax rates 10-25%'),
+('Egypt', '2025', 'Egyptian tax form for non-residents - flat tax rate 20%'),
+('International', '2025', 'W-8BEN form for foreign contractors'),
+('Saudi Arabia', '2025', 'KSA tax form - Zakat and income tax'),
+('UAE', '2025', 'UAE tax form - Corporate tax 9%');
+
+-- Insert Payroll Policies
+INSERT INTO PayrollPolicy (effective_date, type, description)
+VALUES 
+('2025-01-01', 'Overtime', 'Standard overtime calculation with weekday and weekend multipliers'),
+('2025-01-01', 'Lateness', 'Grace period and deduction rules for late arrival'),
+('2025-01-01', 'Bonus', 'Annual and performance-based bonus policy'),
+('2025-01-01', 'Deduction', 'Standard deduction policy for absences and violations'),
+('2025-03-01', 'Overtime', 'Updated overtime policy with higher rates for critical projects'),
+('2025-01-01', 'Insurance', 'Social insurance contribution brackets'),
+('2025-01-01', 'Tax', 'Progressive tax calculation policy');
+
+-- Insert Overtime Policies
+INSERT INTO OvertimePolicy (policy_id, weekday_rate_multiplier, weekend_rate_multiplier, max_hours_per_month)
+VALUES 
+(1, 1.25, 1.50, 50),
+(5, 1.50, 2.00, 60);
+
+-- Insert Lateness Policies
+INSERT INTO LatenessPolicy (policy_id, grace_period_mins, deduction_rate)
+VALUES 
+(2, 10, 2.50),
+(4, 15, 3.00);
+
+-- Insert Bonus Policies
+INSERT INTO BonusPolicy (policy_id, bonus_type, eligibility_criteria)
+VALUES 
+(3, 'Annual Performance', 'Completed 1 year with performance rating above 3.5/5');
+
+-- Insert Deduction Policies
+INSERT INTO DeductionPolicy (policy_id, deduction_reason, calculation_mode)
+VALUES 
+(4, 'Absence', 'Full day salary deduction');
+
+-- NOTE: The following insertions assume that Employee table has been populated
+-- with at least 10 employees (employee_id 1-10) by another team member
+
+-- Sample Payroll Records for employees 1-10
+INSERT INTO Payroll (employee_id, taxes, period_start, period_end, base_amount, adjustments, contributions, actual_pay, payment_date)
+VALUES 
+-- January 2025 Payroll
+(1, 1500.00, '2025-01-01', '2025-01-31', 15000.00, 500.00, 1650.00, 13850.00, '2025-02-05'),
+(2, 800.00, '2025-01-01', '2025-01-31', 8000.00, 300.00, 880.00, 7420.00, '2025-02-05'),
+(3, 2250.00, '2025-01-01', '2025-01-31', 22500.00, 1000.00, 2475.00, 21025.00, '2025-02-05'),
+(4, 600.00, '2025-01-01', '2025-01-31', 6000.00, 200.00, 660.00, 5540.00, '2025-02-05'),
+(5, 1200.00, '2025-01-01', '2025-01-31', 12000.00, 400.00, 1320.00, 10880.00, '2025-02-05'),
+(6, 1800.00, '2025-01-01', '2025-01-31', 18000.00, 600.00, 1980.00, 16620.00, '2025-02-05'),
+(7, 450.00, '2025-01-01', '2025-01-31', 4500.00, 150.00, 495.00, 4155.00, '2025-02-05'),
+(8, 3000.00, '2025-01-01', '2025-01-31', 30000.00, 1200.00, 3300.00, 27900.00, '2025-02-05'),
+(9, 900.00, '2025-01-01', '2025-01-31', 9000.00, 350.00, 990.00, 8360.00, '2025-02-05'),
+(10, 1050.00, '2025-01-01', '2025-01-31', 10500.00, 450.00, 1155.00, 9795.00, '2025-02-05'),
+
+-- February 2025 Payroll
+(1, 1500.00, '2025-02-01', '2025-02-28', 15000.00, 700.00, 1650.00, 14050.00, '2025-03-05'),
+(2, 800.00, '2025-02-01', '2025-02-28', 8000.00, 300.00, 880.00, 7420.00, '2025-03-05'),
+(3, 2250.00, '2025-02-01', '2025-02-28', 22500.00, 1500.00, 2475.00, 21525.00, '2025-03-05'),
+(4, 600.00, '2025-02-01', '2025-02-28', 6000.00, 250.00, 660.00, 5590.00, '2025-03-05'),
+(5, 1200.00, '2025-02-01', '2025-02-28', 12000.00, 500.00, 1320.00, 11180.00, '2025-03-05'),
+
+-- March 2025 Payroll
+(1, 1500.00, '2025-03-01', '2025-03-31', 15000.00, 500.00, 1650.00, 13850.00, '2025-04-05'),
+(2, 800.00, '2025-03-01', '2025-03-31', 8000.00, 400.00, 880.00, 7520.00, '2025-04-05'),
+(3, 2250.00, '2025-03-01', '2025-03-31', 22500.00, 2000.00, 2475.00, 22025.00, '2025-04-05');
+
+-- Insert Allowances and Deductions for the payroll records
+INSERT INTO AllowanceDeduction (payroll_id, employee_id, type, amount, currency, duration, timezone)
+VALUES 
+-- January allowances
+(1, 1, 'Allowance', 500.00, 'Egyptian Pound', 'Monthly', 'EET'),
+(2, 2, 'Allowance', 300.00, 'Egyptian Pound', 'Monthly', 'EET'),
+(3, 3, 'Allowance', 1000.00, 'Egyptian Pound', 'Monthly', 'EET'),
+(4, 4, 'Allowance', 200.00, 'Egyptian Pound', 'Monthly', 'EET'),
+(5, 5, 'Allowance', 400.00, 'Egyptian Pound', 'Monthly', 'EET'),
+(6, 6, 'Allowance', 600.00, 'Egyptian Pound', 'Monthly', 'EET'),
+(7, 7, 'Allowance', 150.00, 'Egyptian Pound', 'Monthly', 'EET'),
+(8, 8, 'Allowance', 1200.00, 'Egyptian Pound', 'Monthly', 'EET'),
+(9, 9, 'Allowance', 350.00, 'Egyptian Pound', 'Monthly', 'EET'),
+(10, 10, 'Allowance', 450.00, 'Egyptian Pound', 'Monthly', 'EET'),
+
+-- Some deductions
+(3, 3, 'Deduction', 200.00, 'Egyptian Pound', 'One-time', 'EET'),
+(8, 8, 'Deduction', 300.00, 'Egyptian Pound', 'One-time', 'EET'),
+
+-- February allowances
+(11, 1, 'Allowance', 700.00, 'Egyptian Pound', 'Monthly', 'EET'),
+(12, 2, 'Allowance', 300.00, 'Egyptian Pound', 'Monthly', 'EET'),
+(13, 3, 'Allowance', 1500.00, 'Egyptian Pound', 'Monthly', 'EET'),
+(14, 4, 'Allowance', 250.00, 'Egyptian Pound', 'Monthly', 'EET'),
+(15, 5, 'Allowance', 500.00, 'Egyptian Pound', 'Monthly', 'EET'),
+
+-- March allowances
+(16, 1, 'Allowance', 500.00, 'Egyptian Pound', 'Monthly', 'EET'),
+(17, 2, 'Allowance', 400.00, 'Egyptian Pound', 'Monthly', 'EET'),
+(18, 3, 'Allowance', 2000.00, 'Egyptian Pound', 'Monthly', 'EET');
+
+-- Link Payroll to Policies
+INSERT INTO PayrollPolicy_ID (payroll_id, policy_id)
+VALUES 
+-- January payrolls with policies
+(1, 1), (1, 2), (1, 6),
+(2, 1), (2, 2),
+(3, 1), (3, 3), (3, 6),
+(4, 2), (4, 4),
+(5, 1), (5, 2),
+(6, 1), (6, 6),
+(7, 2), (7, 4),
+(8, 1), (8, 3), (8, 6),
+(9, 1), (9, 2),
+(10, 1), (10, 2),
+
+-- February payrolls
+(11, 1), (11, 2),
+(12, 1), (12, 2),
+(13, 1), (13, 3),
+(14, 2), (14, 4),
+(15, 1), (15, 2),
+
+-- March payrolls
+(16, 5), (16, 2),
+(17, 5), (17, 2),
+(18, 5), (18, 3);
+
+-- Insert Payroll Logs
+INSERT INTO Payroll_Log (payroll_id, actor, change_date, modification_type)
+VALUES 
+(1, 1, '2025-01-31 09:00:00', 'Payroll Generated'),
+(1, 1, '2025-01-31 09:15:00', 'Added Transportation Allowance'),
+(2, 1, '2025-01-31 09:00:00', 'Payroll Generated'),
+(3, 1, '2025-01-31 09:00:00', 'Payroll Generated'),
+(3, 1, '2025-01-31 09:20:00', 'Added Performance Bonus'),
+(4, 1, '2025-01-31 09:00:00', 'Payroll Generated'),
+(5, 1, '2025-01-31 09:00:00', 'Payroll Generated'),
+(8, 1, '2025-01-31 09:00:00', 'Payroll Generated'),
+(8, 1, '2025-01-31 09:30:00', 'Deduction Applied - Uniform'),
+(11, 1, '2025-02-28 09:00:00', 'Payroll Generated'),
+(11, 1, '2025-02-28 09:25:00', 'Added Overtime Payment'),
+(13, 1, '2025-02-28 09:00:00', 'Payroll Generated'),
+(13, 1, '2025-02-28 09:35:00', 'Added Project Completion Bonus'),
+(16, 1, '2025-03-31 09:00:00', 'Payroll Generated'),
+(17, 1, '2025-03-31 09:00:00', 'Payroll Generated'),
+(18, 1, '2025-03-31 09:00:00', 'Payroll Generated'),
+(18, 1, '2025-03-31 09:40:00', 'Added Annual Bonus');
+
+-- Insert Payroll Periods
+INSERT INTO PayrollPeriod (payroll_id, start_date, end_date, status)
+VALUES 
+-- January periods
+(1, '2025-01-01', '2025-01-31', 'Closed'),
+(2, '2025-01-01', '2025-01-31', 'Closed'),
+(3, '2025-01-01', '2025-01-31', 'Closed'),
+(4, '2025-01-01', '2025-01-31', 'Closed'),
+(5, '2025-01-01', '2025-01-31', 'Closed'),
+(6, '2025-01-01', '2025-01-31', 'Closed'),
+(7, '2025-01-01', '2025-01-31', 'Closed'),
+(8, '2025-01-01', '2025-01-31', 'Closed'),
+(9, '2025-01-01', '2025-01-31', 'Closed'),
+(10, '2025-01-01', '2025-01-31', 'Closed'),
+
+-- February periods
+(11, '2025-02-01', '2025-02-28', 'Closed'),
+(12, '2025-02-01', '2025-02-28', 'Closed'),
+(13, '2025-02-01', '2025-02-28', 'Closed'),
+(14, '2025-02-01', '2025-02-28', 'Closed'),
+(15, '2025-02-01', '2025-02-28', 'Closed'),
+
+-- March periods
+(16, '2025-03-01', '2025-03-31', 'Open'),
+(17, '2025-03-01', '2025-03-31', 'Open'),
+(18, '2025-03-01', '2025-03-31', 'Open');
+
+
+
+-------------------------Tarek End ---------------------------------------
