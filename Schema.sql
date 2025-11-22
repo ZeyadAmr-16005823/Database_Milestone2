@@ -522,7 +522,7 @@ CREATE TABLE Device (
 
 
 
--- =============================================
+- =============================================
 -- Tarek - Payroll, Salary Types & Policies
 -- Tables Creation Script
 -- =============================================
@@ -541,8 +541,8 @@ CREATE TABLE SalaryType (
     salary_type_id INT PRIMARY KEY IDENTITY(1,1),
     type VARCHAR(50) NOT NULL,
     payment_frequency VARCHAR(50),
-    currency VARCHAR(50),
-    FOREIGN KEY (currency) REFERENCES Currency(CurrencyName)
+    currency VARCHAR(10),
+    FOREIGN KEY (currency) REFERENCES Currency(CurrencyCode)
 );
 
 -- Hourly Salary Type
@@ -601,12 +601,12 @@ CREATE TABLE AllowanceDeduction (
     employee_id INT NOT NULL,
     type VARCHAR(50) NOT NULL,
     amount DECIMAL(10,2) NOT NULL,
-    currency VARCHAR(50),
+    currency VARCHAR(10),
     duration VARCHAR(50),
     timezone VARCHAR(50),
     FOREIGN KEY (payroll_id) REFERENCES Payroll(payroll_id),
     FOREIGN KEY (employee_id) REFERENCES Employee(employee_id),
-    FOREIGN KEY (currency) REFERENCES Currency(CurrencyName)
+    FOREIGN KEY (currency) REFERENCES Currency(CurrencyCode)
 );
 
 -- Payroll Policy Table
@@ -687,5 +687,4 @@ CREATE TABLE PayrollPeriod (
     FOREIGN KEY (payroll_id) REFERENCES Payroll(payroll_id),
     CONSTRAINT CHK_PayrollPeriod_Dates CHECK (start_date < end_date)
 );
-
 -------------------------------Tarek End--------------------------------------
