@@ -38,14 +38,20 @@ GO
 CREATE PROCEDURE AdjustPayrollItem
     @PayrollID INT,
     @Type VARCHAR(50),
-    @Amount DECIMAL(10,2)
+    @Amount DECIMAL(10,2),
+    @duration INT,
+    @timezone VARCHAR(20)
 AS
 BEGIN
+    DECLARE @EmployeeID INT;
+    
     IF NOT EXISTS (SELECT 1 FROM Payroll WHERE payroll_id = @PayrollID)
     BEGIN
         SELECT 'Invalid Payroll ID' AS Message;
         RETURN;
     END
+    
+    SELECT @EmployeeID = employee_id FROM Payroll WHERE payroll_id = @PayrollID;
 
     IF @Type = 'Allowance'
     BEGIN
@@ -60,8 +66,12 @@ BEGIN
         WHERE payroll_id = @PayrollID;
     END
     
+    -- Insert the allowance/deduction with duration and timezone
+    INSERT INTO AllowanceDeduction (payroll_id, employee_id, type, amount, currency, duration, timezone)
+    VALUES (@PayrollID, @EmployeeID, @Type, @Amount, 'EGP', CAST(@duration AS VARCHAR), @timezone);
+    
     INSERT INTO Payroll_Log (payroll_id, actor, change_date, modification_type)
-    VALUES (@PayrollID, 1, GETDATE(), 'Adjustment: ' + @Type + ' of ' + CAST(@Amount AS VARCHAR));
+    VALUES (@PayrollID, 1, GETDATE(), 'Adjustment: ' + @Type + ' of ' + CAST(@Amount AS VARCHAR) + ' for ' + CAST(@duration AS VARCHAR) + ' mins');
     
     SELECT 'Payroll item adjusted successfully' AS Message;
 END;
@@ -87,7 +97,9 @@ GO
 GO
 CREATE PROCEDURE ApplyPayrollPolicy
     @PolicyID INT,
-    @PayrollID INT
+    @PayrollID INT,
+    @type VARCHAR(20),
+    @description VARCHAR(50)
 AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Payroll WHERE payroll_id = @PayrollID)
@@ -108,7 +120,7 @@ BEGIN
         VALUES (@PayrollID, @PolicyID);
         
         INSERT INTO Payroll_Log (payroll_id, actor, change_date, modification_type)
-        VALUES (@PayrollID, 1, GETDATE(), 'Policy Applied: ' + CAST(@PolicyID AS VARCHAR));
+        VALUES (@PayrollID, 1, GETDATE(), 'Policy Applied: ' + CAST(@PolicyID AS VARCHAR) + ', Type: ' + @type + ', Desc: ' + @description);
         
         SELECT 'Policy applied successfully' AS Message;
     END
@@ -200,20 +212,22 @@ GO
 -- 8. Get Bonus Eligible Employees
 GO
 CREATE PROCEDURE GetBonusEligibleEmployees
-    @Month INT,
-    @Year INT
+    @Eligibility_criteria NVARCHAR(200)
 AS
 BEGIN
+    -- Return employees based on eligibility criteria in bonus policy
     SELECT DISTINCT
         e.employee_id,
         e.full_name,
         e.department_id,
+        e.hire_date,
+        DATEDIFF(YEAR, e.hire_date, GETDATE()) AS YearsOfService,
         p.base_amount
     FROM Employee e
-    INNER JOIN Payroll p ON e.employee_id = p.employee_id
-    WHERE MONTH(p.period_start) = @Month 
-    AND YEAR(p.period_start) = @Year
-    AND DATEDIFF(YEAR, e.hire_date, GETDATE()) >= 1;
+    LEFT JOIN Payroll p ON e.employee_id = p.employee_id
+    INNER JOIN BonusPolicy bp ON bp.eligibility_criteria LIKE '%' + @Eligibility_criteria + '%'
+    WHERE DATEDIFF(YEAR, e.hire_date, GETDATE()) >= 1
+    ORDER BY e.employee_id;
 END;
 GO
 
@@ -648,11 +662,11 @@ GO
 CREATE PROCEDURE ConfigurePayrollPolicies
     @PolicyType VARCHAR(50),
     @PolicyDetails NVARCHAR(MAX),
-    @CreatedBy INT
+    @effectivedate DATE
 AS
 BEGIN
     INSERT INTO PayrollPolicy (effective_date, type, description)
-    VALUES (GETDATE(), @PolicyType, @PolicyDetails);
+    VALUES (@effectivedate, @PolicyType, @PolicyDetails);
     
     SELECT 'Payroll policy configured successfully' AS Message;
 END;
@@ -751,7 +765,7 @@ GO
 CREATE PROCEDURE ConfigureOvertimeRules
     @DayType VARCHAR(20),
     @Multiplier DECIMAL(3,2),
-    @CreatedBy INT
+    @hourspermonth INT
 AS
 BEGIN
     IF @Multiplier <= 0
@@ -760,13 +774,19 @@ BEGIN
         RETURN;
     END
     
+    IF @hourspermonth <= 0
+    BEGIN
+        SELECT 'Hours per month must be positive' AS Message;
+        RETURN;
+    END
+    
     INSERT INTO PayrollPolicy (effective_date, type, description)
-    VALUES (GETDATE(), 'Overtime', 'DayType: ' + @DayType + ', Multiplier: ' + CAST(@Multiplier AS VARCHAR));
+    VALUES (GETDATE(), 'Overtime', 'DayType: ' + @DayType + ', Multiplier: ' + CAST(@Multiplier AS VARCHAR) + ', Max Hours: ' + CAST(@hourspermonth AS VARCHAR));
     
     DECLARE @PolicyID INT = SCOPE_IDENTITY();
     
     INSERT INTO OvertimePolicy (policy_id, weekday_rate_multiplier, weekend_rate_multiplier, max_hours_per_month)
-    VALUES (@PolicyID, @Multiplier, @Multiplier * 1.2, 50);
+    VALUES (@PolicyID, @Multiplier, @Multiplier * 1.2, @hourspermonth);
     
     SELECT 'Overtime rules configured successfully' AS Message;
 END;
@@ -856,7 +876,44 @@ BEGIN
 END;
 GO
 
--- 31. Generate Tax Statement
+-- 31. Configure Insurance Brackets By Name (with BracketName parameter)
+-- Note: This has same name as procedure 21 in requirements, renamed to avoid SQL conflict
+GO
+CREATE PROCEDURE ConfigureInsuranceBracketsByName
+    @BracketName VARCHAR(50),
+    @MinSalary DECIMAL(10,2),
+    @MaxSalary DECIMAL(10,2),
+    @EmployeeContribution DECIMAL(5,2),
+    @EmployerContribution DECIMAL(5,2)
+AS
+BEGIN
+    IF @MinSalary >= @MaxSalary
+    BEGIN
+        SELECT 'Minimum salary must be less than maximum salary' AS Message;
+        RETURN;
+    END
+    
+    IF @EmployeeContribution < 0 OR @EmployerContribution < 0
+    BEGIN
+        SELECT 'Contribution percentages must be non-negative' AS Message;
+        RETURN;
+    END
+    
+    INSERT INTO PayrollPolicy (effective_date, type, description)
+    VALUES (
+        GETDATE(),
+        'Insurance',
+        'Bracket: ' + @BracketName + 
+        ', Range: ' + CAST(@MinSalary AS VARCHAR) + '-' + CAST(@MaxSalary AS VARCHAR) +
+        ', Employee: ' + CAST(@EmployeeContribution AS VARCHAR) + '%' +
+        ', Employer: ' + CAST(@EmployerContribution AS VARCHAR) + '%'
+    );
+    
+    SELECT 'Insurance bracket configured successfully' AS Message;
+END;
+GO
+
+-- 32. Generate Tax Statement
 GO
 CREATE PROCEDURE GenerateTaxStatement
     @EmployeeID INT,
@@ -884,7 +941,7 @@ BEGIN
 END;
 GO
 
--- 32. Approve Payroll Configuration
+-- 33. Approve Payroll Configuration
 GO
 CREATE PROCEDURE ApprovePayrollConfiguration
     @ConfigID INT,
@@ -907,7 +964,7 @@ BEGIN
 END;
 GO
 
--- 33. Modify Past Payroll
+-- 34. Modify Past Payroll
 GO
 CREATE PROCEDURE ModifyPastPayroll
     @PayrollRunID INT,
@@ -960,7 +1017,6 @@ GO
 
 -- =============================================
 -- END OF PAYROLL OFFICER PROCEDURES
--- 33 procedures done by Tarek
--- =================================
-
+-- Total: 34 procedures as required
+-- =============================================
 --------------------------Tarek End---------------------------
