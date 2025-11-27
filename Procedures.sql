@@ -558,7 +558,7 @@ GO
 -- =============================================
 
 -- =============================================
--- PAYROLL OFFICER PROCEDURES (33 procedures)
+
 -- =============================================
 
 -- 1. Generate Payroll
@@ -606,6 +606,8 @@ BEGIN
     END
     
     SELECT @EmployeeID = employee_id FROM Payroll WHERE payroll_id = @PayrollID;
+    
+    BEGIN TRANSACTION;
 
     IF @Type = 'Allowance'
     BEGIN
@@ -622,10 +624,12 @@ BEGIN
     
     -- Insert the allowance/deduction with duration and timezone
     INSERT INTO AllowanceDeduction (payroll_id, employee_id, type, amount, currency, duration, timezone)
-    VALUES (@PayrollID, @EmployeeID, @Type, @Amount, 'EGP', CAST(@duration AS VARCHAR), @timezone);
+    VALUES (@PayrollID, @EmployeeID, @Type, @Amount, 'EGP', CAST(@duration AS VARCHAR(20)), @timezone);
     
     INSERT INTO Payroll_Log (payroll_id, actor, change_date, modification_type)
-    VALUES (@PayrollID, 1, GETDATE(), 'Adjustment: ' + @Type + ' of ' + CAST(@Amount AS VARCHAR) + ' for ' + CAST(@duration AS VARCHAR) + ' mins');
+    VALUES (@PayrollID, 1, GETDATE(), 'Adjustment: ' + @Type + ' of ' + CAST(@Amount AS VARCHAR(20)) + ' for ' + CAST(@duration AS VARCHAR(20)) + ' mins');
+    
+    COMMIT TRANSACTION;
     
     SELECT 'Payroll item adjusted successfully' AS Message;
 END;
@@ -674,7 +678,7 @@ BEGIN
         VALUES (@PayrollID, @PolicyID);
         
         INSERT INTO Payroll_Log (payroll_id, actor, change_date, modification_type)
-        VALUES (@PayrollID, 1, GETDATE(), 'Policy Applied: ' + CAST(@PolicyID AS VARCHAR) + ', Type: ' + @type + ', Desc: ' + @description);
+        VALUES (@PayrollID, 1, GETDATE(), 'Policy Applied: ' + CAST(@PolicyID AS VARCHAR(10)) + ', Type: ' + @type + ', Desc: ' + @description);
         
         SELECT 'Policy applied successfully' AS Message;
     END
@@ -722,6 +726,8 @@ BEGIN
     
     SELECT @EmployeeID = employee_id FROM Payroll WHERE payroll_id = @PayrollID;
     
+    BEGIN TRANSACTION;
+    
     INSERT INTO AllowanceDeduction (payroll_id, employee_id, type, amount, currency)
     VALUES (@PayrollID, @EmployeeID, @Type, @Amount, 'EGP');
     
@@ -735,7 +741,9 @@ BEGIN
     END
     
     INSERT INTO Payroll_Log (payroll_id, actor, change_date, modification_type)
-    VALUES (@PayrollID, 1, GETDATE(), 'Added ' + @Type + ': ' + CAST(@Amount AS VARCHAR));
+    VALUES (@PayrollID, 1, GETDATE(), 'Added ' + @Type + ': ' + CAST(@Amount AS VARCHAR(20)));
+    
+    COMMIT TRANSACTION;
     
     SELECT 'Allowance/Deduction added successfully' AS Message;
 END;
@@ -854,6 +862,7 @@ BEGIN
         RETURN;
     END
     
+    -- Find employees with missing punches in the payroll period
     SELECT 
         e.employee_id,
         e.full_name,
@@ -861,7 +870,16 @@ BEGIN
     FROM Employee e
     INNER JOIN Attendance a ON e.employee_id = a.employee_id
     WHERE (a.entry_time IS NULL OR a.exit_time IS NULL)
-    AND CAST(a.entry_time AS DATE) BETWEEN @StartDate AND @EndDate
+    AND a.attendance_id IN (
+        SELECT attendance_id 
+        FROM Attendance 
+        WHERE employee_id = e.employee_id
+        AND (
+            (entry_time IS NOT NULL AND CAST(entry_time AS DATE) BETWEEN @StartDate AND @EndDate)
+            OR
+            (exit_time IS NOT NULL AND CAST(exit_time AS DATE) BETWEEN @StartDate AND @EndDate)
+        )
+    )
     GROUP BY e.employee_id, e.full_name
     HAVING COUNT(*) > 0;
 END;
@@ -896,17 +914,44 @@ CREATE PROCEDURE SyncApprovedPermissionsToPayroll
     @PayrollPeriodID INT
 AS
 BEGIN
-    DECLARE @PayrollID INT;
+    DECLARE @PayrollID INT, @StartDate DATE, @EndDate DATE;
     
-    SELECT @PayrollID = payroll_id
+    SELECT @PayrollID = payroll_id, @StartDate = start_date, @EndDate = end_date
     FROM PayrollPeriod
     WHERE payroll_period_id = @PayrollPeriodID;
     
-    IF @PayrollID IS NOT NULL
+    IF @PayrollID IS NULL
     BEGIN
-        INSERT INTO Payroll_Log (payroll_id, actor, change_date, modification_type)
-        VALUES (@PayrollID, 1, GETDATE(), 'Approved permissions synced');
+        SELECT 'Invalid Payroll Period ID' AS Message;
+        RETURN;
     END
+    
+    BEGIN TRANSACTION;
+    
+    -- Sync approved permission requests for ALL employees in this payroll period
+    -- Updates payroll adjustments based on approved attendance corrections
+    UPDATE p
+    SET p.adjustments = p.adjustments + 
+        (SELECT ISNULL(COUNT(*), 0) * 50.00
+         FROM AttendanceCorrectionRequest acr
+         WHERE acr.employee_id = p.employee_id
+         AND acr.status = 'Approved'
+         AND acr.date BETWEEN @StartDate AND @EndDate)
+    FROM Payroll p
+    WHERE p.payroll_id = @PayrollID
+    AND EXISTS (
+        SELECT 1 
+        FROM AttendanceCorrectionRequest acr
+        WHERE acr.employee_id = p.employee_id
+        AND acr.status = 'Approved'
+        AND acr.date BETWEEN @StartDate AND @EndDate
+    );
+    
+    -- Log the sync operation
+    INSERT INTO Payroll_Log (payroll_id, actor, change_date, modification_type)
+    VALUES (@PayrollID, 1, GETDATE(), 'Approved permissions synced for period ' + CAST(@PayrollPeriodID AS VARCHAR(10)));
+    
+    COMMIT TRANSACTION;
     
     SELECT 'Approved permissions synced to payroll successfully' AS Message;
 END;
@@ -1007,11 +1052,22 @@ BEGIN
         RETURN;
     END
     
+    IF @Exemption < 0
+    BEGIN
+        SELECT 'Tax exemption cannot be negative' AS Message;
+        RETURN;
+    END
+    
+    -- Store tax rule as a structured record in TaxForm
+    -- Using consistent format for parsing and application
+    DECLARE @FormContent NVARCHAR(500);
+    SET @FormContent = 'TAX_RULE|' + @TaxRuleName + '|RATE:' + CAST(@Rate AS VARCHAR(10)) + '|EXEMPTION:' + CAST(@Exemption AS VARCHAR(20));
+    
     INSERT INTO TaxForm (jurisdiction, validity_period, form_content)
     VALUES (
         @CountryCode, 
-        CAST(YEAR(GETDATE()) AS VARCHAR), 
-        'Tax Rule: ' + @TaxRuleName + ', Rate: ' + CAST(@Rate AS VARCHAR) + '%, Exemption: ' + CAST(@Exemption AS VARCHAR)
+        CAST(YEAR(GETDATE()) AS VARCHAR(4)), 
+        @FormContent
     );
     
     SELECT 'Tax rule managed successfully' AS Message;
@@ -1072,6 +1128,8 @@ BEGIN
     
     IF @PayrollID IS NOT NULL
     BEGIN
+        BEGIN TRANSACTION;
+        
         UPDATE Payroll
         SET adjustments = adjustments + @BonusAmount
         WHERE payroll_id = @PayrollID;
@@ -1080,7 +1138,9 @@ BEGIN
         VALUES (@PayrollID, @EmployeeID, 'Signing Bonus', @BonusAmount, 'EGP');
         
         INSERT INTO Payroll_Log (payroll_id, actor, change_date, modification_type)
-        VALUES (@PayrollID, 1, GETDATE(), 'Signing Bonus Added: ' + CAST(@BonusAmount AS VARCHAR));
+        VALUES (@PayrollID, 1, GETDATE(), 'Signing Bonus Added: ' + CAST(@BonusAmount AS VARCHAR(20)));
+        
+        COMMIT TRANSACTION;
         
         SELECT 'Signing bonus configured successfully' AS Message;
     END
@@ -1122,6 +1182,8 @@ BEGIN
     
     IF @PayrollID IS NOT NULL
     BEGIN
+        BEGIN TRANSACTION;
+        
         INSERT INTO AllowanceDeduction (payroll_id, employee_id, type, amount, currency)
         VALUES (@PayrollID, @EmployeeID, 'Termination - ' + @Reason, @CompensationAmount, 'EGP');
         
@@ -1130,7 +1192,9 @@ BEGIN
         WHERE payroll_id = @PayrollID;
         
         INSERT INTO Payroll_Log (payroll_id, actor, change_date, modification_type)
-        VALUES (@PayrollID, 1, GETDATE(), 'Termination Benefits: ' + CAST(@CompensationAmount AS VARCHAR) + ' - ' + @Reason);
+        VALUES (@PayrollID, 1, GETDATE(), 'Termination Benefits: ' + CAST(@CompensationAmount AS VARCHAR(20)) + ' - ' + @Reason);
+        
+        COMMIT TRANSACTION;
         
         SELECT 'Termination benefits configured successfully' AS Message;
     END
@@ -1536,6 +1600,8 @@ BEGIN
         RETURN;
     END
     
+    BEGIN TRANSACTION;
+    
     IF @FieldName = 'base_amount'
     BEGIN
         SELECT @OldValue = base_amount FROM Payroll WHERE payroll_id = @PayrollRunID;
@@ -1558,15 +1624,22 @@ BEGIN
     END
     ELSE
     BEGIN
+        ROLLBACK TRANSACTION;
         SELECT 'Invalid field name' AS Message;
         RETURN;
     END
     
     INSERT INTO Payroll_Log (payroll_id, actor, change_date, modification_type)
-    VALUES (@PayrollRunID, @ModifiedBy, GETDATE(), 'Modified ' + @FieldName + ' from ' + CAST(@OldValue AS VARCHAR) + ' to ' + CAST(@NewValue AS VARCHAR));
+    VALUES (@PayrollRunID, @ModifiedBy, GETDATE(), 'Modified ' + @FieldName + ' from ' + CAST(@OldValue AS VARCHAR(20)) + ' to ' + CAST(@NewValue AS VARCHAR(20)));
+    
+    COMMIT TRANSACTION;
     
     SELECT 'Past payroll modified successfully' AS Message;
 END;
 GO
+
+-- =============================================
+
+-- =============================================
 
 --------------------------Tarek End---------------------------
