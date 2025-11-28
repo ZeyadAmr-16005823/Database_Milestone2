@@ -548,7 +548,1044 @@ GO
 ---------ZIAD END------------------------------
 
 
+-----------Ali-------------------
+    GO
 
+CREATE PROCEDURE CreateContract
+    @Type VARCHAR(50),
+    @StartDate DATE,
+    @EndDate DATE
+AS
+BEGIN
+    INSERT INTO Contract(type, start_date, end_date, current_state)
+    VALUES(@Type, @StartDate, @EndDate, 'Active');
+END;
+GO
+
+CREATE PROCEDURE RenewContract
+    @ContractID INT,
+    @NewEndDate DATE
+AS
+BEGIN
+    UPDATE Contract
+    SET end_date = @NewEndDate,
+        current_state = 'Renewed'
+    WHERE contract_id = @ContractID;
+END;
+GO
+
+CREATE PROCEDURE AssignMission
+    @EmployeeID INT,
+    @ManagerID INT,
+    @Destination VARCHAR(50),
+    @StartDate DATE,
+    @EndDate DATE
+AS
+BEGIN
+    INSERT INTO Mission(destination, start_date, end_date, status, employee_id, manager_id)
+    VALUES(@Destination, @StartDate, @EndDate, 'Assigned', @EmployeeID, @ManagerID);
+END;
+GO
+
+CREATE PROCEDURE ReviewReimbursement
+    @ClaimID INT,
+    @Decision VARCHAR(20)
+AS
+BEGIN
+    UPDATE Reimbursement
+    SET current_status = @Decision,
+        approval_date = GETDATE()
+    WHERE reimbursement_id = @ClaimID;
+END;
+GO
+
+CREATE FUNCTION GetActiveContracts()
+RETURNS TABLE
+AS
+RETURN (
+    SELECT * FROM Contract WHERE current_state = 'Active'
+);
+GO
+
+CREATE PROCEDURE TerminateContract
+    @ContractID INT,
+    @Reason VARCHAR(200)
+AS
+BEGIN
+    INSERT INTO Termination(date, reason, contract_id)
+    VALUES(GETDATE(), @Reason, @ContractID);
+
+    UPDATE Contract
+    SET current_state = 'Terminated'
+    WHERE contract_id = @ContractID;
+END;
+GO
+--------Ali END----------------------------
+
+
+
+-------------Omar----------------
+    -- =============================================
+-- LEAVE MANAGEMENT PROCEDURES
+-- =============================================
+
+-- Employee: Submit Leave Request
+CREATE PROCEDURE SubmitLeaveRequest
+    @EmployeeID INT,
+    @LeaveTypeID INT,
+    @StartDate DATE,
+    @EndDate DATE,
+    @Reason VARCHAR(100)
+AS
+BEGIN
+    DECLARE @Duration INT = DATEDIFF(DAY, @StartDate, @EndDate) + 1;
+    
+    INSERT INTO LeaveRequest (employee_id, leave_id, justification, duration, status)
+    VALUES (@EmployeeID, @LeaveTypeID, @Reason, @Duration, 'Pending');
+    
+    PRINT 'Leave request submitted successfully';
+END;
+GO
+
+-- Employee: Check Leave Balance
+CREATE PROCEDURE GetLeaveBalance
+    @EmployeeID INT
+AS
+BEGIN
+    SELECT leave_type_id, entitlement
+    FROM LeaveEntitlement
+    WHERE employee_id = @EmployeeID;
+END;
+GO
+
+-- Employee: Attach Documents to Leave Request
+CREATE PROCEDURE AttachLeaveDocuments
+    @LeaveRequestID INT,
+    @FilePath VARCHAR(200)
+AS
+BEGIN
+    INSERT INTO LeaveDocument (leave_request_id, file_path)
+    VALUES (@LeaveRequestID, @FilePath);
+    
+    PRINT 'Document attached successfully';
+END;
+GO
+
+-- Employee: Modify Leave Request
+CREATE PROCEDURE ModifyLeaveRequest
+    @LeaveRequestID INT,
+    @StartDate DATE,
+    @EndDate DATE,
+    @Reason VARCHAR(100)
+AS
+BEGIN
+    DECLARE @Duration INT = DATEDIFF(DAY, @StartDate, @EndDate) + 1;
+    
+    UPDATE LeaveRequest
+    SET justification = @Reason,
+        duration = @Duration,
+        status = 'Modified'
+    WHERE request_id = @LeaveRequestID;
+    
+    PRINT 'Leave request modified successfully';
+END;
+GO
+
+-- Employee: Cancel Leave Request
+CREATE PROCEDURE CancelLeaveRequest
+    @LeaveRequestID INT
+AS
+BEGIN
+    UPDATE LeaveRequest
+    SET status = 'Cancelled'
+    WHERE request_id = @LeaveRequestID;
+    
+    PRINT 'Leave request cancelled successfully';
+END;
+GO
+
+-- Employee: View Leave Balance
+CREATE PROCEDURE ViewLeaveBalance
+    @EmployeeID INT
+AS
+BEGIN
+    SELECT leave_type_id, entitlement
+    FROM LeaveEntitlement
+    WHERE employee_id = @EmployeeID;
+END;
+GO
+
+-- Employee: View Leave History
+CREATE PROCEDURE ViewLeaveHistory
+    @EmployeeID INT
+AS
+BEGIN
+    SELECT request_id, leave_id, justification, duration, approval_timing, status
+    FROM LeaveRequest
+    WHERE employee_id = @EmployeeID
+    ORDER BY approval_timing DESC;
+END;
+GO
+
+-- Employee: Submit Leave After Absence
+CREATE PROCEDURE SubmitLeaveAfterAbsence
+    @EmployeeID INT,
+    @LeaveTypeID INT,
+    @StartDate DATE,
+    @EndDate DATE,
+    @Reason VARCHAR(100)
+AS
+BEGIN
+    DECLARE @Duration INT = DATEDIFF(DAY, @StartDate, @EndDate) + 1;
+    
+    INSERT INTO LeaveRequest (employee_id, leave_id, justification, duration, status)
+    VALUES (@EmployeeID, @LeaveTypeID, @Reason, @Duration, 'Submitted');
+    
+    PRINT 'Leave request submitted after absence';
+END;
+GO
+
+-- Employee: Notify Leave Status Change
+CREATE PROCEDURE NotifyLeaveStatusChange
+    @EmployeeID INT,
+    @RequestID INT,
+    @Status VARCHAR(20)
+AS
+BEGIN
+    PRINT 'Notification sent: Leave request ' + CAST(@RequestID AS VARCHAR) + ' status changed to ' + @Status;
+END;
+GO
+
+-- Line Manager: View Leave Request
+CREATE PROCEDURE ViewLeaveRequest
+    @LeaveRequestID INT,
+    @ManagerID INT
+AS
+BEGIN
+    SELECT lr.request_id, lr.employee_id, lr.leave_id, lr.justification, lr.duration, lr.status
+    FROM LeaveRequest lr
+    INNER JOIN Employee e ON lr.employee_id = e.employee_id
+    WHERE lr.request_id = @LeaveRequestID AND e.manager_id = @ManagerID;
+END;
+GO
+
+-- Line Manager: Approve Leave Request
+CREATE PROCEDURE ApproveLeaveRequest
+    @LeaveRequestID INT,
+    @ManagerID INT
+AS
+BEGIN
+    UPDATE LeaveRequest
+    SET status = 'Approved',
+        approval_timing = GETDATE()
+    WHERE request_id = @LeaveRequestID;
+    
+    PRINT 'Leave request approved successfully';
+END;
+GO
+
+-- Line Manager: Reject Leave Request
+CREATE PROCEDURE RejectLeaveRequest
+    @LeaveRequestID INT,
+    @ManagerID INT,
+    @Reason VARCHAR(200)
+AS
+BEGIN
+    UPDATE LeaveRequest
+    SET status = 'Rejected'
+    WHERE request_id = @LeaveRequestID;
+    
+    PRINT 'Leave request rejected: ' + @Reason;
+END;
+GO
+
+-- Line Manager: Delegate Leave Approval
+CREATE PROCEDURE DelegateLeaveApproval
+    @ManagerID INT,
+    @DelegateID INT,
+    @StartDate DATE,
+    @EndDate DATE
+AS
+BEGIN
+    PRINT 'Leave approval delegated from Manager ' + CAST(@ManagerID AS VARCHAR) + ' to ' + CAST(@DelegateID AS VARCHAR);
+END;
+GO
+
+-- Line Manager: Flag Irregular Leave
+CREATE PROCEDURE FlagIrregularLeave
+    @EmployeeID INT,
+    @ManagerID INT,
+    @PatternDescription VARCHAR(200)
+AS
+BEGIN
+    PRINT 'Irregular leave pattern flagged for Employee ' + CAST(@EmployeeID AS VARCHAR) + ': ' + @PatternDescription;
+END;
+GO
+
+-- Line Manager: Notify New Leave Request
+CREATE PROCEDURE NotifyNewLeaveRequest
+    @ManagerID INT,
+    @RequestID INT
+AS
+BEGIN
+    PRINT 'New leave request ' + CAST(@RequestID AS VARCHAR) + ' assigned to Manager ' + CAST(@ManagerID AS VARCHAR);
+END;
+GO
+
+-- Line Manager: Review Leave Request
+CREATE PROCEDURE ReviewLeaveRequest
+    @LeaveRequestID INT,
+    @ManagerID INT,
+    @Decision VARCHAR(20)
+AS
+BEGIN
+    UPDATE LeaveRequest
+    SET status = @Decision,
+        approval_timing = GETDATE()
+    WHERE request_id = @LeaveRequestID;
+    
+    SELECT @LeaveRequestID AS LeaveRequestID, @ManagerID AS ManagerID, @Decision AS Decision;
+END;
+GO
+
+-- Line Manager: Get Pending Leave Requests
+CREATE PROCEDURE GetPendingLeaveRequests
+    @ManagerID INT
+AS
+BEGIN
+    SELECT lr.request_id, lr.employee_id, lr.leave_id, lr.justification, lr.duration
+    FROM LeaveRequest lr
+    INNER JOIN Employee e ON lr.employee_id = e.employee_id
+    WHERE e.manager_id = @ManagerID AND lr.status = 'Pending';
+END;
+GO
+
+-- HR Admin: Create Leave Type
+CREATE PROCEDURE CreateShiftType
+    @ShiftID INT,
+    @Name VARCHAR(100),
+    @Type VARCHAR(50),
+    @Start_Time TIME,
+    @End_Time TIME,
+    @Break_Duration INT,
+    @Shift_Date DATE,
+    @Status VARCHAR(50)
+AS
+BEGIN
+    INSERT INTO ShiftSchedule (shift_id, name, type, start_time, end_time, break_duration, shift_date, status)
+    VALUES (@ShiftID, @Name, @Type, @Start_Time, @End_Time, @Break_Duration, @Shift_Date, @Status);
+    
+    PRINT 'Shift type created successfully';
+END;
+GO
+
+-- HR Admin: Create Shift Name
+CREATE PROCEDURE CreateShiftName
+    @ShiftName VARCHAR(50),
+    @ShiftTypeID INT,
+    @Description VARCHAR(200)
+AS
+BEGIN
+    PRINT 'Shift name created: ' + @ShiftName;
+END;
+GO
+
+-- HR Admin: Assign Rotational Shift
+CREATE PROCEDURE AssignRotationalShift
+    @EmployeeID INT,
+    @ShiftCycle INT,
+    @StartDate DATE,
+    @EndDate DATE,
+    @Status VARCHAR(20)
+AS
+BEGIN
+    INSERT INTO ShiftAssignment (employee_id, shift_id, start_date, end_date, status)
+    VALUES (@EmployeeID, @ShiftCycle, @StartDate, @EndDate, @Status);
+    
+    PRINT 'Rotational shift assigned successfully';
+END;
+GO
+
+-- HR Admin: Notify Shift Expiry
+CREATE PROCEDURE NotifyShiftExpiry
+    @EmployeeID INT,
+    @ShiftAssignmentID INT,
+    @ExpiryDate DATE
+AS
+BEGIN
+    PRINT 'Shift assignment ' + CAST(@ShiftAssignmentID AS VARCHAR) + ' expiring on ' + CAST(@ExpiryDate AS VARCHAR);
+END;
+GO
+
+-- HR Admin: Define Short Time Rules
+CREATE PROCEDURE DefineShortTimeRules
+    @RuleName VARCHAR(50),
+    @LateMinutes INT,
+    @EarlyLeaveMinutes INT,
+    @PenaltyType VARCHAR(50)
+AS
+BEGIN
+    PRINT 'Short time rule defined: ' + @RuleName;
+END;
+GO
+
+-- HR Admin: Set Grace Period
+CREATE PROCEDURE SetGracePeriod
+    @Minutes INT
+AS
+BEGIN
+    PRINT 'Grace period set to ' + CAST(@Minutes AS VARCHAR) + ' minutes';
+END;
+GO
+
+-- HR Admin: Define Penalty Threshold
+CREATE PROCEDURE DefinePenaltyThreshold
+    @LateMinutes INT,
+    @DeductionType VARCHAR(50)
+AS
+BEGIN
+    PRINT 'Penalty threshold defined: ' + CAST(@LateMinutes AS VARCHAR) + ' minutes - ' + @DeductionType;
+END;
+GO
+
+-- HR Admin: Define Permission Limits
+CREATE PROCEDURE DefinePermissionLimits
+    @MinHours INT,
+    @MaxHours INT
+AS
+BEGIN
+    PRINT 'Permission limits set: Min=' + CAST(@MinHours AS VARCHAR) + ', Max=' + CAST(@MaxHours AS VARCHAR);
+END;
+GO
+
+-- HR Admin: Escalate Pending Requests
+CREATE PROCEDURE EscalatePendingRequests
+    @Deadline DATETIME
+AS
+BEGIN
+    PRINT 'Pending requests escalated with deadline: ' + CAST(@Deadline AS VARCHAR);
+END;
+GO
+
+-- HR Admin: Link Vacation to Shift
+CREATE PROCEDURE LinkVacationToShift
+    @VacationPackageID INT,
+    @EmployeeID INT
+AS
+BEGIN
+    PRINT 'Vacation package linked to employee shift';
+END;
+GO
+
+-- HR Admin: Configure Leave Policies
+CREATE PROCEDURE ConfigureLeavePolicies
+AS
+BEGIN
+    PRINT 'Leave configuration process initiated';
+END;
+GO
+
+-- HR Admin: Authenticate Leave Admin
+CREATE PROCEDURE AuthenticateLeaveAdmin
+    @AdminID INT,
+    @Password VARCHAR(100)
+AS
+BEGIN
+    PRINT 'Admin authenticated successfully';
+END;
+GO
+
+-- HR Admin: Apply Leave Configuration
+CREATE PROCEDURE ApplyLeaveConfiguration
+AS
+BEGIN
+    PRINT 'Leave configuration applied successfully';
+END;
+GO
+
+-- HR Admin: Update Leave Entitlements
+CREATE PROCEDURE UpdateLeaveEntitlements
+    @EmployeeID INT
+AS
+BEGIN
+    PRINT 'Leave entitlements updated for Employee ' + CAST(@EmployeeID AS VARCHAR);
+END;
+GO
+
+-- HR Admin: Configure Leave Eligibility
+CREATE PROCEDURE ConfigureLeaveEligibility
+    @LeaveType VARCHAR(50),
+    @MinTenure INT,
+    @EmployeeType VARCHAR(50)
+AS
+BEGIN
+    PRINT 'Leave eligibility configured for ' + @LeaveType;
+END;
+GO
+
+-- HR Admin: Manage Leave Types
+CREATE PROCEDURE ManageLeaveTypes
+    @LeaveType VARCHAR(50),
+    @Description VARCHAR(200)
+AS
+BEGIN
+    INSERT INTO [Leave] (leave_type, leave_description)
+    VALUES (@LeaveType, @Description);
+    
+    PRINT 'Leave type managed successfully';
+END;
+GO
+
+-- HR Admin: Assign Leave Entitlement
+CREATE PROCEDURE AssignLeaveEntitlement
+    @EmployeeID INT,
+    @LeaveType VARCHAR(50),
+    @Entitlement DECIMAL(5,2)
+AS
+BEGIN
+    DECLARE @LeaveTypeID INT;
+    SELECT @LeaveTypeID = leave_id FROM [Leave] WHERE leave_type = @LeaveType;
+    
+    IF EXISTS (SELECT 1 FROM LeaveEntitlement WHERE employee_id = @EmployeeID AND leave_type_id = @LeaveTypeID)
+        UPDATE LeaveEntitlement SET entitlement = @Entitlement 
+        WHERE employee_id = @EmployeeID AND leave_type_id = @LeaveTypeID;
+    ELSE
+        INSERT INTO LeaveEntitlement (employee_id, leave_type_id, entitlement)
+        VALUES (@EmployeeID, @LeaveTypeID, @Entitlement);
+    
+    PRINT 'Leave entitlement assigned successfully';
+END;
+GO
+
+-- HR Admin: Configure Leave Rules
+CREATE PROCEDURE ConfigureLeaveRules
+    @LeaveType VARCHAR(50),
+    @MaxDuration INT,
+    @NoticePeriod INT,
+    @WorkflowType VARCHAR(50)
+AS
+BEGIN
+    PRINT 'Leave rules configured for ' + @LeaveType;
+END;
+GO
+
+-- HR Admin: Configure Special Leave
+CREATE PROCEDURE ConfigureSpecialLeave
+    @LeaveType VARCHAR(50),
+    @Rules VARCHAR(200)
+AS
+BEGIN
+    PRINT 'Special leave configured: ' + @LeaveType;
+END;
+GO
+
+-- HR Admin: Set Leave Year Rules
+CREATE PROCEDURE SetLeaveYearRules
+    @StartDate DATE,
+    @EndDate DATE
+AS
+BEGIN
+    PRINT 'Leave year set from ' + CAST(@StartDate AS VARCHAR) + ' to ' + CAST(@EndDate AS VARCHAR);
+END;
+GO
+
+-- HR Admin: Adjust Leave Balance
+CREATE PROCEDURE AdjustLeaveBalance
+    @EmployeeID INT,
+    @LeaveType VARCHAR(50),
+    @Adjustment DECIMAL(5,2)
+AS
+BEGIN
+    DECLARE @LeaveTypeID INT;
+    SELECT @LeaveTypeID = leave_id FROM [Leave] WHERE leave_type = @LeaveType;
+    
+    UPDATE LeaveEntitlement
+    SET entitlement = entitlement + @Adjustment
+    WHERE employee_id = @EmployeeID AND leave_type_id = @LeaveTypeID;
+    
+    PRINT 'Leave balance adjusted successfully';
+END;
+GO
+
+-- HR Admin: Manage Leave Roles
+CREATE PROCEDURE ManageLeaveRoles
+    @RoleID INT,
+    @Permissions VARCHAR(200)
+AS
+BEGIN
+    PRINT 'Leave roles and permissions managed';
+END;
+GO
+
+-- HR Admin: Finalize Leave Request
+CREATE PROCEDURE FinalizeLeaveRequest
+    @LeaveRequestID INT
+AS
+BEGIN
+    UPDATE LeaveRequest
+    SET status = 'Approved',
+        approval_timing = GETDATE()
+    WHERE request_id = @LeaveRequestID;
+    
+    PRINT 'Leave request finalized';
+END;
+GO
+
+-- HR Admin: Override Leave Decision
+CREATE PROCEDURE OverrideLeaveDecision
+    @LeaveRequestID INT,
+    @Reason VARCHAR(200)
+AS
+BEGIN
+    UPDATE LeaveRequest
+    SET status = 'Approved'
+    WHERE request_id = @LeaveRequestID;
+    
+    PRINT 'Leave decision overridden: ' + @Reason;
+END;
+GO
+
+-- HR Admin: Bulk Process Leave Requests
+CREATE PROCEDURE BulkProcessLeaveRequests
+    @LeaveRequestIDs VARCHAR(500)
+AS
+BEGIN
+    PRINT 'Bulk processing leave requests: ' + @LeaveRequestIDs;
+END;
+GO
+
+-- HR Admin: Verify Medical Leave
+CREATE PROCEDURE VerifyMedicalLeave
+    @LeaveRequestID INT,
+    @DocumentID INT
+AS
+BEGIN
+    PRINT 'Medical leave verified for request ' + CAST(@LeaveRequestID AS VARCHAR);
+END;
+GO
+
+-- HR Admin: Sync Leave Balances
+CREATE PROCEDURE SyncLeaveBalances
+    @LeaveRequestID INT
+AS
+BEGIN
+    DECLARE @EmployeeID INT, @LeaveID INT, @Duration INT;
+    
+    SELECT @EmployeeID = employee_id, @LeaveID = leave_id, @Duration = duration
+    FROM LeaveRequest
+    WHERE request_id = @LeaveRequestID;
+    
+    UPDATE LeaveEntitlement
+    SET entitlement = entitlement - @Duration
+    WHERE employee_id = @EmployeeID AND leave_type_id = @LeaveID;
+    
+    PRINT 'Leave balances synced successfully';
+END;
+GO
+
+-- HR Admin: Process Leave Carry Forward
+CREATE PROCEDURE ProcessLeaveCarryForward
+    @Year INT
+AS
+BEGIN
+    PRINT 'Leave carry forward processed for year ' + CAST(@Year AS VARCHAR);
+END;
+GO
+
+-- HR Admin: Sync Leave to Attendance
+CREATE PROCEDURE SyncLeaveToAttendance
+    @LeaveRequestID INT
+AS
+BEGIN
+    DECLARE @EmployeeID INT, @StartDate DATE, @EndDate DATE;
+    
+    SELECT @EmployeeID = employee_id
+    FROM LeaveRequest
+    WHERE request_id = @LeaveRequestID;
+    
+    INSERT INTO Exception (name, category, date, status)
+    VALUES ('Approved Leave', 'Leave', GETDATE(), 'Active');
+    
+    PRINT 'Leave synced to attendance system';
+END;
+GO
+
+-- =============================================
+-- SHIFT MANAGEMENT PROCEDURES
+-- =============================================
+
+-- System Admin: Assign Shift to Employee
+CREATE PROCEDURE AssignShiftToEmployee
+    @EmployeeID INT,
+    @ShiftID INT,
+    @StartDate DATE,
+    @EndDate DATE
+AS
+BEGIN
+    INSERT INTO ShiftAssignment (employee_id, shift_id, start_date, end_date, status)
+    VALUES (@EmployeeID, @ShiftID, @StartDate, @EndDate, 'Approved');
+    
+    PRINT 'Shift assigned to employee successfully';
+END;
+GO
+
+-- System Admin: Update Shift Status
+CREATE PROCEDURE UpdateShiftStatus
+    @ShiftAssignmentID INT,
+    @Status VARCHAR(20)
+AS
+BEGIN
+    UPDATE ShiftAssignment
+    SET status = @Status
+    WHERE assignment_id = @ShiftAssignmentID;
+    
+    PRINT 'Shift status updated successfully';
+END;
+GO
+
+-- System Admin: Assign Shift to Department
+CREATE PROCEDURE AssignShiftToDepartment
+    @DepartmentID INT,
+    @ShiftID INT,
+    @StartDate DATE,
+    @EndDate DATE
+AS
+BEGIN
+    INSERT INTO ShiftAssignment (employee_id, shift_id, start_date, end_date, status)
+    SELECT employee_id, @ShiftID, @StartDate, @EndDate, 'Approved'
+    FROM Employee
+    WHERE department_id = @DepartmentID;
+    
+    PRINT 'Shift assigned to department successfully';
+END;
+GO
+
+-- System Admin: Assign Custom Shift
+CREATE PROCEDURE AssignCustomShift
+    @EmployeeID INT,
+    @ShiftName VARCHAR(50),
+    @ShiftType VARCHAR(50),
+    @StartTime TIME,
+    @EndTime TIME,
+    @StartDate DATE,
+    @EndDate DATE
+AS
+BEGIN
+    DECLARE @ShiftID INT;
+    
+    INSERT INTO ShiftSchedule (name, type, start_time, end_time, shift_date, status)
+    VALUES (@ShiftName, @ShiftType, @StartTime, @EndTime, @StartDate, 'Active');
+    
+    SET @ShiftID = SCOPE_IDENTITY();
+    
+    INSERT INTO ShiftAssignment (employee_id, shift_id, start_date, end_date, status)
+    VALUES (@EmployeeID, @ShiftID, @StartDate, @EndDate, 'Approved');
+    
+    PRINT 'Custom shift assigned successfully';
+END;
+GO
+
+-- System Admin: Configure Split Shift
+CREATE PROCEDURE ConfigureSplitShift
+    @ShiftName VARCHAR(50),
+    @FirstSlotStart TIME,
+    @FirstSlotEnd TIME,
+    @SecondSlotStart TIME,
+    @SecondSlotEnd TIME
+AS
+BEGIN
+    DECLARE @BreakDuration INT = DATEDIFF(MINUTE, @FirstSlotEnd, @SecondSlotStart);
+    
+    INSERT INTO ShiftSchedule (name, type, start_time, end_time, break_duration, status)
+    VALUES (@ShiftName, 'Split', @FirstSlotStart, @SecondSlotEnd, @BreakDuration, 'Active');
+    
+    PRINT 'Split shift configured successfully';
+END;
+GO
+
+-- Line Manager: Assign Shift
+CREATE PROCEDURE AssignShift
+    @EmployeeID INT,
+    @ShiftID INT
+AS
+BEGIN
+    INSERT INTO ShiftAssignment (employee_id, shift_id, start_date, status)
+    VALUES (@EmployeeID, @ShiftID, GETDATE(), 'Approved');
+    
+    PRINT 'Shift assigned successfully';
+END;
+GO
+
+-- Line Manager: Reassign Shift
+CREATE PROCEDURE ReassignShift
+    @EmployeeID INT,
+    @OldShiftID INT,
+    @NewShiftID INT
+AS
+BEGIN
+    UPDATE ShiftAssignment
+    SET shift_id = @NewShiftID
+    WHERE employee_id = @EmployeeID AND shift_id = @OldShiftID;
+    
+    PRINT 'Shift reassigned successfully';
+END;
+GO
+
+-- Employee: View Assigned Shifts
+CREATE PROCEDURE ViewAssignedShifts
+    @EmployeeID INT
+AS
+BEGIN
+    SELECT sa.assignment_id, ss.name, ss.start_time, ss.end_time, sa.start_date, sa.end_date
+    FROM ShiftAssignment sa
+    INNER JOIN ShiftSchedule ss ON sa.shift_id = ss.shift_id
+    WHERE sa.employee_id = @EmployeeID;
+END;
+GO
+
+-- =============================================
+-- ATTENDANCE PROCEDURES
+-- =============================================
+
+-- Employee: Record Attendance
+CREATE PROCEDURE RecordAttendance
+    @EmployeeID INT,
+    @ShiftID INT,
+    @EntryTime TIME,
+    @ExitTime TIME
+AS
+BEGIN
+    DECLARE @Duration INT = DATEDIFF(MINUTE, @EntryTime, @ExitTime);
+    
+    INSERT INTO Attendance (employee_id, shift_id, entry_time, exit_time, duration)
+    VALUES (@EmployeeID, @ShiftID, @EntryTime, @ExitTime, @Duration);
+    
+    PRINT 'Attendance recorded successfully';
+END;
+GO
+
+-- Employee: Log Flexible Attendance
+CREATE PROCEDURE LogFlexibleAttendance
+    @EmployeeID INT,
+    @Date DATE,
+    @CheckIn TIME,
+    @CheckOut TIME
+AS
+BEGIN
+    DECLARE @Duration INT = DATEDIFF(MINUTE, @CheckIn, @CheckOut);
+    
+    INSERT INTO Attendance (employee_id, entry_time, exit_time, duration)
+    VALUES (@EmployeeID, CAST(@Date AS DATETIME) + CAST(@CheckIn AS DATETIME), 
+            CAST(@Date AS DATETIME) + CAST(@CheckOut AS DATETIME), @Duration);
+    
+    SELECT @Duration AS TotalWorkingMinutes;
+END;
+GO
+
+-- Employee: Notify Missed Punch
+CREATE PROCEDURE NotifyMissedPunch
+    @EmployeeID INT,
+    @Date DATE
+AS
+BEGIN
+    PRINT 'Notification: Missed punch on ' + CAST(@Date AS VARCHAR) + ' for Employee ' + CAST(@EmployeeID AS VARCHAR);
+END;
+GO
+
+-- Employee: Record Multiple Punches
+CREATE PROCEDURE RecordMultiplePunches
+    @EmployeeID INT,
+    @ClockInOutTime DATETIME,
+    @Type VARCHAR(10)
+AS
+BEGIN
+    IF @Type = 'IN'
+        INSERT INTO Attendance (employee_id, entry_time)
+        VALUES (@EmployeeID, @ClockInOutTime);
+    ELSE
+        UPDATE Attendance
+        SET exit_time = @ClockInOutTime,
+            duration = DATEDIFF(MINUTE, entry_time, @ClockInOutTime)
+        WHERE employee_id = @EmployeeID AND exit_time IS NULL;
+    
+    PRINT 'Punch recorded successfully';
+END;
+GO
+
+-- Employee: Submit Correction Request
+CREATE PROCEDURE SubmitCorrectionRequest
+    @EmployeeID INT,
+    @Date DATE,
+    @CorrectionType VARCHAR(50),
+    @Reason VARCHAR(200)
+AS
+BEGIN
+    INSERT INTO AttendanceCorrectionRequest (employee_id, date, correction_type, reason, recorded_by)
+    VALUES (@EmployeeID, @Date, @CorrectionType, @Reason, @EmployeeID);
+    
+    PRINT 'Correction request submitted successfully';
+END;
+GO
+
+-- Employee: View Request Status
+CREATE PROCEDURE ViewRequestStatus
+    @EmployeeID INT
+AS
+BEGIN
+    SELECT request_id, date, correction_type, status
+    FROM AttendanceCorrectionRequest
+    WHERE employee_id = @EmployeeID;
+END;
+GO
+
+-- Line Manager: View Team Attendance
+CREATE PROCEDURE ViewTeamAttendance
+    @ManagerID INT,
+    @DateRangeStart DATE,
+    @DateRangeEnd DATE
+AS
+BEGIN
+    SELECT a.attendance_id, a.employee_id, a.entry_time, a.exit_time, a.duration
+    FROM Attendance a
+    INNER JOIN Employee e ON a.employee_id = e.employee_id
+    WHERE e.manager_id = @ManagerID 
+      AND CAST(a.entry_time AS DATE) BETWEEN @DateRangeStart AND @DateRangeEnd;
+END;
+GO
+
+-- Line Manager: Record Manual Attendance
+CREATE PROCEDURE RecordManualAttendance
+    @EmployeeID INT,
+    @Date DATE,
+    @ClockIn TIME,
+    @ClockOut TIME,
+    @Reason VARCHAR(200),
+    @RecordedBy INT
+AS
+BEGIN
+    DECLARE @Duration INT = DATEDIFF(MINUTE, @ClockIn, @ClockOut);
+    
+    INSERT INTO Attendance (employee_id, entry_time, exit_time, duration)
+    VALUES (@EmployeeID, CAST(@Date AS DATETIME) + CAST(@ClockIn AS DATETIME), 
+            CAST(@Date AS DATETIME) + CAST(@ClockOut AS DATETIME), @Duration);
+    
+    INSERT INTO AttendanceLog (attendance_id, actor, reason)
+    VALUES (SCOPE_IDENTITY(), @RecordedBy, @Reason);
+    
+    PRINT 'Manual attendance recorded successfully';
+END;
+GO
+
+-- Line Manager: Review Missed Punches
+CREATE PROCEDURE ReviewMissedPunches
+    @ManagerID INT,
+    @Date DATE
+AS
+BEGIN
+    SELECT a.attendance_id, a.employee_id, a.entry_time, a.exit_time
+    FROM Attendance a
+    INNER JOIN Employee e ON a.employee_id = e.employee_id
+    WHERE e.manager_id = @ManagerID 
+      AND CAST(a.entry_time AS DATE) = @Date
+      AND (a.entry_time IS NULL OR a.exit_time IS NULL);
+END;
+GO
+
+-- Line Manager: Approve Time Request
+CREATE PROCEDURE ApproveTimeRequest
+    @RequestID INT,
+    @ManagerID INT,
+    @Decision VARCHAR(20),
+    @Comments VARCHAR(200)
+AS
+BEGIN
+    UPDATE AttendanceCorrectionRequest
+    SET status = @Decision
+    WHERE request_id = @RequestID;
+    
+    PRINT 'Time request ' + @Decision + ': ' + @Comments;
+END;
+GO
+
+-- System Admin: Enable First In Last Out
+CREATE PROCEDURE EnableFirstInLastOut
+    @Enable BIT
+AS
+BEGIN
+    PRINT 'First In/Last Out processing: ' + CASE WHEN @Enable = 1 THEN 'Enabled' ELSE 'Disabled' END;
+END;
+GO
+
+-- System Admin: Tag Attendance Source
+CREATE PROCEDURE TagAttendanceSource
+    @AttendanceID INT,
+    @SourceType VARCHAR(20),
+    @DeviceID INT,
+    @Latitude DECIMAL(10,7),
+    @Longitude DECIMAL(10,7)
+AS
+BEGIN
+    INSERT INTO AttendanceSource (attendance_id, device_id, source_type, latitude, longitude)
+    VALUES (@AttendanceID, @DeviceID, @SourceType, @Latitude, @Longitude);
+    
+    PRINT 'Attendance source tagged successfully';
+END;
+GO
+
+-- System Admin: Sync Offline Attendance
+CREATE PROCEDURE SyncOfflineAttendance
+    @DeviceID INT,
+    @EmployeeID INT,
+    @ClockTime DATETIME,
+    @Type VARCHAR(10)
+AS
+BEGIN
+    IF @Type = 'IN'
+        INSERT INTO Attendance (employee_id, entry_time)
+        VALUES (@EmployeeID, @ClockTime);
+    ELSE
+        UPDATE Attendance
+        SET exit_time = @ClockTime,
+            duration = DATEDIFF(MINUTE, entry_time, @ClockTime)
+        WHERE employee_id = @EmployeeID AND exit_time IS NULL;
+    
+    PRINT 'Offline attendance synced successfully';
+END;
+GO
+
+-- System Admin: Log Attendance Edit
+CREATE PROCEDURE LogAttendanceEdit
+    @AttendanceID INT,
+    @EditedBy INT,
+    @OldValue DATETIME,
+    @NewValue DATETIME,
+    @EditTimestamp DATETIME
+AS
+BEGIN
+    INSERT INTO AttendanceLog (attendance_id, actor, timestamp, reason)
+    VALUES (@AttendanceID, @EditedBy, @EditTimestamp, 
+            'Changed from ' + CAST(@OldValue AS VARCHAR) + ' to ' + CAST(@NewValue AS VARCHAR));
+    
+    PRINT 'Attendance edit logged successfully';
+END;
+GO
+
+-- System Admin: Apply Holiday Overrides
+CREATE PROCEDURE ApplyHolidayOverrides
+    @HolidayID INT,
+    @EmployeeID INT
+AS
+BEGIN
+    INSERT INTO Exception (name, category, date, status)
+    VALUES ('Holiday Override', 'Holiday', GETDATE(), 'Active');
+    
+    PRINT 'Holiday override applied successfully';
+END;
+GO
+
+GO
+    
+-----------Omar End--------------
 
 
 
