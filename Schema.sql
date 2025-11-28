@@ -303,364 +303,305 @@ CREATE INDEX IX_EmployeeNotification_DeliveryStatus ON Employee_Notification(del
 -------------- End of Yousef's---------------------------
 
 
----------- Omar Zaher -----------
--- ================================
--- LEAVE MODULE
--- ================================
 
-CREATE TABLE LeaveType (
-    leave_id INT PRIMARY KEY,
-    leave_type VARCHAR(50),
-    leave_description VARCHAR(MAX)
+-- =========================
+-- CONTRACT TABLES
+-- =========================
+
+CREATE TABLE Contract (
+    contract_id INT PRIMARY KEY IDENTITY(1,1),
+    type VARCHAR(50),
+    start_date DATE,
+    end_date DATE,
+    current_state VARCHAR(50)
+);
+
+CREATE TABLE FullTimeContract (
+    contract_id INT PRIMARY KEY,
+    leave_entitlement INT,
+    insurance_eligibility BIT,
+    weekly_working_hours INT,
+    FOREIGN KEY (contract_id) REFERENCES Contract(contract_id)
+);
+
+CREATE TABLE PartTimeContract (
+    contract_id INT PRIMARY KEY,
+    working_hours INT,
+    hourly_rate DECIMAL(10,2),
+    FOREIGN KEY (contract_id) REFERENCES Contract(contract_id)
+);
+
+CREATE TABLE ConsultantContract (
+    contract_id INT PRIMARY KEY,
+    project_scope VARCHAR(200),
+    fees DECIMAL(10,2),
+    payment_schedule VARCHAR(100),
+    FOREIGN KEY (contract_id) REFERENCES Contract(contract_id)
+);
+
+CREATE TABLE InternshipContract (
+    contract_id INT PRIMARY KEY,
+    mentoring VARCHAR(200),
+    evaluation VARCHAR(200),
+    stipend_related VARCHAR(100),
+    FOREIGN KEY (contract_id) REFERENCES Contract(contract_id)
+);
+
+-- =========================
+-- INSURANCE
+-- =========================
+
+CREATE TABLE Insurance (
+    insurance_id INT PRIMARY KEY IDENTITY(1,1),
+    type VARCHAR(50),
+    contribution_rate DECIMAL(5,2),
+    coverage VARCHAR(100)
+);
+
+-- =========================
+-- TERMINATION
+-- =========================
+
+CREATE TABLE Termination (
+    termination_id INT PRIMARY KEY IDENTITY(1,1),
+    date DATE,
+    reason VARCHAR(200),
+    contract_id INT,
+    FOREIGN KEY (contract_id) REFERENCES Contract(contract_id)
+);
+
+-- =========================
+-- REIMBURSEMENT
+-- =========================
+
+CREATE TABLE Reimbursement (
+    reimbursement_id INT PRIMARY KEY IDENTITY(1,1),
+    type VARCHAR(50),
+    claim_type VARCHAR(50),
+    approval_date DATE,
+    current_status VARCHAR(50),
+    employee_id INT
+);
+
+-- =========================
+-- MISSION
+-- =========================
+
+CREATE TABLE Mission (
+    mission_id INT PRIMARY KEY IDENTITY(1,1),
+    destination VARCHAR(100),
+    start_date DATE,
+    end_date DATE,
+    status VARCHAR(50),
+    employee_id INT,
+    manager_id INT
+);
+-------------------Ali END--------------------------
+
+
+---------- Omar Zaher -----------
+-- =============================================
+-- LEAVE SYSTEM TABLES
+-- =============================================
+
+CREATE TABLE Leave (
+    leave_id INT PRIMARY KEY IDENTITY(1,1),
+    leave_type VARCHAR(50) NOT NULL,
+    leave_description VARCHAR(255)
 );
 
 CREATE TABLE VacationLeave (
     leave_id INT PRIMARY KEY,
     carry_over_days INT,
     approving_manager INT,
-    FOREIGN KEY (leave_id) REFERENCES LeaveType(leave_id)
+    FOREIGN KEY (leave_id) REFERENCES [Leave](leave_id) ON DELETE CASCADE
 );
 
 CREATE TABLE SickLeave (
     leave_id INT PRIMARY KEY,
-    medical_cert_required BIT,
+    medical_cert_required BIT DEFAULT 0,
     physician_id INT,
-    FOREIGN KEY (leave_id) REFERENCES LeaveType(leave_id)
+    FOREIGN KEY (leave_id) REFERENCES [Leave](leave_id) ON DELETE CASCADE
 );
 
 CREATE TABLE ProbationLeave (
     leave_id INT PRIMARY KEY,
     eligibility_start_date DATE,
     probation_period INT,
-    FOREIGN KEY (leave_id) REFERENCES LeaveType(leave_id)
+    FOREIGN KEY (leave_id) REFERENCES [Leave](leave_id) ON DELETE CASCADE
 );
 
 CREATE TABLE HolidayLeave (
     leave_id INT PRIMARY KEY,
-    holiday_name VARCHAR(100),
-    official_recognition BIT,
+    holiday_name VARCHAR(100) NOT NULL,
+    official_recognition VARCHAR(100),
     regional_scope VARCHAR(100),
-    FOREIGN KEY (leave_id) REFERENCES LeaveType(leave_id)
+    FOREIGN KEY (leave_id) REFERENCES [Leave](leave_id) ON DELETE CASCADE
 );
 
 CREATE TABLE LeavePolicy (
-    policy_id INT PRIMARY KEY,
-    name VARCHAR(100),
-    purpose VARCHAR(MAX),
-    eligibility_rules VARCHAR(MAX),
+    policy_id INT PRIMARY KEY IDENTITY(1,1),
+    name VARCHAR(100) NOT NULL,
+    purpose VARCHAR(255),
+    eligibility_rules VARCHAR(200),
     notice_period INT,
-    special_leave_type INT,
-    reset_on_new_year BIT,
-    FOREIGN KEY (special_leave_type) REFERENCES LeaveType(leave_id)
+    special_leave_type VARCHAR(50),
+    reset_on_new_year BIT DEFAULT 1
 );
 
 CREATE TABLE LeaveRequest (
-    request_id INT PRIMARY KEY,
-    employee_id INT,
-    leave_id INT,
-    justification VARCHAR(MAX),
+    request_id INT PRIMARY KEY IDENTITY(1,1),
+    employee_id INT NOT NULL,
+    leave_id INT NOT NULL,
+    justification VARCHAR(500),
     duration INT,
-    approval_timing DATETIME2,
+    approval_timing DATETIME,
     status VARCHAR(50),
     FOREIGN KEY (employee_id) REFERENCES Employee(employee_id),
-    FOREIGN KEY (leave_id) REFERENCES LeaveType(leave_id)
+    FOREIGN KEY (leave_id) REFERENCES [Leave](leave_id)
 );
 
 CREATE TABLE LeaveEntitlement (
     employee_id INT,
     leave_type_id INT,
-    entitlement INT,
-    PRIMARY KEY(employee_id, leave_type_id),
+    entitlement DECIMAL(5,2) NOT NULL,
+    PRIMARY KEY (employee_id, leave_type_id),
     FOREIGN KEY (employee_id) REFERENCES Employee(employee_id),
-    FOREIGN KEY (leave_type_id) REFERENCES LeaveType(leave_id)
+    FOREIGN KEY (leave_type_id) REFERENCES [Leave](leave_id)
 );
 
 CREATE TABLE LeaveDocument (
-    document_id INT PRIMARY KEY,
-    leave_request_id INT,
-    file_path VARCHAR(255),
-    uploaded_at DATETIME2,
-    FOREIGN KEY (leave_request_id) REFERENCES LeaveRequest(request_id)
+    document_id INT PRIMARY KEY IDENTITY(1,1),
+    leave_request_id INT NOT NULL,
+    file_path VARCHAR(500) NOT NULL,
+    uploaded_at DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (leave_request_id) REFERENCES LeaveRequest(request_id) ON DELETE CASCADE
 );
 
--- ================================
--- ATTENDANCE MODULE
--- ================================
-
-CREATE TABLE Attendance (
-    attendance_id INT PRIMARY KEY,
-    employee_id INT,
-    shift_id INT,
-    entry_time DATETIME2,
-    exit_time DATETIME2,
-    duration INT,
-    login_method VARCHAR(50),
-    logout_method VARCHAR(50),
-    exception_id INT,
-    FOREIGN KEY (employee_id) REFERENCES Employee(employee_id),
-    FOREIGN KEY (shift_id) REFERENCES ShiftSchedule(shift_id),
-    FOREIGN KEY (exception_id) REFERENCES [Exception](exception_id)
-);
-
-CREATE TABLE AttendanceLog (
-    attendance_log_id INT PRIMARY KEY,
-    attendance_id INT,
-    actor VARCHAR(100),
-    [timestamp] DATETIME2,
-    reason VARCHAR(MAX),
-    FOREIGN KEY (attendance_id) REFERENCES Attendance(attendance_id)
-);
-
-CREATE TABLE AttendanceCorrectionRequest (
-    request_id INT PRIMARY KEY,
-    employee_id INT,
-    date DATE,
-    correction_type VARCHAR(50),
-    reason VARCHAR(MAX),
-    status VARCHAR(50),
-    recorded_by INT,
-    FOREIGN KEY (employee_id) REFERENCES Employee(employee_id),
-    FOREIGN KEY (recorded_by) REFERENCES Employee(employee_id)
-);
-
--- ================================
--- SHIFT MODULE
--- ================================
+-- =============================================
+-- SHIFT MANAGEMENT TABLES
+-- =============================================
 
 CREATE TABLE ShiftSchedule (
-    shift_id INT PRIMARY KEY,
-    name VARCHAR(100),
+    shift_id INT PRIMARY KEY IDENTITY(1,1),
+    name VARCHAR(100) NOT NULL,
     type VARCHAR(50),
-    start_time TIME,
-    end_time TIME,
-    break_duration INT,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    break_duration INT DEFAULT 0,
     shift_date DATE,
     status VARCHAR(50)
 );
 
 CREATE TABLE ShiftAssignment (
-    assignment_id INT PRIMARY KEY,
-    employee_id INT,
-    shift_id INT,
-    start_date DATE,
+    assignment_id INT PRIMARY KEY IDENTITY(1,1),
+    employee_id INT NOT NULL,
+    shift_id INT NOT NULL,
+    start_date DATE NOT NULL,
     end_date DATE,
     status VARCHAR(50),
     FOREIGN KEY (employee_id) REFERENCES Employee(employee_id),
     FOREIGN KEY (shift_id) REFERENCES ShiftSchedule(shift_id)
 );
 
--- ================================
--- EXCEPTION MODULE
--- ================================
+CREATE TABLE ShiftCycle (
+    cycle_id INT PRIMARY KEY IDENTITY(1,1),
+    cycle_name VARCHAR(100) NOT NULL,
+    description VARCHAR(255)
+);
 
-CREATE TABLE [Exception] (
-    exception_id INT PRIMARY KEY,
-    name VARCHAR(100),
+CREATE TABLE ShiftCycleAssignment (
+    cycle_id INT,
+    shift_id INT,
+    order_number INT NOT NULL,
+    PRIMARY KEY (cycle_id, shift_id),
+    FOREIGN KEY (cycle_id) REFERENCES ShiftCycle(cycle_id) ON DELETE CASCADE,
+    FOREIGN KEY (shift_id) REFERENCES ShiftSchedule(shift_id)
+);
+
+-- =============================================
+-- ATTENDANCE TABLES
+-- =============================================
+
+CREATE TABLE Exception (
+    exception_id INT PRIMARY KEY IDENTITY(1,1),
+    name VARCHAR(100) NOT NULL,
     category VARCHAR(50),
-    date DATE,
+    date DATE NOT NULL,
     status VARCHAR(50)
+);
+
+CREATE TABLE Attendance (
+    attendance_id INT PRIMARY KEY IDENTITY(1,1),
+    employee_id INT NOT NULL,
+    shift_id INT,
+    entry_time DATETIME,
+    exit_time DATETIME,
+    duration INT,
+    login_method VARCHAR(50),
+    logout_method VARCHAR(50),
+    exception_id INT,
+    FOREIGN KEY (employee_id) REFERENCES Employee(employee_id),
+    FOREIGN KEY (shift_id) REFERENCES ShiftSchedule(shift_id),
+    FOREIGN KEY (exception_id) REFERENCES Exception(exception_id)
 );
 
 CREATE TABLE Employee_Exception (
     employee_id INT,
     exception_id INT,
-    PRIMARY KEY(employee_id, exception_id),
+    PRIMARY KEY (employee_id, exception_id),
+    FOREIGN KEY (employee_id) REFERENCES Employee(employee_id) ON DELETE CASCADE,
+    FOREIGN KEY (exception_id) REFERENCES Exception(exception_id) ON DELETE CASCADE
+);
+
+CREATE TABLE AttendanceLog (
+    attendance_log_id INT PRIMARY KEY IDENTITY(1,1),
+    attendance_id INT NOT NULL,
+    actor INT NOT NULL,
+    timestamp DATETIME DEFAULT GETDATE(),
+    reason VARCHAR(500),
+    FOREIGN KEY (attendance_id) REFERENCES Attendance(attendance_id) ON DELETE CASCADE
+);
+
+CREATE TABLE AttendanceCorrectionRequest (
+    request_id INT PRIMARY KEY IDENTITY(1,1),
+    employee_id INT NOT NULL,
+    date DATE NOT NULL,
+    correction_type VARCHAR(50),
+    reason VARCHAR(500),
+    status VARCHAR(50) DEFAULT 'Pending',
+    recorded_by INT NOT NULL,
     FOREIGN KEY (employee_id) REFERENCES Employee(employee_id),
-    FOREIGN KEY (exception_id) REFERENCES [Exception](exception_id)
-);
-
--- ================================
--- PAYROLL MODULE
--- ================================
-
-CREATE TABLE Payroll (
-    payroll_id INT PRIMARY KEY,
-    employee_id INT,
-    taxes DECIMAL(10,2),
-    period_start DATE,
-    period_end DATE,
-    base_amount DECIMAL(10,2),
-    adjustments DECIMAL(10,2),
-    contributions DECIMAL(10,2),
-    actual_pay DECIMAL(10,2),
-    net_salary DECIMAL(10,2),
-    payment_date DATE,
-    FOREIGN KEY (employee_id) REFERENCES Employee(employee_id)
-);
-
-CREATE TABLE Currency (
-    CurrencyCode VARCHAR(10) PRIMARY KEY,
-    CurrencyName VARCHAR(50),
-    ExchangeRate DECIMAL(10,4),
-    CreatedDate DATE,
-    LastUpdated DATE
-);
-
-CREATE TABLE SalaryType (
-    salary_type_id INT PRIMARY KEY,
-    type VARCHAR(50),
-    payment_frequency VARCHAR(50),
-    currency VARCHAR(10),
-    FOREIGN KEY (currency) REFERENCES Currency(CurrencyCode)
-);
-
-CREATE TABLE HourlySalaryType (
-    salary_type_id INT PRIMARY KEY,
-    hourly_rate DECIMAL(10,2),
-    max_monthly_hours INT,
-    FOREIGN KEY (salary_type_id) REFERENCES SalaryType(salary_type_id)
-);
-
-CREATE TABLE MonthlySalaryType (
-    salary_type_id INT PRIMARY KEY,
-    tax_rule VARCHAR(MAX),
-    contribution_scheme VARCHAR(MAX),
-    FOREIGN KEY (salary_type_id) REFERENCES SalaryType(salary_type_id)
-);
-
-CREATE TABLE ContractSalaryType (
-    salary_type_id INT PRIMARY KEY,
-    contract_value DECIMAL(10,2),
-    installment_details VARCHAR(MAX),
-    FOREIGN KEY (salary_type_id) REFERENCES SalaryType(salary_type_id)
-);
-
-CREATE TABLE AllowanceDeduction (
-    ad_id INT PRIMARY KEY,
-    payroll_id INT,
-    employee_id INT,
-    type VARCHAR(50),
-    amount DECIMAL(10,2),
-    currency VARCHAR(10),
-    duration VARCHAR(50),
-    timezone VARCHAR(50),
-    FOREIGN KEY (payroll_id) REFERENCES Payroll(payroll_id),
-    FOREIGN KEY (employee_id) REFERENCES Employee(employee_id),
-    FOREIGN KEY (currency) REFERENCES Currency(CurrencyCode)
-);
-
-CREATE TABLE PayrollPolicy (
-    policy_id INT PRIMARY KEY,
-    effective_date DATE,
-    type VARCHAR(50),
-    description VARCHAR(MAX)
-);
-
-CREATE TABLE OvertimePolicy (
-    policy_id INT PRIMARY KEY,
-    weekday_rate_multiplier DECIMAL(5,2),
-    weekend_rate_multiplier DECIMAL(5,2),
-    max_hours_per_month INT,
-    FOREIGN KEY (policy_id) REFERENCES PayrollPolicy(policy_id)
-);
-
-CREATE TABLE LatenessPolicy (
-    policy_id INT PRIMARY KEY,
-    grace_period_mins INT,
-    deduction_rate DECIMAL(5,2),
-    FOREIGN KEY (policy_id) REFERENCES PayrollPolicy(policy_id)
-);
-
-CREATE TABLE BonusPolicy (
-    policy_id INT PRIMARY KEY,
-    bonus_type VARCHAR(50),
-    eligibility_criteria VARCHAR(MAX),
-    FOREIGN KEY (policy_id) REFERENCES PayrollPolicy(policy_id)
-);
-
-CREATE TABLE DeductionPolicy (
-    policy_id INT PRIMARY KEY,
-    deduction_reason VARCHAR(100),
-    calculation_mode VARCHAR(50),
-    FOREIGN KEY (policy_id) REFERENCES PayrollPolicy(policy_id)
-);
-
-CREATE TABLE PayrollPolicy_ID (
-    payroll_id INT,
-    policy_id INT,
-    PRIMARY KEY(payroll_id, policy_id),
-    FOREIGN KEY (payroll_id) REFERENCES Payroll(payroll_id),
-    FOREIGN KEY (policy_id) REFERENCES PayrollPolicy(policy_id)
-);
-
-CREATE TABLE Payroll_Log (
-    payroll_log_id INT PRIMARY KEY,
-    payroll_id INT,
-    actor VARCHAR(100),
-    change_date DATETIME2,
-    modification_type VARCHAR(50),
-    FOREIGN KEY (payroll_id) REFERENCES Payroll(payroll_id)
-);
-
--- ================================
--- MISC MODULE
--- ================================
-
-CREATE TABLE TaxForm (
-    tax_form_id INT PRIMARY KEY,
-    jurisdiction VARCHAR(100),
-    validity_period VARCHAR(100),
-    form_content VARCHAR(MAX)
-);
-
-CREATE TABLE PayGrade (
-    pay_grade_id INT PRIMARY KEY,
-    grade_name VARCHAR(50),
-    min_salary DECIMAL(10,2),
-    max_salary DECIMAL(10,2)
-);
-
-CREATE TABLE PayrollPeriod (
-    payroll_period_id INT PRIMARY KEY,
-    payroll_id INT,
-    start_date DATE,
-    end_date DATE,
-    status VARCHAR(50),
-    FOREIGN KEY (payroll_id) REFERENCES Payroll(payroll_id)
-);
-
-CREATE TABLE Notification (
-    notification_id INT PRIMARY KEY,
-    message_content VARCHAR(MAX),
-    [timestamp] DATETIME2,
-    urgency VARCHAR(50),
-    read_status BIT,
-    notification_type VARCHAR(50)
-);
-
-CREATE TABLE Employee_Notification (
-    employee_id INT,
-    notification_id INT,
-    delivery_status VARCHAR(50),
-    delivered_at DATETIME2,
-    PRIMARY KEY(employee_id, notification_id),
-    FOREIGN KEY (employee_id) REFERENCES Employee(employee_id),
-    FOREIGN KEY (notification_id) REFERENCES Notification(notification_id)
-);
-
-CREATE TABLE EmployeeHierarchy (
-    employee_id INT,
-    manager_id INT,
-    hierarchy_level INT,
-    PRIMARY KEY(employee_id, manager_id),
-    FOREIGN KEY (employee_id) REFERENCES Employee(employee_id),
-    FOREIGN KEY (manager_id) REFERENCES Employee(employee_id)
+    FOREIGN KEY (recorded_by) REFERENCES Employee(employee_id)
 );
 
 CREATE TABLE Device (
-    device_id INT PRIMARY KEY,
+    device_id INT PRIMARY KEY IDENTITY(1,1),
     device_type VARCHAR(50),
-    terminal_id VARCHAR(50),
+    terminal_id VARCHAR(50) UNIQUE,
     latitude DECIMAL(10,7),
     longitude DECIMAL(10,7),
     employee_id INT,
     FOREIGN KEY (employee_id) REFERENCES Employee(employee_id)
 );
+
+CREATE TABLE AttendanceSource (
+    attendance_id INT,
+    device_id INT,
+    source_type VARCHAR(50),
+    latitude DECIMAL(10,7),
+    longitude DECIMAL(10,7),
+    recorded_at DATETIME DEFAULT GETDATE(),
+    PRIMARY KEY (attendance_id, device_id),
+    FOREIGN KEY (attendance_id) REFERENCES Attendance(attendance_id) ON DELETE CASCADE,
+    FOREIGN KEY (device_id) REFERENCES Device(device_id)
+);
+GO
 --------- Omar Zaher End -------------
 
 
 
-- =============================================
+-- =============================================
 -- Tarek - Payroll, Salary Types & Policies
 -- Tables Creation Script
 -- =============================================
