@@ -596,7 +596,6 @@ CREATE TABLE AttendanceSource (
     FOREIGN KEY (attendance_id) REFERENCES Attendance(attendance_id) ON DELETE CASCADE,
     FOREIGN KEY (device_id) REFERENCES Device(device_id)
 );
-GO
 --------- Omar Zaher End -------------
 
 
