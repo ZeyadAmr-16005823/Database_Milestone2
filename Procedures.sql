@@ -547,6 +547,249 @@ END;
 GO
 ---------ZIAD END------------------------------
 
+---------Yousef-----------------
+    CREATE PROCEDURE AddEmployeeSkill
+    @EmployeeID int,
+    @SkillName varchar(50)
+AS
+BEGIN
+    DECLARE @SkillID int;
+    
+    SELECT @SkillID = skill_id 
+    FROM Skill 
+    WHERE skill_name = @SkillName;
+    
+    IF @SkillID IS NULL
+    BEGIN
+        INSERT INTO Skill (skill_name, description)
+        VALUES (@SkillName, 'User added skill');
+        
+        SET @SkillID = SCOPE_IDENTITY();
+    END
+    
+    IF NOT EXISTS (SELECT 1 FROM Employee_Skill WHERE employee_id = @EmployeeID AND skill_id = @SkillID)
+    BEGIN
+        INSERT INTO Employee_Skill (employee_id, skill_id, proficiency_level)
+        VALUES (@EmployeeID, @SkillID, 'Beginner');
+        
+        PRINT 'Skill added successfully';
+    END
+    ELSE
+    BEGIN
+        PRINT 'Employee already has this skill';
+    END
+END;
+GO
+
+CREATE PROCEDURE NotifyProfileUpdate
+    @EmployeeID int,
+    @ChangeType varchar(50)
+AS
+BEGIN
+    DECLARE @NotificationID int;
+    DECLARE @Message varchar(200);
+    
+    SET @Message = 'Your profile has been updated: ' + @ChangeType;
+    
+    INSERT INTO Notification (message_content, timestamp, urgency, read_status, notification_type)
+    VALUES (@Message, GETDATE(), 'Low', 0, 'Profile');
+    
+    SET @NotificationID = SCOPE_IDENTITY();
+    
+    INSERT INTO Employee_Notification (employee_id, notification_id, delivery_status, delivered_at)
+    VALUES (@EmployeeID, @NotificationID, 'Delivered', GETDATE());
+    
+    PRINT 'Profile update notification sent';
+END;
+GO
+
+CREATE PROCEDURE SendTeamNotification
+    @ManagerID int,
+    @MessageContent varchar(255),
+    @UrgencyLevel varchar(50)
+AS
+BEGIN
+    DECLARE @NotificationID int;
+    
+    INSERT INTO Notification (message_content, timestamp, urgency, read_status, notification_type)
+    VALUES (@MessageContent, GETDATE(), @UrgencyLevel, 0, 'Team');
+    
+    SET @NotificationID = SCOPE_IDENTITY();
+    
+    INSERT INTO Employee_Notification (employee_id, notification_id, delivery_status, delivered_at)
+    SELECT employee_id, @NotificationID, 'Delivered', GETDATE()
+    FROM Employee
+    WHERE manager_id = @ManagerID;
+    
+    PRINT 'Team notification sent successfully';
+END;
+GO
+
+CREATE PROCEDURE AssignDepartmentHead
+    @DepartmentID int,
+    @ManagerID int
+AS
+BEGIN
+    IF EXISTS (SELECT 1 FROM Employee WHERE employee_id = @ManagerID)
+    BEGIN
+        UPDATE Department
+        SET department_head_id = @ManagerID
+        WHERE department_id = @DepartmentID;
+        
+        PRINT 'Department head assigned successfully';
+    END
+    ELSE
+    BEGIN
+        PRINT 'Manager ID does not exist';
+    END
+END;
+GO
+
+CREATE PROCEDURE NotifyStructureChange
+    @AffectedEmployees varchar(500),
+    @Message varchar(200)
+AS
+BEGIN
+    DECLARE @NotificationID int;
+    DECLARE @EmployeeID int;
+    DECLARE @Pos int;
+    DECLARE @EmployeeList varchar(500);
+    
+    INSERT INTO Notification (message_content, timestamp, urgency, read_status, notification_type)
+    VALUES (@Message, GETDATE(), 'High', 0, 'Organizational');
+    
+    SET @NotificationID = SCOPE_IDENTITY();
+    SET @EmployeeList = @AffectedEmployees + ',';
+    
+    WHILE CHARINDEX(',', @EmployeeList) > 0
+    BEGIN
+        SET @Pos = CHARINDEX(',', @EmployeeList);
+        SET @EmployeeID = CAST(LEFT(@EmployeeList, @Pos - 1) AS int);
+        SET @EmployeeList = SUBSTRING(@EmployeeList, @Pos + 1, LEN(@EmployeeList));
+        
+        INSERT INTO Employee_Notification (employee_id, notification_id, delivery_status, delivered_at)
+        VALUES (@EmployeeID, @NotificationID, 'Delivered', GETDATE());
+    END
+    
+    PRINT 'Structure change notification sent to all affected employees';
+END;
+GO
+
+CREATE PROCEDURE ViewTeamProfiles
+    @ManagerID int
+AS
+BEGIN
+    SELECT 
+        e.employee_id,
+        e.full_name,
+        e.email,
+        e.phone,
+        p.position_title,
+        d.department_name,
+        e.hire_date
+    FROM Employee e
+    LEFT JOIN Position p ON e.position_id = p.position_id
+    LEFT JOIN Department d ON e.department_id = d.department_id
+    WHERE e.manager_id = @ManagerID;
+END;
+GO
+
+CREATE PROCEDURE GetTeamSummary
+    @ManagerID int
+AS
+BEGIN
+    SELECT 
+        p.position_title,
+        COUNT(*) as employee_count,
+        AVG(DATEDIFF(YEAR, e.hire_date, GETDATE())) as avg_tenure_years
+    FROM Employee e
+    LEFT JOIN Position p ON e.position_id = p.position_id
+    WHERE e.manager_id = @ManagerID
+    GROUP BY p.position_title;
+END;
+GO
+
+CREATE PROCEDURE FilterTeamProfiles
+    @ManagerID int,
+    @Skill varchar(50),
+    @RoleID int
+AS
+BEGIN
+    SELECT DISTINCT
+        e.employee_id,
+        e.full_name,
+        e.email,
+        p.position_title,
+        s.skill_name,
+        es.proficiency_level
+    FROM Employee e
+    LEFT JOIN Position p ON e.position_id = p.position_id
+    LEFT JOIN Employee_Skill es ON e.employee_id = es.employee_id
+    LEFT JOIN Skill s ON es.skill_id = s.skill_id
+    LEFT JOIN Employee_Role er ON e.employee_id = er.employee_id
+    WHERE e.manager_id = @ManagerID
+    AND (@Skill IS NULL OR s.skill_name = @Skill)
+    AND (@RoleID IS NULL OR er.role_id = @RoleID);
+END;
+GO
+
+CREATE PROCEDURE ViewTeamCertifications
+    @ManagerID int
+AS
+BEGIN
+    SELECT 
+        e.employee_id,
+        e.full_name,
+        s.skill_name,
+        es.proficiency_level,
+        v.verification_type,
+        v.issuer,
+        v.issue_date,
+        v.expiry_period
+    FROM Employee e
+    LEFT JOIN Employee_Skill es ON e.employee_id = es.employee_id
+    LEFT JOIN Skill s ON es.skill_id = s.skill_id
+    LEFT JOIN Employee_Verification ev ON e.employee_id = ev.employee_id
+    LEFT JOIN Verification v ON ev.verification_id = v.verification_id
+    WHERE e.manager_id = @ManagerID;
+END;
+GO
+
+CREATE PROCEDURE GenerateProfileReport
+    @FilterField varchar(50),
+    @FilterValue varchar(100)
+AS
+BEGIN
+    IF @FilterField = 'department'
+    BEGIN
+        SELECT e.employee_id, e.full_name, e.email, d.department_name, p.position_title
+        FROM Employee e
+        LEFT JOIN Department d ON e.department_id = d.department_id
+        LEFT JOIN Position p ON e.position_id = p.position_id
+        WHERE d.department_name = @FilterValue;
+    END
+    ELSE IF @FilterField = 'position'
+    BEGIN
+        SELECT e.employee_id, e.full_name, e.email, d.department_name, p.position_title
+        FROM Employee e
+        LEFT JOIN Department d ON e.department_id = d.department_id
+        LEFT JOIN Position p ON e.position_id = p.position_id
+        WHERE p.position_title = @FilterValue;
+    END
+    ELSE
+    BEGIN
+        SELECT e.employee_id, e.full_name, e.email, d.department_name, p.position_title
+        FROM Employee e
+        LEFT JOIN Department d ON e.department_id = d.department_id
+        LEFT JOIN Position p ON e.position_id = p.position_id;
+    END
+END;
+GO
+
+---------Yousef END--------------
+
+
+    
 
 -----------Ali-------------------
     GO
