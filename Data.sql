@@ -474,7 +474,609 @@ INSERT INTO ApprovalWorkflowStep (workflow_id, step_number, role_id, action_requ
 
 
 
-- =============================================
+
+-- =============================================
+-- Yousef Part: Data Insertion Script
+-- Tables: Position, Department, Skill, Employee_Skill, 
+--         Verification, Employee_Verification, 
+--         Notification, Employee_Notification
+-- =============================================
+
+-- Note: This script assumes Employee table has been populated
+-- with at least employees with IDs 1-30
+
+-- =============================================
+-- 1. Insert Departments
+-- =============================================
+SET IDENTITY_INSERT Department ON;
+
+INSERT INTO Department (department_id, department_name, purpose, department_head_id)
+VALUES
+    (1, 'Human Resources', 'Manage employee relations, recruitment, and HR policies', NULL),
+    (2, 'Information Technology', 'Manage company IT infrastructure and software development', NULL),
+    (3, 'Finance', 'Manage financial operations, accounting, and budgeting', NULL),
+    (4, 'Sales', 'Drive revenue through customer acquisition and retention', NULL),
+    (5, 'Marketing', 'Promote company products and manage brand identity', NULL),
+    (6, 'Operations', 'Oversee daily business operations and logistics', NULL),
+    (7, 'Customer Support', 'Provide customer service and technical support', NULL),
+    (8, 'Research and Development', 'Innovate and develop new products and solutions', NULL),
+    (9, 'Legal', 'Handle legal matters and ensure regulatory compliance', NULL),
+    (10, 'Administration', 'Manage general administrative functions', NULL);
+
+SET IDENTITY_INSERT Department OFF;
+
+-- Update department heads (assuming employees exist)
+UPDATE Department SET department_head_id = 5 WHERE department_id = 1; -- HR Head
+UPDATE Department SET department_head_id = 8 WHERE department_id = 2; -- IT Head
+UPDATE Department SET department_head_id = 10 WHERE department_id = 3; -- Finance Head
+UPDATE Department SET department_head_id = 12 WHERE department_id = 4; -- Sales Head
+UPDATE Department SET department_head_id = 15 WHERE department_id = 5; -- Marketing Head
+
+-- =============================================
+-- 2. Insert Positions
+-- =============================================
+SET IDENTITY_INSERT Position ON;
+
+INSERT INTO Position (position_id, position_title, responsibilities, status)
+VALUES
+    (1, 'CEO', 'Lead company strategy and overall operations', 'Active'),
+    (2, 'CTO', 'Oversee technology strategy and IT operations', 'Active'),
+    (3, 'CFO', 'Manage financial planning and risk management', 'Active'),
+    (4, 'HR Manager', 'Manage HR department and employee relations', 'Active'),
+    (5, 'IT Manager', 'Supervise IT team and infrastructure', 'Active'),
+    (6, 'Finance Manager', 'Oversee accounting and financial reporting', 'Active'),
+    (7, 'Sales Manager', 'Lead sales team and drive revenue', 'Active'),
+    (8, 'Marketing Manager', 'Develop marketing strategies and campaigns', 'Active'),
+    (9, 'Software Engineer', 'Develop and maintain software applications', 'Active'),
+    (10, 'Senior Software Engineer', 'Lead technical projects and mentor junior developers', 'Active'),
+    (11, 'Data Analyst', 'Analyze business data and provide insights', 'Active'),
+    (12, 'HR Specialist', 'Handle recruitment and employee onboarding', 'Active'),
+    (13, 'Accountant', 'Manage financial records and transactions', 'Active'),
+    (14, 'Sales Representative', 'Sell products and services to customers', 'Active'),
+    (15, 'Marketing Specialist', 'Execute marketing campaigns and content creation', 'Active'),
+    (16, 'Customer Support Agent', 'Assist customers with inquiries and issues', 'Active'),
+    (17, 'Operations Coordinator', 'Coordinate daily operational activities', 'Active'),
+    (18, 'Legal Counsel', 'Provide legal advice and handle contracts', 'Active'),
+    (19, 'Administrative Assistant', 'Provide administrative support', 'Active'),
+    (20, 'Payroll Officer', 'Process payroll and manage compensation', 'Active'),
+    (21, 'DevOps Engineer', 'Manage deployment and infrastructure automation', 'Active'),
+    (22, 'UX Designer', 'Design user interfaces and experiences', 'Active'),
+    (23, 'Project Manager', 'Plan and oversee project execution', 'Active'),
+    (24, 'Business Analyst', 'Analyze business requirements and processes', 'Active'),
+    (25, 'QA Engineer', 'Test software and ensure quality standards', 'Active'),
+    (26, 'Intern', 'Learn and assist with various tasks', 'Active'),
+    (27, 'Consultant', 'Provide expert advice on specific projects', 'Active'),
+    (28, 'Security Analyst', 'Monitor and protect IT security', 'Active'),
+    (29, 'Content Writer', 'Create written content for marketing', 'Active'),
+    (30, 'System Administrator', 'Maintain and configure computer systems', 'Inactive');
+
+SET IDENTITY_INSERT Position OFF;
+
+-- =============================================
+-- 3. Insert Skills
+-- =============================================
+SET IDENTITY_INSERT Skill ON;
+
+INSERT INTO Skill (skill_id, skill_name, description)
+VALUES
+    (1, 'Python Programming', 'Proficiency in Python programming language'),
+    (2, 'Java Development', 'Expertise in Java application development'),
+    (3, 'SQL Database Management', 'Database design and SQL query optimization'),
+    (4, 'Project Management', 'Planning and executing projects effectively'),
+    (5, 'Leadership', 'Leading and motivating teams'),
+    (6, 'Communication', 'Effective verbal and written communication'),
+    (7, 'Data Analysis', 'Analyzing and interpreting complex data'),
+    (8, 'Machine Learning', 'Implementing ML algorithms and models'),
+    (9, 'Cloud Computing', 'AWS, Azure, or GCP platform expertise'),
+    (10, 'DevOps', 'CI/CD pipelines and infrastructure automation'),
+    (11, 'JavaScript', 'Frontend and backend JavaScript development'),
+    (12, 'React', 'Building user interfaces with React'),
+    (13, 'Angular', 'Developing applications with Angular framework'),
+    (14, 'Node.js', 'Server-side JavaScript development'),
+    (15, 'HTML/CSS', 'Web markup and styling'),
+    (16, 'Agile Methodologies', 'Scrum, Kanban project management'),
+    (17, 'Financial Analysis', 'Financial modeling and analysis'),
+    (18, 'HR Management', 'Human resources best practices'),
+    (19, 'Marketing Strategy', 'Developing marketing plans and campaigns'),
+    (20, 'Sales Techniques', 'Effective selling and negotiation'),
+    (21, 'Customer Service', 'Providing excellent customer support'),
+    (22, 'Technical Writing', 'Creating technical documentation'),
+    (23, 'UI/UX Design', 'User interface and experience design'),
+    (24, 'Cybersecurity', 'Information security and threat protection'),
+    (25, 'Docker', 'Container orchestration and management'),
+    (26, 'Kubernetes', 'Container orchestration platform'),
+    (27, 'Git Version Control', 'Source code version management'),
+    (28, 'REST API Design', 'Designing RESTful web services'),
+    (29, 'Microservices', 'Microservices architecture design'),
+    (30, 'Excel Advanced', 'Advanced Excel formulas and data analysis'),
+    (31, 'PowerBI', 'Data visualization and business intelligence'),
+    (32, 'Tableau', 'Data visualization platform'),
+    (33, 'Public Speaking', 'Presenting to audiences effectively'),
+    (34, 'Negotiation', 'Contract and deal negotiation skills'),
+    (35, 'Time Management', 'Efficiently managing time and priorities'),
+    (36, 'Problem Solving', 'Analytical thinking and solution finding'),
+    (37, 'Adobe Creative Suite', 'Photoshop, Illustrator, InDesign'),
+    (38, 'Video Editing', 'Video production and editing'),
+    (39, 'SEO/SEM', 'Search engine optimization and marketing'),
+    (40, 'Content Marketing', 'Creating and distributing valuable content');
+
+SET IDENTITY_INSERT Skill OFF;
+
+-- =============================================
+-- 4. Insert Employee_Skill (assuming employees 1-30 exist)
+-- =============================================
+INSERT INTO Employee_Skill (employee_id, skill_id, proficiency_level)
+VALUES
+    -- CEO (employee 1)
+    (1, 5, 'Expert'), (1, 4, 'Expert'), (1, 6, 'Expert'),
+    -- CTO (employee 2)
+    (2, 1, 'Expert'), (2, 9, 'Expert'), (2, 10, 'Advanced'),
+    -- CFO (employee 3)
+    (3, 17, 'Expert'), (3, 30, 'Advanced'), (3, 7, 'Advanced'),
+    -- HR Manager (employee 5)
+    (5, 18, 'Expert'), (5, 6, 'Advanced'), (5, 5, 'Advanced'),
+    -- IT Manager (employee 8)
+    (8, 3, 'Expert'), (8, 9, 'Advanced'), (8, 24, 'Advanced'),
+    -- Software Engineers (employees 9-14)
+    (9, 1, 'Advanced'), (9, 3, 'Intermediate'), (9, 27, 'Advanced'),
+    (10, 2, 'Expert'), (10, 28, 'Advanced'), (10, 29, 'Advanced'),
+    (11, 11, 'Advanced'), (11, 12, 'Advanced'), (11, 15, 'Expert'),
+    (12, 14, 'Advanced'), (12, 11, 'Expert'), (12, 3, 'Intermediate'),
+    (13, 1, 'Intermediate'), (13, 8, 'Advanced'), (13, 7, 'Advanced'),
+    (14, 2, 'Advanced'), (14, 3, 'Advanced'), (14, 16, 'Intermediate'),
+    -- Data Analyst (employee 15)
+    (15, 7, 'Expert'), (15, 31, 'Advanced'), (15, 32, 'Advanced'),
+    -- HR Specialist (employee 16)
+    (16, 18, 'Advanced'), (16, 6, 'Advanced'), (16, 35, 'Intermediate'),
+    -- Accountant (employee 17)
+    (17, 17, 'Advanced'), (17, 30, 'Expert'), (17, 7, 'Intermediate'),
+    -- Sales Representatives (employees 18-19)
+    (18, 20, 'Advanced'), (18, 34, 'Advanced'), (18, 6, 'Advanced'),
+    (19, 20, 'Intermediate'), (19, 6, 'Intermediate'), (19, 35, 'Intermediate'),
+    -- Marketing Specialists (employees 20-21)
+    (20, 19, 'Advanced'), (20, 39, 'Advanced'), (20, 40, 'Advanced'),
+    (21, 37, 'Advanced'), (21, 38, 'Intermediate'), (21, 29, 'Intermediate'),
+    -- Customer Support (employees 22-23)
+    (22, 21, 'Advanced'), (22, 6, 'Advanced'), (22, 36, 'Advanced'),
+    (23, 21, 'Intermediate'), (23, 6, 'Intermediate'), (23, 35, 'Intermediate'),
+    -- DevOps Engineer (employee 24)
+    (24, 10, 'Expert'), (24, 25, 'Advanced'), (24, 26, 'Advanced'),
+    -- UX Designer (employee 25)
+    (25, 23, 'Expert'), (25, 37, 'Advanced'), (25, 12, 'Intermediate'),
+    -- QA Engineer (employee 26)
+    (26, 1, 'Intermediate'), (26, 11, 'Intermediate'), (26, 36, 'Advanced'),
+    -- Intern (employee 27)
+    (27, 1, 'Beginner'), (27, 15, 'Beginner'), (27, 27, 'Beginner'),
+    -- Consultant (employee 28)
+    (28, 4, 'Expert'), (28, 5, 'Expert'), (28, 33, 'Expert'),
+    -- Security Analyst (employee 29)
+    (29, 24, 'Expert'), (29, 9, 'Advanced'), (29, 10, 'Advanced'),
+    -- Payroll Officer (employee 30)
+    (30, 30, 'Expert'), (30, 17, 'Advanced'), (30, 35, 'Advanced');
+
+-- =============================================
+-- 5. Insert Verifications
+-- =============================================
+SET IDENTITY_INSERT Verification ON;
+
+INSERT INTO Verification (verification_id, verification_type, issuer, issue_date, expiry_period)
+VALUES
+    (1, 'Degree', 'Cairo University', '2015-06-15', NULL),
+    (2, 'Degree', 'American University in Cairo', '2016-06-20', NULL),
+    (3, 'Degree', 'Ain Shams University', '2017-06-10', NULL),
+    (4, 'Certificate', 'AWS', '2023-01-15', 1095), -- 3 years
+    (5, 'Certificate', 'Microsoft Azure', '2023-03-20', 730), -- 2 years
+    (6, 'Certificate', 'Google Cloud', '2022-11-10', 730),
+    (7, 'Certificate', 'PMP Certification', '2021-08-15', 1095),
+    (8, 'Certificate', 'SHRM-CP', '2022-05-20', 1095),
+    (9, 'Certificate', 'CPA', '2020-12-01', NULL),
+    (10, 'Certificate', 'Certified Scrum Master', '2023-02-10', 730),
+    (11, 'License', 'Driving License', '2019-03-15', 3650), -- 10 years
+    (12, 'Certificate', 'CISSP', '2022-09-25', 1095),
+    (13, 'Certificate', 'CompTIA Security+', '2023-04-12', 1095),
+    (14, 'Background Check', 'National Security Agency', '2023-06-01', 365),
+    (15, 'Background Check', 'HR Background Services', '2023-07-15', 365),
+    (16, 'Certificate', 'Oracle Database Administrator', '2021-10-20', 730),
+    (17, 'Certificate', 'Salesforce Administrator', '2023-01-30', 730),
+    (18, 'Certificate', 'Google Analytics', '2022-12-05', 730),
+    (19, 'Certificate', 'HubSpot Inbound Marketing', '2023-03-15', NULL),
+    (20, 'Degree', 'German University in Cairo', '2018-07-20', NULL),
+    (21, 'Certificate', 'ITIL Foundation', '2022-08-10', NULL),
+    (22, 'Certificate', 'Six Sigma Green Belt', '2021-11-15', NULL),
+    (23, 'Certificate', 'Digital Marketing Certificate', '2023-02-28', 730),
+    (24, 'Medical Certificate', 'Ministry of Health', '2023-06-15', 365),
+    (25, 'Certificate', 'First Aid Training', '2023-05-20', 730);
+
+SET IDENTITY_INSERT Verification OFF;
+
+-- =============================================
+-- 6. Insert Employee_Verification
+-- =============================================
+INSERT INTO Employee_Verification (employee_id, verification_id)
+VALUES
+    -- CEO verifications
+    (1, 1), (1, 7), (1, 11),
+    -- CTO verifications
+    (2, 2), (2, 4), (2, 12),
+    -- CFO verifications
+    (3, 1), (3, 9), (3, 14),
+    -- HR Manager verifications
+    (5, 3), (5, 8), (5, 15),
+    -- IT Manager verifications
+    (8, 20), (8, 5), (8, 21),
+    -- Software Engineers verifications
+    (9, 20), (9, 4), (9, 14),
+    (10, 2), (10, 10), (10, 15),
+    (11, 3), (11, 14),
+    (12, 1), (12, 6), (12, 15),
+    (13, 20), (13, 14),
+    (14, 2), (14, 10), (14, 14),
+    -- Data Analyst verifications
+    (15, 3), (15, 18), (15, 14),
+    -- HR Specialist verifications
+    (16, 1), (16, 8), (16, 15),
+    -- Accountant verifications
+    (17, 2), (17, 9), (17, 14),
+    -- Sales Representatives verifications
+    (18, 3), (18, 17), (18, 11),
+    (19, 20), (19, 11), (19, 15),
+    -- Marketing Specialists verifications
+    (20, 1), (20, 19), (20, 23),
+    (21, 2), (21, 18), (21, 23),
+    -- Customer Support verifications
+    (22, 3), (22, 15), (22, 25),
+    (23, 20), (23, 15),
+    -- DevOps Engineer verifications
+    (24, 1), (24, 4), (24, 5), (24, 21),
+    -- UX Designer verifications
+    (25, 2), (25, 15),
+    -- QA Engineer verifications
+    (26, 20), (26, 22), (26, 14),
+    -- Intern verifications
+    (27, 3), (27, 15),
+    -- Consultant verifications
+    (28, 1), (28, 7), (28, 22),
+    -- Security Analyst verifications
+    (29, 2), (29, 12), (29, 13), (29, 14),
+    -- Payroll Officer verifications
+    (30, 20), (30, 9), (30, 14);
+
+-- =============================================
+-- 7. Insert Notifications
+-- =============================================
+SET IDENTITY_INSERT Notification ON;
+
+INSERT INTO Notification (notification_id, message_content, timestamp, urgency, read_status, notification_type)
+VALUES
+    (1, 'Welcome to the company! Please complete your profile information.', '2024-01-15 09:00:00', 'Medium', 0, 'Onboarding'),
+    (2, 'Your leave request has been approved.', '2024-02-10 14:30:00', 'Low', 1, 'Leave'),
+    (3, 'Urgent: System maintenance scheduled for tonight at 11 PM.', '2024-03-05 16:00:00', 'Urgent', 0, 'System'),
+    (4, 'Your payroll for March has been processed.', '2024-03-31 08:00:00', 'Medium', 1, 'Payroll'),
+    (5, 'Reminder: Complete your annual performance review by Friday.', '2024-04-20 10:00:00', 'High', 0, 'Performance'),
+    (6, 'New company policy update available in the HR portal.', '2024-05-01 09:30:00', 'Medium', 0, 'Policy'),
+    (7, 'Your shift schedule for next week is now available.', '2024-05-15 15:00:00', 'Low', 1, 'Shift'),
+    (8, 'Security Alert: Suspicious login attempt detected.', '2024-06-02 11:45:00', 'Urgent', 0, 'Security'),
+    (9, 'Training session on new software tools - June 20th.', '2024-06-10 13:00:00', 'Medium', 0, 'Training'),
+    (10, 'Your reimbursement request has been processed.', '2024-06-25 10:15:00', 'Low', 1, 'Reimbursement'),
+    (11, 'Team meeting scheduled for tomorrow at 2 PM.', '2024-07-08 16:30:00', 'Medium', 0, 'Meeting'),
+    (12, 'Your contract renewal is due next month.', '2024-07-15 09:00:00', 'High', 0, 'Contract'),
+    (13, 'Holiday announcement: Office closed on July 30th.', '2024-07-20 11:00:00', 'Low', 1, 'Holiday'),
+    (14, 'Your attendance correction request has been approved.', '2024-08-05 14:00:00', 'Low', 1, 'Attendance'),
+    (15, 'Important: Update your emergency contact information.', '2024-08-12 10:30:00', 'High', 0, 'Alert'),
+    (16, 'New benefits package information available.', '2024-09-01 09:00:00', 'Medium', 0, 'Benefits'),
+    (17, 'Your mission assignment to Cairo has been confirmed.', '2024-09-10 15:30:00', 'High', 0, 'Mission'),
+    (18, 'Quarterly bonus payment will be credited tomorrow.', '2024-09-28 11:00:00', 'Medium', 1, 'Payroll'),
+    (19, 'Your department has been restructured. Check org chart.', '2024-10-05 09:15:00', 'High', 0, 'Organizational'),
+    (20, 'IT Security training is mandatory - Complete by Oct 31st.', '2024-10-15 13:00:00', 'Urgent', 0, 'Training'),
+    (21, 'Your health insurance renewal is processing.', '2024-11-01 10:00:00', 'Medium', 0, 'Insurance'),
+    (22, 'System upgrade completed successfully.', '2024-11-10 08:30:00', 'Low', 1, 'System'),
+    (23, 'Your profile verification documents have been approved.', '2024-11-15 14:45:00', 'Low', 1, 'Verification'),
+    (24, 'Year-end performance reviews starting December 1st.', '2024-11-25 09:00:00', 'High', 0, 'Performance'),
+    (25, 'Holiday schedule for December available in portal.', '2024-11-28 11:30:00', 'Medium', 0, 'Holiday');
+
+SET IDENTITY_INSERT Notification OFF;
+
+-- =============================================
+-- 8. Insert Employee_Notification
+-- =============================================
+INSERT INTO Employee_Notification (employee_id, notification_id, delivery_status, delivered_at)
+VALUES
+    -- Notifications for employee 1 (CEO)
+    (1, 3, 'Delivered', '2024-03-05 16:01:00'),
+    (1, 6, 'Delivered', '2024-05-01 09:31:00'),
+    (1, 19, 'Delivered', '2024-10-05 09:16:00'),
+    (1, 24, 'Delivered', '2024-11-25 09:01:00'),
+    
+    -- Notifications for employee 2 (CTO)
+    (2, 3, 'Delivered', '2024-03-05 16:01:00'),
+    (2, 8, 'Delivered', '2024-06-02 11:46:00'),
+    (2, 20, 'Delivered', '2024-10-15 13:01:00'),
+    (2, 22, 'Delivered', '2024-11-10 08:31:00'),
+    
+    -- Notifications for employee 5 (HR Manager)
+    (5, 1, 'Delivered', '2024-01-15 09:01:00'),
+    (5, 6, 'Delivered', '2024-05-01 09:31:00'),
+    (5, 12, 'Delivered', '2024-07-15 09:01:00'),
+    (5, 15, 'Delivered', '2024-08-12 10:31:00'),
+    (5, 23, 'Delivered', '2024-11-15 14:46:00'),
+    
+    -- Notifications for employees 9-15 (IT team)
+    (9, 2, 'Delivered', '2024-02-10 14:31:00'),
+    (9, 7, 'Delivered', '2024-05-15 15:01:00'),
+    (9, 9, 'Delivered', '2024-06-10 13:01:00'),
+    (9, 14, 'Delivered', '2024-08-05 14:01:00'),
+    (10, 4, 'Delivered', '2024-03-31 08:01:00'),
+    (10, 11, 'Delivered', '2024-07-08 16:31:00'),
+    (10, 20, 'Delivered', '2024-10-15 13:01:00'),
+    (11, 7, 'Delivered', '2024-05-15 15:01:00'),
+    (11, 13, 'Delivered', '2024-07-20 11:01:00'),
+    (12, 9, 'Delivered', '2024-06-10 13:01:00'),
+    (12, 16, 'Delivered', '2024-09-01 09:01:00'),
+    (13, 5, 'Delivered', '2024-04-20 10:01:00'),
+    (13, 24, 'Delivered', '2024-11-25 09:01:00'),
+    (14, 11, 'Delivered', '2024-07-08 16:31:00'),
+    (14, 20, 'Delivered', '2024-10-15 13:01:00'),
+    (15, 4, 'Delivered', '2024-03-31 08:01:00'),
+    (15, 18, 'Delivered', '2024-09-28 11:01:00'),
+    
+    -- Notifications for employees 16-20 (HR, Accounting, Sales)
+    (16, 1, 'Delivered', '2024-01-15 09:01:00'),
+    (16, 23, 'Delivered', '2024-11-15 14:46:00'),
+    (17, 4, 'Delivered', '2024-03-31 08:01:00'),
+    (17, 18, 'Delivered', '2024-09-28 11:01:00'),
+    (18, 7, 'Delivered', '2024-05-15 15:01:00'),
+    (18, 17, 'Delivered', '2024-09-10 15:31:00'),
+    (19, 2, 'Delivered', '2024-02-10 14:31:00'),
+    (19, 13, 'Delivered', '2024-07-20 11:01:00'),
+    (20, 9, 'Delivered', '2024-06-10 13:01:00'),
+    (20, 25, 'Delivered', '2024-11-28 11:31:00'),
+    
+    -- Notifications for employees 21-30 (Various departments)
+    (21, 16, 'Delivered', '2024-09-01 09:01:00'),
+    (22, 10, 'Delivered', '2024-06-25 10:16:00'),
+    (23, 14, 'Delivered', '2024-08-05 14:01:00'),
+    (24, 3, 'Delivered', '2024-03-05 16:01:00'),
+    (24, 22, 'Delivered', '2024-11-10 08:31:00'),
+    (25, 5, 'Delivered', '2024-04-20 10:01:00'),
+    (26, 9, 'Delivered', '2024-06-10 13:01:00'),
+    (27, 1, 'Delivered', '2024-01-15 09:01:00'),
+    (27, 9, 'Delivered', '2024-06-10 13:01:00'),
+    (28, 12, 'Delivered', '2024-07-15 09:01:00'),
+    (29, 8, 'Delivered', '2024-06-02 11:46:00'),
+    (29, 20, 'Delivered', '2024-10-15 13:01:00'),
+    (30, 4, 'Delivered', '2024-03-31 08:01:00'),
+    (30, 18, 'Delivered', '2024-09-28 11:01:00'),
+    (30, 21, 'Delivered', '2024-11-01 10:01:00'),
+    
+    -- Some pending notifications
+    (5, 25, 'Pending', NULL),
+    (10, 25, 'Pending', NULL),
+    (15, 25, 'Pending', NULL),
+    (20, 24, 'Pending', NULL),
+    (25, 24, 'Pending', NULL);
+
+-- =============================================
+---------------End of Yousef's--------------
+-- =============================================
+
+
+----------Ali---------------------
+-- =========================
+-- CONTRACT DATA
+-- =========================
+INSERT INTO Contract VALUES
+('Full Time', '2024-01-01', '2025-01-01', 'Active'),
+('Part Time', '2023-06-01', '2024-06-01', 'Expired'),
+('Consultant', '2024-03-01', '2024-09-01', 'Active'),
+('Internship', '2024-07-01', '2024-12-01', 'Active');
+
+INSERT INTO FullTimeContract VALUES (1, 21, 1, 40);
+INSERT INTO PartTimeContract VALUES (2, 20, 120);
+INSERT INTO ConsultantContract VALUES (3, 'ERP System', 20000, 'Monthly');
+INSERT INTO InternshipContract VALUES (4, 'HR Training', 'Monthly Review', 'Paid');
+
+-- =========================
+-- INSURANCE
+-- =========================
+
+INSERT INTO Insurance VALUES
+('Social Insurance', 5.00, 'Medical & Pension'),
+('Private Insurance', 3.00, 'Medical Only');
+
+-- =========================
+-- TERMINATION
+-- =========================
+
+INSERT INTO Termination VALUES
+('2024-10-01', 'Resignation', 2);
+
+-- =========================
+-- REIMBURSEMENT
+-- =========================
+
+INSERT INTO Reimbursement VALUES
+('Travel', 'Flight', '2024-05-10', 'Approved', 1),
+('Medical', 'Treatment', '2024-06-01', 'Pending', 2);
+
+-- =========================
+-- MISSION
+-- =========================
+
+INSERT INTO Mission VALUES
+('Dubai', '2024-06-01', '2024-06-10', 'Completed', 1, 3),
+('Berlin', '2024-08-01', '2024-08-15', 'Active', 2, 3);
+---------------Ali End---------------------
+
+
+-------Omar---------------------------
+-- Leave Types
+INSERT INTO Leave (leave_id, leave_type, leave_description) VALUES
+(1, 'Vacation', 'Annual vacation leave for employees'),
+(2, 'Sick', 'Medical leave for illness or injury'),
+(3, 'Probation', 'Leave during probation period'),
+(4, 'Holiday', 'Official public holidays');
+
+-- VacationLeave
+INSERT INTO VacationLeave (leave_id, carry_over_days, approving_manager) VALUES
+(1, 5, NULL);
+
+-- SickLeave
+INSERT INTO SickLeave (leave_id, medical_cert_required, physician_id) VALUES
+(2, 1, NULL);
+
+-- ProbationLeave
+INSERT INTO ProbationLeave (leave_id, eligibility_start_date, probation_period) VALUES
+(3, '2025-01-01', 90);
+
+-- HolidayLeave
+INSERT INTO HolidayLeave (leave_id, holiday_name, official_recognition, regional_scope) VALUES
+(4, 'New Year', 'National Holiday', 'Egypt'),
+(4, 'Eid Al-Fitr', 'Religious Holiday', 'Egypt'),
+(4, 'Eid Al-Adha', 'Religious Holiday', 'Egypt'),
+(4, 'Labor Day', 'National Holiday', 'Egypt'),
+(4, 'Revolution Day', 'National Holiday', 'Egypt');
+
+-- Leave Policies
+INSERT INTO LeavePolicy (policy_id, name, purpose, eligibility_rules, notice_period, special_leave_type, reset_on_new_year) VALUES
+(1, 'Standard Vacation Policy', 'Regular annual leave for full-time employees', 'Full-time employees with 6+ months tenure', 7, NULL, 1),
+(2, 'Sick Leave Policy', 'Medical leave for health-related absences', 'All employees', 0, 'Medical', 1),
+(3, 'Probation Leave Policy', 'Limited leave during probation period', 'Probationary employees', 3, NULL, 0),
+(4, 'Holiday Policy', 'Public and religious holidays', 'All employees', 0, 'Holiday', 0),
+(5, 'Emergency Leave Policy', 'Urgent family matters', 'All employees with 3+ months tenure', 1, 'Emergency', 1),
+(6, 'Maternity Leave Policy', 'Maternity leave for female employees', 'Female employees with 1+ year tenure', 30, 'Maternity', 0),
+(7, 'Bereavement Leave Policy', 'Leave for family bereavement', 'All employees', 0, 'Bereavement', 1);
+
+-- Leave Entitlements
+INSERT INTO LeaveEntitlement (employee_id, leave_type_id, entitlement) VALUES
+(1, 1, 21.00),
+(1, 2, 15.00),
+(2, 1, 21.00),
+(2, 2, 15.00),
+(3, 1, 21.00),
+(3, 2, 15.00),
+(4, 1, 21.00),
+(4, 2, 15.00),
+(5, 1, 21.00),
+(5, 2, 15.00);
+
+-- Leave Requests
+INSERT INTO LeaveRequest (request_id, employee_id, leave_id, justification, duration, approval_timing, status) VALUES
+(1, 1, 1, 'Family vacation', 5, NULL, 'Pending'),
+(2, 2, 2, 'Flu symptoms', 2, NULL, 'Approved'),
+(3, 3, 1, 'Personal travel', 7, NULL, 'Approved'),
+(4, 4, 2, 'Medical checkup', 1, NULL, 'Pending'),
+(5, 5, 1, 'Summer vacation', 10, NULL, 'Rejected');
+
+-- Leave Documents
+INSERT INTO LeaveDocument (document_id, leave_request_id, file_path, uploaded_at) VALUES
+(1, 2, '/documents/medical/sick_leave_cert_002.pdf', '2025-01-15 09:30:00'),
+(2, 3, '/documents/requests/vacation_request_003.pdf', '2025-02-01 10:00:00'),
+(3, 4, '/documents/medical/medical_report_004.pdf', '2025-03-10 14:20:00');
+
+-- Shift Schedules
+INSERT INTO ShiftSchedule (shift_id, name, type, start_time, end_time, break_duration, shift_date, status) VALUES
+(1, 'Morning Shift', 'Normal', '08:00:00', '16:00:00', 60, '2025-01-01', 'Active'),
+(2, 'Evening Shift', 'Normal', '14:00:00', '22:00:00', 60, '2025-01-01', 'Active'),
+(3, 'Night Shift', 'Overnight', '22:00:00', '06:00:00', 60, '2025-01-01', 'Active'),
+(4, 'Split Shift', 'Split', '08:00:00', '20:00:00', 240, '2025-01-01', 'Active'),
+(5, 'Flex Hours', 'Flexible', '09:00:00', '17:00:00', 60, '2025-01-01', 'Active'),
+(6, 'Core Hours', 'Normal', '09:00:00', '18:00:00', 60, '2025-01-01', 'Active'),
+(7, 'Weekend Shift', 'Normal', '10:00:00', '18:00:00', 60, '2025-01-01', 'Active');
+
+-- Shift Assignments
+INSERT INTO ShiftAssignment (assignment_id, employee_id, shift_id, start_date, end_date, status) VALUES
+(1, 1, 1, '2025-01-01', '2025-12-31', 'Approved'),
+(2, 2, 1, '2025-01-01', '2025-12-31', 'Approved'),
+(3, 3, 2, '2025-01-01', '2025-12-31', 'Approved'),
+(4, 4, 5, '2025-01-01', '2025-12-31', 'Approved'),
+(5, 5, 3, '2025-02-01', '2025-12-31', 'Submitted'),
+(6, 1, 6, '2025-03-01', '2025-06-30', 'Entered'),
+(7, 2, 7, '2025-04-01', '2025-04-30', 'Cancelled');
+
+-- Shift Cycles
+INSERT INTO ShiftCycle (cycle_id, cycle_name, description) VALUES
+(1, 'Rotating 3-Week Cycle', 'Morning, Evening, Night rotation every 3 weeks'),
+(2, 'Weekly Rotation', 'Weekly shift rotation for operations team'),
+(3, 'Bi-Weekly Rotation', 'Two-week rotation cycle'),
+(4, '24/7 Coverage', 'Continuous coverage rotation');
+
+-- Shift Cycle Assignments
+INSERT INTO ShiftCycleAssignment (cycle_id, shift_id, order_number) VALUES
+(1, 1, 1),
+(1, 2, 2),
+(1, 3, 3),
+(2, 1, 1),
+(2, 2, 2),
+(3, 6, 1),
+(3, 5, 2);
+
+-- Devices
+INSERT INTO Device (device_id, device_type, terminal_id, latitude, longitude, employee_id) VALUES
+(1, 'Biometric', 'TERM-001', 30.0444, 31.2357, NULL),
+(2, 'Biometric', 'TERM-002', 30.0444, 31.2357, NULL),
+(3, 'Mobile', 'MOB-001', 30.0444, 31.2357, 1),
+(4, 'Mobile', 'MOB-002', 30.0444, 31.2357, 2),
+(5, 'Biometric', 'TERM-003', 31.2001, 29.9187, NULL),
+(6, 'GPS Tracker', 'GPS-001', 30.0444, 31.2357, NULL);
+
+-- Exceptions
+INSERT INTO Exception (exception_id, name, category, date, status) VALUES
+(1, 'Late Arrival', 'Lateness', '2025-01-15', 'Active'),
+(2, 'Early Departure', 'Early Leave', '2025-01-15', 'Active'),
+(3, 'Missed Punch In', 'Attendance', '2025-01-16', 'Active'),
+(4, 'Missed Punch Out', 'Attendance', '2025-01-16', 'Active'),
+(5, 'Overtime', 'Extra Hours', '2025-01-17', 'Active'),
+(6, 'Public Holiday', 'Holiday', '2025-01-25', 'Active'),
+(7, 'Approved Leave', 'Leave', '2025-02-01', 'Active'),
+(8, 'Sick Leave', 'Leave', '2025-02-05', 'Active');
+
+-- Attendance Records
+INSERT INTO Attendance (attendance_id, employee_id, shift_id, entry_time, exit_time, duration, login_method, logout_method, exception_id) VALUES
+(1, 1, 1, '2025-01-15 08:00:00', '2025-01-15 16:00:00', 480, 'Biometric', 'Biometric', NULL),
+(2, 2, 1, '2025-01-15 08:15:00', '2025-01-15 16:00:00', 465, 'Biometric', 'Biometric', 1),
+(3, 3, 2, '2025-01-15 14:00:00', '2025-01-15 22:00:00', 480, 'Biometric', 'Biometric', NULL),
+(4, 1, 1, '2025-01-16 08:05:00', '2025-01-16 15:45:00', 460, 'Mobile', 'Mobile', 2),
+(5, 4, 5, '2025-01-16 09:30:00', '2025-01-16 18:30:00', 480, 'Biometric', 'Biometric', NULL),
+(6, 2, 1, '2025-01-17 08:00:00', '2025-01-17 18:00:00', 600, 'Biometric', 'Biometric', 5),
+(7, 5, 3, '2025-01-17 22:00:00', '2025-01-18 06:00:00', 480, 'Biometric', 'Biometric', NULL),
+(8, 1, 1, '2025-01-18 08:00:00', NULL, NULL, 'Biometric', NULL, 4);
+
+-- Employee Exceptions
+INSERT INTO Employee_Exception (employee_id, exception_id) VALUES
+(1, 2),
+(1, 4),
+(2, 1),
+(2, 5),
+(4, 5);
+
+-- Attendance Source
+INSERT INTO AttendanceSource (attendance_id, device_id, source_type, latitude, longitude, recorded_at) VALUES
+(1, 1, 'Biometric', 30.0444, 31.2357, '2025-01-15 08:00:00'),
+(2, 1, 'Biometric', 30.0444, 31.2357, '2025-01-15 08:15:00'),
+(3, 2, 'Biometric', 30.0444, 31.2357, '2025-01-15 14:00:00'),
+(4, 3, 'GPS', 30.0450, 31.2360, '2025-01-16 08:05:00'),
+(5, 1, 'Biometric', 30.0444, 31.2357, '2025-01-16 09:30:00'),
+(6, 1, 'Biometric', 30.0444, 31.2357, '2025-01-17 08:00:00'),
+(7, 5, 'Biometric', 31.2001, 29.9187, '2025-01-17 22:00:00'),
+(8, 1, 'Biometric', 30.0444, 31.2357, '2025-01-18 08:00:00');
+
+-- Attendance Logs
+INSERT INTO AttendanceLog (attendance_log_id, attendance_id, actor, timestamp, reason) VALUES
+(1, 1, 1, '2025-01-15 08:00:00', 'Regular clock-in'),
+(2, 2, 2, '2025-01-15 08:15:00', 'Late arrival due to traffic'),
+(3, 4, 1, '2025-01-16 15:45:00', 'Early departure approved by manager'),
+(4, 8, 1, '2025-01-18 08:00:00', 'Missed clock-out - pending correction');
+
+-- Attendance Correction Requests
+INSERT INTO AttendanceCorrectionRequest (request_id, employee_id, date, correction_type, reason, status, recorded_by) VALUES
+(1, 1, '2025-01-18', 'Missed Punch Out', 'Forgot to clock out, left at 16:00', 'Pending', 1),
+(2, 2, '2025-01-15', 'Late Arrival', 'Traffic accident on the highway', 'Approved', 2),
+(3, 1, '2025-01-16', 'Early Departure', 'Medical appointment', 'Approved', 1),
+(4, 4, '2025-01-19', 'Missed Punch In', 'Device malfunction', 'Pending', 4);
+
+-----------Omar's End------------------------------
+
+-- =============================================
 -- Tarek - Payroll, Salary Types & Policies
 -- Data Insertion Script
 -- =============================================
