@@ -147,34 +147,18 @@ END;
 GO
 
 -- 8. NotifyStructureChange
-CREATE PROCEDURE NotifyStructureChange
+CREATE OR ALTER PROCEDURE NotifyStructureChange
     @AffectedEmployees VARCHAR(500),
     @Message VARCHAR(200)
 AS
 BEGIN
-    DECLARE @EmployeeID INT;
-    DECLARE @Pos INT;
-    DECLARE @EmployeeList VARCHAR(500) = @AffectedEmployees;
-    
-    WHILE LEN(@EmployeeList) > 0
-    BEGIN
-        SET @Pos = CHARINDEX(',', @EmployeeList);
-        
-        IF @Pos = 0
-        BEGIN
-            SET @EmployeeID = CAST(@EmployeeList AS INT);
-            SET @EmployeeList = '';
-        END
-        ELSE
-        BEGIN
-            SET @EmployeeID = CAST(LEFT(@EmployeeList, @Pos - 1) AS INT);
-            SET @EmployeeList = SUBSTRING(@EmployeeList, @Pos + 1, LEN(@EmployeeList));
-        END
-        
-        INSERT INTO Notification (EmployeeID, Message, NotificationDate, IsRead)
-        VALUES (@EmployeeID, @Message, GETDATE(), 0);
-    END
-    
+    SET NOCOUNT ON;
+
+    INSERT INTO Notification (EmployeeID, Message, NotificationDate, IsRead)
+    SELECT TRY_CAST(LTRIM(RTRIM(value)) AS INT), @Message, GETDATE(), 0
+    FROM STRING_SPLIT(@AffectedEmployees, ',')
+    WHERE TRY_CAST(LTRIM(RTRIM(value)) AS INT) IS NOT NULL;
+
     SELECT 'Notifications sent successfully' AS Message;
 END;
 GO
