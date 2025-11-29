@@ -484,5 +484,3 @@ INSERT INTO ApprovalWorkflowStep (workflow_id, step_number, role_id, action_requ
 (1, 1, 4, 'Review and Approve/Reject Leave Request'),
 (2, 1, 3, 'Review Adjustment'),
 (3, 1, 4, 'Review and Approve Time Correction');
-
-PRINT 'Ziad''s part completed successfully!';
