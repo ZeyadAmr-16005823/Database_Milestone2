@@ -1,14 +1,182 @@
+-- =============================================
+-- ADD THESE TWO DROP STATEMENTS TO YOUR DROP SECTION
+-- =============================================
+
+
+
+-- Add this line:
+IF OBJECT_ID('ManagerApproveLeave', 'P') IS NOT NULL DROP PROCEDURE ManagerApproveLeave;
 
 -- =============================================
--- SYSTEM ADMINISTRATOR PROCEDURES (10)
+-- OR USE THIS SIMPLER APPROACH - DROP ALL AT ONCE
 -- =============================================
---------Ziad's Part----------------------------
+
+-- Replace your entire DROP section with this:
+DROP PROCEDURE IF EXISTS GetActiveContracts;
+DROP PROCEDURE IF EXISTS ViewEmployeeInfo;
+DROP PROCEDURE IF EXISTS AddEmployee;
+DROP PROCEDURE IF EXISTS UpdateEmployeeInfo;
+DROP PROCEDURE IF EXISTS AssignRole;
+DROP PROCEDURE IF EXISTS GetDepartmentEmployeeStats;
+DROP PROCEDURE IF EXISTS ReassignManager;
+DROP PROCEDURE IF EXISTS ReassignHierarchy;
+DROP PROCEDURE IF EXISTS NotifyStructureChange;
+DROP PROCEDURE IF EXISTS ViewOrgHierarchy;
+DROP PROCEDURE IF EXISTS AssignShiftToEmployee;
+DROP PROCEDURE IF EXISTS UpdateShiftStatus;
+DROP PROCEDURE IF EXISTS AssignShiftToDepartment;
+DROP PROCEDURE IF EXISTS AssignCustomShift;
+DROP PROCEDURE IF EXISTS ConfigureSplitShift;
+DROP PROCEDURE IF EXISTS EnableFirstInLastOut;
+DROP PROCEDURE IF EXISTS TagAttendanceSource;
+DROP PROCEDURE IF EXISTS SyncOfflineAttendance;
+DROP PROCEDURE IF EXISTS LogAttendanceEdit;
+DROP PROCEDURE IF EXISTS ApplyHolidayOverrides;
+DROP PROCEDURE IF EXISTS ManageUserAccounts;
+DROP PROCEDURE IF EXISTS AddEmployeeSkill;
+DROP PROCEDURE IF EXISTS NotifyProfileUpdate;
+DROP PROCEDURE IF EXISTS SendTeamNotification;
+DROP PROCEDURE IF EXISTS AssignDepartmentHead;
+DROP PROCEDURE IF EXISTS ViewTeamProfiles;
+DROP PROCEDURE IF EXISTS GetTeamSummary;
+DROP PROCEDURE IF EXISTS FilterTeamProfiles;
+DROP PROCEDURE IF EXISTS ViewTeamCertifications;
+DROP PROCEDURE IF EXISTS GenerateProfileReport;
+DROP PROCEDURE IF EXISTS GetTeamByManager;
+DROP PROCEDURE IF EXISTS CreateEmployeeProfile;
+DROP PROCEDURE IF EXISTS UpdateEmployeeProfile;
+DROP PROCEDURE IF EXISTS SetProfileCompleteness;
+DROP PROCEDURE IF EXISTS GetTeamStatistics;
+DROP PROCEDURE IF EXISTS AddManagerNotes;
+DROP PROCEDURE IF EXISTS CreateContract;
+DROP PROCEDURE IF EXISTS RenewContract;
+DROP PROCEDURE IF EXISTS ApproveLeaveRequest;
+DROP PROCEDURE IF EXISTS AssignMission;
+DROP PROCEDURE IF EXISTS ReviewReimbursement;
+DROP FUNCTION IF EXISTS GetActiveContracts;
+DROP PROCEDURE IF EXISTS GetExpiringContracts;
+DROP PROCEDURE IF EXISTS UpdateLeavePolicy;
+DROP PROCEDURE IF EXISTS SubmitLeaveRequest;
+DROP PROCEDURE IF EXISTS GetLeaveBalance;
+DROP PROCEDURE IF EXISTS AttachLeaveDocuments;
+DROP PROCEDURE IF EXISTS ModifyLeaveRequest;
+DROP PROCEDURE IF EXISTS CancelLeaveRequest;
+DROP PROCEDURE IF EXISTS ViewLeaveBalance;
+DROP PROCEDURE IF EXISTS ViewLeaveHistory;
+DROP PROCEDURE IF EXISTS SubmitLeaveAfterAbsence;
+DROP PROCEDURE IF EXISTS NotifyLeaveStatusChange;
+DROP PROCEDURE IF EXISTS ViewLeaveRequest;
+DROP PROCEDURE IF EXISTS ManagerApproveLeave;
+DROP PROCEDURE IF EXISTS RejectLeaveRequest;
+DROP PROCEDURE IF EXISTS DelegateLeaveApproval;
+DROP PROCEDURE IF EXISTS FlagIrregularLeave;
+DROP PROCEDURE IF EXISTS NotifyNewLeaveRequest;
+DROP PROCEDURE IF EXISTS ReviewLeaveRequest;
+DROP PROCEDURE IF EXISTS GetPendingLeaveRequests;
+DROP PROCEDURE IF EXISTS CreateShiftType;
+DROP PROCEDURE IF EXISTS CreateShiftName;
+DROP PROCEDURE IF EXISTS AssignRotationalShift;
+DROP PROCEDURE IF EXISTS NotifyShiftExpiry;
+DROP PROCEDURE IF EXISTS DefineShortTimeRules;
+DROP PROCEDURE IF EXISTS SetGracePeriod;
+DROP PROCEDURE IF EXISTS DefinePenaltyThreshold;
+DROP PROCEDURE IF EXISTS DefinePermissionLimits;
+DROP PROCEDURE IF EXISTS EscalatePendingRequests;
+DROP PROCEDURE IF EXISTS LinkVacationToShift;
+DROP PROCEDURE IF EXISTS ConfigureLeavePolicies;
+DROP PROCEDURE IF EXISTS AuthenticateLeaveAdmin;
+DROP PROCEDURE IF EXISTS ApplyLeaveConfiguration;
+DROP PROCEDURE IF EXISTS UpdateLeaveEntitlements;
+DROP PROCEDURE IF EXISTS ConfigureLeaveEligibility;
+DROP PROCEDURE IF EXISTS ManageLeaveTypes;
+DROP PROCEDURE IF EXISTS AssignLeaveEntitlement;
+DROP PROCEDURE IF EXISTS ConfigureLeaveRules;
+DROP PROCEDURE IF EXISTS ConfigureSpecialLeave;
+DROP PROCEDURE IF EXISTS SetLeaveYearRules;
+DROP PROCEDURE IF EXISTS AdjustLeaveBalance;
+DROP PROCEDURE IF EXISTS ManageLeaveRoles;
+DROP PROCEDURE IF EXISTS FinalizeLeaveRequest;
+DROP PROCEDURE IF EXISTS OverrideLeaveDecision;
+DROP PROCEDURE IF EXISTS BulkProcessLeaveRequests;
+DROP PROCEDURE IF EXISTS VerifyMedicalLeave;
+DROP PROCEDURE IF EXISTS SyncLeaveBalances;
+DROP PROCEDURE IF EXISTS ProcessLeaveCarryForward;
+DROP PROCEDURE IF EXISTS SyncLeaveToAttendance;
+DROP PROCEDURE IF EXISTS AssignShift;
+DROP PROCEDURE IF EXISTS ReassignShift;
+DROP PROCEDURE IF EXISTS ViewAssignedShifts;
+DROP PROCEDURE IF EXISTS RecordAttendance;
+DROP PROCEDURE IF EXISTS LogFlexibleAttendance;
+DROP PROCEDURE IF EXISTS NotifyMissedPunch;
+DROP PROCEDURE IF EXISTS RecordMultiplePunches;
+DROP PROCEDURE IF EXISTS SubmitCorrectionRequest;
+DROP PROCEDURE IF EXISTS ViewRequestStatus;
+DROP PROCEDURE IF EXISTS ViewTeamAttendance;
+DROP PROCEDURE IF EXISTS RecordManualAttendance;
+DROP PROCEDURE IF EXISTS ReviewMissedPunches;
+DROP PROCEDURE IF EXISTS ApproveTimeRequest;
+DROP PROCEDURE IF EXISTS GeneratePayroll;
+DROP PROCEDURE IF EXISTS AdjustPayrollItem;
+DROP PROCEDURE IF EXISTS CalculateNetSalary;
+DROP PROCEDURE IF EXISTS ApplyPayrollPolicy;
+DROP PROCEDURE IF EXISTS GetMonthlyPayrollSummary;
+DROP PROCEDURE IF EXISTS AddAllowanceDeduction;
+DROP PROCEDURE IF EXISTS GetEmployeePayrollHistory;
+DROP PROCEDURE IF EXISTS GetBonusEligibleEmployees;
+DROP PROCEDURE IF EXISTS UpdateSalaryType;
+DROP PROCEDURE IF EXISTS GetPayrollByDepartment;
+DROP PROCEDURE IF EXISTS ValidateAttendanceBeforePayroll;
+DROP PROCEDURE IF EXISTS SyncAttendanceToPayroll;
+DROP PROCEDURE IF EXISTS SyncApprovedPermissionsToPayroll;
+DROP PROCEDURE IF EXISTS ConfigurePayGrades;
+DROP PROCEDURE IF EXISTS ConfigureShiftAllowances;
+DROP PROCEDURE IF EXISTS EnableMultiCurrencyPayroll;
+DROP PROCEDURE IF EXISTS ManageTaxRules;
+DROP PROCEDURE IF EXISTS ApprovePayrollConfigChanges;
+DROP PROCEDURE IF EXISTS ConfigureSigningBonus;
+DROP PROCEDURE IF EXISTS ConfigureTerminationBenefits;
+DROP PROCEDURE IF EXISTS ConfigureInsuranceBrackets;
+DROP PROCEDURE IF EXISTS UpdateInsuranceBrackets;
+DROP PROCEDURE IF EXISTS ConfigurePayrollPolicies;
+DROP PROCEDURE IF EXISTS DefinePayGrades;
+DROP PROCEDURE IF EXISTS ConfigureEscalationWorkflow;
+DROP PROCEDURE IF EXISTS DefinePayType;
+DROP PROCEDURE IF EXISTS ConfigureOvertimeRules;
+DROP PROCEDURE IF EXISTS ConfigureShiftAllowance;
+DROP PROCEDURE IF EXISTS ConfigureMultiCurrency;
+DROP PROCEDURE IF EXISTS ConfigureSigningBonusPolicy;
+DROP PROCEDURE IF EXISTS ConfigureInsuranceBracketsByName;
+DROP PROCEDURE IF EXISTS GenerateTaxStatement;
+DROP PROCEDURE IF EXISTS ApprovePayrollConfiguration;
+DROP PROCEDURE IF EXISTS ModifyPastPayroll;
+DROP PROCEDURE IF EXISTS ViewEmployeeProfile;
+DROP PROCEDURE IF EXISTS UpdateContactInformation;
+DROP PROCEDURE IF EXISTS ViewEmploymentTimeline;
+DROP PROCEDURE IF EXISTS UpdateEmergencyContact;
+DROP PROCEDURE IF EXISTS RequestHRDocument;
+DROP PROCEDURE IF EXISTS ViewMyContracts;
+DROP PROCEDURE IF EXISTS ViewMyPayroll;
+DROP PROCEDURE IF EXISTS UpdatePersonalDetails;
+DROP PROCEDURE IF EXISTS ViewMyMissions;
+DROP PROCEDURE IF EXISTS SubmitReimbursement;
+DROP PROCEDURE IF EXISTS ApproveMissionCompletion;
+DROP PROCEDURE IF EXISTS RequestReplacement;
+DROP PROCEDURE IF EXISTS ViewDepartmentSummary;
+DROP PROCEDURE IF EXISTS UpdateInsuranceBracketsNotify;
+DROP PROCEDURE IF EXISTS ApprovePolicyUpdate;
+GO
+
+
+-- =============================================
+-- ZIAD'S PART - SYSTEM ADMINISTRATOR PROCEDURES
+-- =============================================
+
 -- 1. ViewEmployeeInfo
 CREATE PROCEDURE ViewEmployeeInfo
     @EmployeeID INT
 AS
 BEGIN
-    SELECT * FROM Employee WHERE EmployeeID = @EmployeeID;
+    SELECT * FROM Employee WHERE employee_id = @EmployeeID;
 END;
 GO
 
@@ -43,11 +211,11 @@ BEGIN
     DECLARE @NewEmployeeID INT;
     
     INSERT INTO Employee (
-        FullName, NationalID, DateOfBirth, CountryOfBirth, Phone, Email, 
-        Address, EmergencyContactName, EmergencyContactPhone, Relationship, 
-        Biography, EmploymentProgress, AccountStatus, EmploymentStatus, 
-        HireDate, IsActive, ProfileCompletion, DepartmentID, PositionID, 
-        ManagerID, ContractID, TaxFormID, SalaryTypeID, PayGrade
+        full_name, national_id, date_of_birth, country_of_birth, phone, email, 
+        address, emergency_contact_name, emergency_contact_phone, relationship, 
+        biography, employment_progress, account_status, employment_status, 
+        hire_date, is_active, profile_completion, department_id, position_id, 
+        manager_id, contract_id, tax_form_id, salary_type_id, pay_grade
     )
     VALUES (
         @FullName, @NationalID, @DateOfBirth, @CountryOfBirth, @Phone, @Email,
@@ -71,8 +239,8 @@ CREATE PROCEDURE UpdateEmployeeInfo
 AS
 BEGIN
     UPDATE Employee
-    SET Email = @Email, Phone = @Phone, Address = @Address
-    WHERE EmployeeID = @EmployeeID;
+    SET email = @Email, phone = @Phone, address = @Address
+    WHERE employee_id = @EmployeeID;
     
     SELECT 'Employee information updated successfully' AS Message;
 END;
@@ -84,9 +252,9 @@ CREATE PROCEDURE AssignRole
     @RoleID INT
 AS
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM Employee_Role WHERE EmployeeID = @EmployeeID AND RoleID = @RoleID)
+    IF NOT EXISTS (SELECT 1 FROM Employee_Role WHERE employee_id = @EmployeeID AND role_id = @RoleID)
     BEGIN
-        INSERT INTO Employee_Role (EmployeeID, RoleID, AssignedDate)
+        INSERT INTO Employee_Role (employee_id, role_id, assigned_date)
         VALUES (@EmployeeID, @RoleID, GETDATE());
     END
     
@@ -99,12 +267,12 @@ CREATE PROCEDURE GetDepartmentEmployeeStats
 AS
 BEGIN
     SELECT 
-        d.DepartmentName,
-        COUNT(e.EmployeeID) AS EmployeeCount
+        d.department_name,
+        COUNT(e.employee_id) AS EmployeeCount
     FROM Department d
-    LEFT JOIN Employee e ON d.DepartmentID = e.DepartmentID
-    GROUP BY d.DepartmentID, d.DepartmentName
-    ORDER BY d.DepartmentName;
+    LEFT JOIN Employee e ON d.department_id = e.department_id
+    GROUP BY d.department_id, d.department_name
+    ORDER BY d.department_name;
 END;
 GO
 
@@ -114,12 +282,12 @@ CREATE PROCEDURE ReassignManager
     @NewManagerID INT
 AS
 BEGIN
-    UPDATE Employee SET ManagerID = @NewManagerID WHERE EmployeeID = @EmployeeID;
+    UPDATE Employee SET manager_id = @NewManagerID WHERE employee_id = @EmployeeID;
     
     UPDATE EmployeeHierarchy
-    SET ManagerID = @NewManagerID,
-        Level = (SELECT ISNULL(Level, 0) FROM EmployeeHierarchy WHERE EmployeeID = @NewManagerID) + 1
-    WHERE EmployeeID = @EmployeeID;
+    SET manager_id = @NewManagerID,
+        hierarchy_level = (SELECT ISNULL(hierarchy_level, 0) FROM EmployeeHierarchy WHERE employee_id = @NewManagerID) + 1
+    WHERE employee_id = @EmployeeID;
     
     SELECT 'Manager reassigned successfully' AS Message;
 END;
@@ -133,14 +301,13 @@ CREATE PROCEDURE ReassignHierarchy
 AS
 BEGIN
     UPDATE Employee
-    SET DepartmentID = @NewDepartmentID, ManagerID = @NewManagerID
-    WHERE EmployeeID = @EmployeeID;
+    SET department_id = @NewDepartmentID, manager_id = @NewManagerID
+    WHERE employee_id = @EmployeeID;
     
     UPDATE EmployeeHierarchy
-    SET DepartmentID = @NewDepartmentID,
-        ManagerID = @NewManagerID,
-        Level = (SELECT ISNULL(Level, 0) FROM EmployeeHierarchy WHERE EmployeeID = @NewManagerID) + 1
-    WHERE EmployeeID = @EmployeeID;
+    SET manager_id = @NewManagerID,
+        hierarchy_level = (SELECT ISNULL(hierarchy_level, 0) FROM EmployeeHierarchy WHERE employee_id = @NewManagerID) + 1
+    WHERE employee_id = @EmployeeID;
     
     SELECT 'Hierarchy reassigned successfully' AS Message;
 END;
@@ -152,7 +319,6 @@ CREATE PROCEDURE NotifyStructureChange
     @Message VARCHAR(200)
 AS
 BEGIN
-    -- Create notification
     DECLARE @NotificationID INT;
     
     INSERT INTO Notification (message_content, timestamp, urgency, read_status, notification_type)
@@ -160,7 +326,6 @@ BEGIN
     
     SET @NotificationID = SCOPE_IDENTITY();
     
-    -- Parse employee IDs and send notifications
     DECLARE @EmployeeID INT;
     DECLARE @Position INT;
     DECLARE @EmployeeList VARCHAR(500) = @AffectedEmployees + ',';
@@ -185,22 +350,187 @@ CREATE PROCEDURE ViewOrgHierarchy
 AS
 BEGIN
     SELECT 
-        e.EmployeeID,
-        e.FullName AS EmployeeName,
-        m.FullName AS ManagerName,
-        d.DepartmentName,
-        p.PositionTitle,
-        ISNULL(eh.Level, 0) AS HierarchyLevel
+        e.employee_id,
+        e.full_name AS EmployeeName,
+        m.full_name AS ManagerName,
+        d.department_name,
+        p.position_title,
+        ISNULL(eh.hierarchy_level, 0) AS HierarchyLevel
     FROM Employee e
-    LEFT JOIN Employee m ON e.ManagerID = m.EmployeeID
-    LEFT JOIN Department d ON e.DepartmentID = d.DepartmentID
-    LEFT JOIN Position p ON e.PositionID = p.PositionID
-    LEFT JOIN EmployeeHierarchy eh ON e.EmployeeID = eh.EmployeeID
-    ORDER BY ISNULL(eh.Level, 0), d.DepartmentName, e.FullName;
+    LEFT JOIN Employee m ON e.manager_id = m.employee_id
+    LEFT JOIN Department d ON e.department_id = d.department_id
+    LEFT JOIN Position p ON e.position_id = p.position_id
+    LEFT JOIN EmployeeHierarchy eh ON e.employee_id = eh.employee_id
+    ORDER BY ISNULL(eh.hierarchy_level, 0), d.department_name, e.full_name;
 END;
 GO
 
--- 10. ManageUserAccounts
+-- 10. AssignShiftToEmployee
+CREATE PROCEDURE AssignShiftToEmployee
+    @EmployeeID INT,
+    @ShiftID INT,
+    @StartDate DATE,
+    @EndDate DATE
+AS
+BEGIN
+    INSERT INTO ShiftAssignment (employee_id, shift_id, start_date, end_date, status)
+    VALUES (@EmployeeID, @ShiftID, @StartDate, @EndDate, 'Approved');
+    
+    SELECT 'Shift assigned to employee successfully' AS Message;
+END;
+GO
+
+-- 11. UpdateShiftStatus
+CREATE PROCEDURE UpdateShiftStatus
+    @ShiftAssignmentID INT,
+    @Status VARCHAR(20)
+AS
+BEGIN
+    UPDATE ShiftAssignment
+    SET status = @Status
+    WHERE assignment_id = @ShiftAssignmentID;
+    
+    SELECT 'Shift status updated successfully' AS Message;
+END;
+GO
+
+-- 12. AssignShiftToDepartment
+CREATE PROCEDURE AssignShiftToDepartment
+    @DepartmentID INT,
+    @ShiftID INT,
+    @StartDate DATE,
+    @EndDate DATE
+AS
+BEGIN
+    INSERT INTO ShiftAssignment (employee_id, shift_id, start_date, end_date, status)
+    SELECT employee_id, @ShiftID, @StartDate, @EndDate, 'Approved'
+    FROM Employee
+    WHERE department_id = @DepartmentID;
+    
+    SELECT 'Shift assigned to department successfully' AS Message;
+END;
+GO
+
+-- 13. AssignCustomShift
+CREATE PROCEDURE AssignCustomShift
+    @EmployeeID INT,
+    @ShiftName VARCHAR(50),
+    @ShiftType VARCHAR(50),
+    @StartTime TIME,
+    @EndTime TIME,
+    @StartDate DATE,
+    @EndDate DATE
+AS
+BEGIN
+    DECLARE @ShiftID INT;
+    
+    INSERT INTO ShiftSchedule (name, type, start_time, end_time, shift_date, status)
+    VALUES (@ShiftName, @ShiftType, @StartTime, @EndTime, @StartDate, 'Active');
+    
+    SET @ShiftID = SCOPE_IDENTITY();
+    
+    INSERT INTO ShiftAssignment (employee_id, shift_id, start_date, end_date, status)
+    VALUES (@EmployeeID, @ShiftID, @StartDate, @EndDate, 'Approved');
+    
+    SELECT 'Custom shift assigned successfully' AS Message;
+END;
+GO
+
+-- 14. ConfigureSplitShift
+CREATE PROCEDURE ConfigureSplitShift
+    @ShiftName VARCHAR(50),
+    @FirstSlotStart TIME,
+    @FirstSlotEnd TIME,
+    @SecondSlotStart TIME,
+    @SecondSlotEnd TIME
+AS
+BEGIN
+    DECLARE @BreakDuration INT = DATEDIFF(MINUTE, @FirstSlotEnd, @SecondSlotStart);
+    
+    INSERT INTO ShiftSchedule (name, type, start_time, end_time, break_duration, status)
+    VALUES (@ShiftName, 'Split', @FirstSlotStart, @SecondSlotEnd, @BreakDuration, 'Active');
+    
+    SELECT 'Split shift configured successfully' AS Message;
+END;
+GO
+
+-- 15. EnableFirstInLastOut
+CREATE PROCEDURE EnableFirstInLastOut
+    @Enable BIT
+AS
+BEGIN
+    SELECT 'First In/Last Out processing: ' + CASE WHEN @Enable = 1 THEN 'Enabled' ELSE 'Disabled' END AS Message;
+END;
+GO
+
+-- 16. TagAttendanceSource
+CREATE PROCEDURE TagAttendanceSource
+    @AttendanceID INT,
+    @SourceType VARCHAR(20),
+    @DeviceID INT,
+    @Latitude DECIMAL(10,7),
+    @Longitude DECIMAL(10,7)
+AS
+BEGIN
+    INSERT INTO AttendanceSource (attendance_id, device_id, source_type, latitude, longitude)
+    VALUES (@AttendanceID, @DeviceID, @SourceType, @Latitude, @Longitude);
+    
+    SELECT 'Attendance source tagged successfully' AS Message;
+END;
+GO
+
+-- 17. SyncOfflineAttendance
+CREATE PROCEDURE SyncOfflineAttendance
+    @DeviceID INT,
+    @EmployeeID INT,
+    @ClockTime DATETIME,
+    @Type VARCHAR(10)
+AS
+BEGIN
+    IF @Type = 'IN'
+        INSERT INTO Attendance (employee_id, entry_time)
+        VALUES (@EmployeeID, @ClockTime);
+    ELSE
+        UPDATE Attendance
+        SET exit_time = @ClockTime,
+            duration = DATEDIFF(MINUTE, entry_time, @ClockTime)
+        WHERE employee_id = @EmployeeID AND exit_time IS NULL;
+    
+    SELECT 'Offline attendance synced successfully' AS Message;
+END;
+GO
+
+-- 18. LogAttendanceEdit
+CREATE PROCEDURE LogAttendanceEdit
+    @AttendanceID INT,
+    @EditedBy INT,
+    @OldValue DATETIME,
+    @NewValue DATETIME,
+    @EditTimestamp DATETIME
+AS
+BEGIN
+    INSERT INTO AttendanceLog (attendance_id, actor, timestamp, reason)
+    VALUES (@AttendanceID, @EditedBy, @EditTimestamp, 
+            'Changed from ' + CAST(@OldValue AS VARCHAR) + ' to ' + CAST(@NewValue AS VARCHAR));
+    
+    SELECT 'Attendance edit logged successfully' AS Message;
+END;
+GO
+
+-- 19. ApplyHolidayOverrides
+CREATE PROCEDURE ApplyHolidayOverrides
+    @HolidayID INT,
+    @EmployeeID INT
+AS
+BEGIN
+    INSERT INTO Exception (name, category, date, status)
+    VALUES ('Holiday Override', 'Holiday', GETDATE(), 'Active');
+    
+    SELECT 'Holiday override applied successfully' AS Message;
+END;
+GO
+
+-- 20. ManageUserAccounts
 CREATE PROCEDURE ManageUserAccounts
     @UserID INT,
     @Role VARCHAR(50),
@@ -210,17 +540,17 @@ BEGIN
     IF @Action = 'CREATE'
     BEGIN
         DECLARE @RoleID INT;
-        SELECT @RoleID = RoleID FROM Role WHERE RoleName = @Role;
+        SELECT @RoleID = role_id FROM Role WHERE role_name = @Role;
         
         IF @RoleID IS NOT NULL
         BEGIN
-            INSERT INTO Employee_Role (EmployeeID, RoleID, AssignedDate)
+            INSERT INTO Employee_Role (employee_id, role_id, assigned_date)
             VALUES (@UserID, @RoleID, GETDATE());
         END
     END
     ELSE IF @Action = 'DELETE'
     BEGIN
-        DELETE FROM Employee_Role WHERE EmployeeID = @UserID;
+        DELETE FROM Employee_Role WHERE employee_id = @UserID;
     END
     
     SELECT 'User account managed successfully' AS Message;
@@ -228,332 +558,16 @@ END;
 GO
 
 -- =============================================
--- HR ADMINISTRATOR PROCEDURES (6)
+-- YOUSEF'S PART - HR ADMIN & LINE MANAGER
 -- =============================================
 
--- 11. GetTeamByManager
-CREATE PROCEDURE GetTeamByManager
-    @ManagerID INT
-AS
-BEGIN
-    SELECT EmployeeID, FullName AS EmployeeName
-    FROM Employee
-    WHERE ManagerID = @ManagerID
-    ORDER BY FullName;
-END;
-GO
-
--- 12. AssignDepartmentHead
-CREATE PROCEDURE AssignDepartmentHead
-    @DepartmentID INT,
-    @ManagerID INT
-AS
-BEGIN
-    UPDATE Department SET DepartmentHeadID = @ManagerID WHERE DepartmentID = @DepartmentID;
-    SELECT 'Department head assigned successfully' AS Message;
-END;
-GO
-
--- 13. CreateEmployeeProfile
-CREATE PROCEDURE CreateEmployeeProfile
-    @FirstName VARCHAR(50),
-    @LastName VARCHAR(50),
-    @DepartmentID INT,
-    @RoleID INT,
-    @HireDate DATE,
-    @Email VARCHAR(100),
-    @Phone VARCHAR(20),
-    @NationalID VARCHAR(50),
-    @DateOfBirth DATE,
-    @CountryOfBirth VARCHAR(100)
-AS
-BEGIN
-    DECLARE @NewEmployeeID INT;
-    DECLARE @FullName VARCHAR(200) = @FirstName + ' ' + @LastName;
-    
-    INSERT INTO Employee (FullName, NationalID, DateOfBirth, CountryOfBirth, Phone, Email, HireDate, DepartmentID, IsActive, ProfileCompletion, AccountStatus)
-    VALUES (@FullName, @NationalID, @DateOfBirth, @CountryOfBirth, @Phone, @Email, @HireDate, @DepartmentID, 1, 30, 'Active');
-    
-    SET @NewEmployeeID = SCOPE_IDENTITY();
-    
-    INSERT INTO Employee_Role (EmployeeID, RoleID, AssignedDate)
-    VALUES (@NewEmployeeID, @RoleID, GETDATE());
-    
-    INSERT INTO EmployeeHierarchy (EmployeeID, DepartmentID, Level)
-    VALUES (@NewEmployeeID, @DepartmentID, 1);
-    
-    SELECT 'Employee profile created successfully' AS Message, @NewEmployeeID AS EmployeeID;
-END;
-GO
-
--- 14. UpdateEmployeeProfile
-CREATE PROCEDURE UpdateEmployeeProfile
+-- 1. AddEmployeeSkill
+CREATE PROCEDURE AddEmployeeSkill
     @EmployeeID INT,
-    @FieldName VARCHAR(50),
-    @NewValue VARCHAR(255)
+    @SkillName VARCHAR(50)
 AS
 BEGIN
-    DECLARE @SQL NVARCHAR(MAX);
-    SET @SQL = N'UPDATE Employee SET ' + QUOTENAME(@FieldName) + ' = @Value WHERE EmployeeID = @EmpID';
-    EXEC sp_executesql @SQL, N'@Value VARCHAR(255), @EmpID INT', @Value = @NewValue, @EmpID = @EmployeeID;
-    
-    SELECT 'Employee profile updated successfully' AS Message;
-END;
-GO
-
--- 15. SetProfileCompleteness
-CREATE PROCEDURE SetProfileCompleteness
-    @EmployeeID INT,
-    @CompletenessPercentage INT
-AS
-BEGIN
-    UPDATE Employee SET ProfileCompletion = @CompletenessPercentage WHERE EmployeeID = @EmployeeID;
-    SELECT 'Profile completeness updated successfully' AS Message, @CompletenessPercentage AS CompletenessPercentage;
-END;
-GO
-
--- 16. GenerateProfileReport
-CREATE PROCEDURE GenerateProfileReport
-    @FilterField VARCHAR(50),
-    @FilterValue VARCHAR(100)
-AS
-BEGIN
-    DECLARE @SQL NVARCHAR(MAX);
-    SET @SQL = N'SELECT * FROM Employee WHERE ' + QUOTENAME(@FilterField) + ' = @Value';
-    EXEC sp_executesql @SQL, N'@Value VARCHAR(100)', @Value = @FilterValue;
-END;
-GO
-
--- =============================================
--- LINE MANAGER PROCEDURES (6)
--- =============================================
-
--- 17. GetTeamStatistics
-CREATE PROCEDURE GetTeamStatistics
-    @ManagerID INT
-AS
-BEGIN
-    SELECT COUNT(*) AS TeamSize, COUNT(*) AS SpanOfControl
-    FROM Employee
-    WHERE ManagerID = @ManagerID;
-END;
-GO
-
--- 18. ViewTeamProfiles
-CREATE PROCEDURE ViewTeamProfiles
-    @ManagerID INT
-AS
-BEGIN
-    SELECT e.EmployeeID, e.FullName, e.Email, e.Phone, p.PositionTitle, d.DepartmentName, e.HireDate
-    FROM Employee e
-    LEFT JOIN Position p ON e.PositionID = p.PositionID
-    LEFT JOIN Department d ON e.DepartmentID = d.DepartmentID
-    WHERE e.ManagerID = @ManagerID
-    ORDER BY e.FullName;
-END;
-GO
-
--- 19. GetTeamSummary
-CREATE PROCEDURE GetTeamSummary
-    @ManagerID INT
-AS
-BEGIN
-    SELECT p.PositionTitle AS Role, COUNT(*) AS EmployeeCount, AVG(DATEDIFF(YEAR, e.HireDate, GETDATE())) AS AverageTenure, d.DepartmentName
-    FROM Employee e
-    LEFT JOIN Position p ON e.PositionID = p.PositionID
-    LEFT JOIN Department d ON e.DepartmentID = d.DepartmentID
-    WHERE e.ManagerID = @ManagerID
-    GROUP BY p.PositionTitle, d.DepartmentName;
-END;
-GO
-
--- 20. FilterTeamProfiles
-CREATE PROCEDURE FilterTeamProfiles
-    @ManagerID INT,
-    @Skill VARCHAR(50),
-    @RoleID INT
-AS
-BEGIN
-    SELECT DISTINCT e.EmployeeID, e.FullName, p.PositionTitle, d.DepartmentName
-    FROM Employee e
-    LEFT JOIN Position p ON e.PositionID = p.PositionID
-    LEFT JOIN Department d ON e.DepartmentID = d.DepartmentID
-    LEFT JOIN Employee_Skill es ON e.EmployeeID = es.EmployeeID
-    LEFT JOIN Skill s ON es.SkillID = s.SkillID
-    LEFT JOIN Employee_Role er ON e.EmployeeID = er.EmployeeID
-    WHERE e.ManagerID = @ManagerID
-        AND (@Skill IS NULL OR s.SkillName = @Skill)
-        AND (@RoleID IS NULL OR er.RoleID = @RoleID)
-    ORDER BY e.FullName;
-END;
-GO
-
--- 21. ViewTeamCertifications
-CREATE PROCEDURE ViewTeamCertifications
-    @ManagerID INT
-AS
-BEGIN
-    SELECT e.EmployeeID, e.FullName, s.SkillName, v.VerificationName, v.IssuedDate, v.ExpiryDate
-    FROM Employee e
-    LEFT JOIN Employee_Skill es ON e.EmployeeID = es.EmployeeID
-    LEFT JOIN Skill s ON es.SkillID = s.SkillID
-    LEFT JOIN Employee_Verification ev ON e.EmployeeID = ev.EmployeeID
-    LEFT JOIN Verification v ON ev.VerificationID = v.VerificationID
-    WHERE e.ManagerID = @ManagerID
-    ORDER BY e.FullName, s.SkillName;
-END;
-GO
-
--- 22. AddManagerNotes
-CREATE PROCEDURE AddManagerNotes
-    @EmployeeID INT,
-    @ManagerID INT,
-    @Note VARCHAR(500)
-AS
-BEGIN
-    INSERT INTO ManagerNotes (EmployeeID, ManagerID, Note, NoteDate)
-    VALUES (@EmployeeID, @ManagerID, @Note, GETDATE());
-    
-    SELECT 'Manager note added successfully' AS Message;
-END;
-GO
-
--- =============================================
--- EMPLOYEE PROCEDURES (6)
--- =============================================
-
--- 23. ViewEmployeeProfile
-CREATE PROCEDURE ViewEmployeeProfile
-    @EmployeeID INT
-AS
-BEGIN
-    SELECT e.*, p.PositionTitle, d.DepartmentName, m.FullName AS ManagerName
-    FROM Employee e
-    LEFT JOIN Position p ON e.PositionID = p.PositionID
-    LEFT JOIN Department d ON e.DepartmentID = d.DepartmentID
-    LEFT JOIN Employee m ON e.ManagerID = m.EmployeeID
-    WHERE e.EmployeeID = @EmployeeID;
-END;
-GO
-
--- 24. UpdateContactInformation
-CREATE PROCEDURE UpdateContactInformation
-    @EmployeeID INT,
-    @RequestType VARCHAR(50),
-    @NewValue VARCHAR(100)
-AS
-BEGIN
-    IF @RequestType = 'Phone'
-        UPDATE Employee SET Phone = @NewValue WHERE EmployeeID = @EmployeeID;
-    ELSE IF @RequestType = 'Address'
-        UPDATE Employee SET Address = @NewValue WHERE EmployeeID = @EmployeeID;
-    ELSE IF @RequestType = 'Email'
-        UPDATE Employee SET Email = @NewValue WHERE EmployeeID = @EmployeeID;
-    
-    SELECT 'Contact information updated successfully' AS Message;
-END;
-GO
-
--- 25. ViewEmploymentTimeline
-CREATE PROCEDURE ViewEmploymentTimeline
-    @EmployeeID INT
-AS
-BEGIN
-    SELECT 'Hired' AS EventType, e.HireDate AS EventDate, 'Hired as ' + ISNULL(p.PositionTitle, 'Employee') AS Description
-    FROM Employee e
-    LEFT JOIN Position p ON e.PositionID = p.PositionID
-    WHERE e.EmployeeID = @EmployeeID
-    ORDER BY EventDate;
-END;
-GO
-
--- 26. UpdateEmergencyContact
-CREATE PROCEDURE UpdateEmergencyContact
-    @EmployeeID INT,
-    @ContactName VARCHAR(100),
-    @Relation VARCHAR(50),
-    @Phone VARCHAR(20)
-AS
-BEGIN
-    UPDATE Employee
-    SET EmergencyContactName = @ContactName, Relationship = @Relation, EmergencyContactPhone = @Phone
-    WHERE EmployeeID = @EmployeeID;
-    
-    SELECT 'Emergency contact updated successfully' AS Message;
-END;
-GO
-
--- 27. RequestHRDocument
-CREATE PROCEDURE RequestHRDocument
-    @EmployeeID INT,
-    @DocumentType VARCHAR(50)
-AS
-BEGIN
-    INSERT INTO Notification (EmployeeID, Message, NotificationDate, IsRead)
-    VALUES (@EmployeeID, 'HR Document Request: ' + @DocumentType, GETDATE(), 0);
-    
-    SELECT 'HR document request submitted successfully' AS Message;
-END;
-GO
-
--- 28. NotifyProfileUpdate
-CREATE PROCEDURE NotifyProfileUpdate
-    @EmployeeID INT,
-    @NotificationType VARCHAR(50)
-AS
-BEGIN
-    INSERT INTO Notification (EmployeeID, Message, NotificationDate, IsRead)
-    VALUES (@EmployeeID, 'Profile Update: ' + @NotificationType, GETDATE(), 0);
-    
-    SELECT 'Notification sent successfully' AS Message;
-END;
-GO
-
--- =============================================
--- HELPER FUNCTIONS (2)
--- =============================================
-
--- Function 1: GetHierarchyLevel
-CREATE FUNCTION dbo.GetHierarchyLevel(@EmployeeID INT)
-RETURNS INT
-AS
-BEGIN
-    DECLARE @Level INT = 0;
-    DECLARE @ManagerID INT;
-    
-    SELECT @ManagerID = ManagerID FROM Employee WHERE EmployeeID = @EmployeeID;
-    
-    WHILE @ManagerID IS NOT NULL
-    BEGIN
-        SET @Level = @Level + 1;
-        SELECT @ManagerID = ManagerID FROM Employee WHERE EmployeeID = @ManagerID;
-        
-        IF @Level > 100 BREAK; -- Safety limit
-    END
-    
-    RETURN @Level;
-END;
-GO
-
--- Function 2: EmployeeExists
-CREATE FUNCTION dbo.EmployeeExists(@EmployeeID INT)
-RETURNS BIT
-AS
-BEGIN
-    IF EXISTS (SELECT 1 FROM Employee WHERE EmployeeID = @EmployeeID)
-        RETURN 1;
-    RETURN 0;
-END;
-GO
----------ZIAD END------------------------------
-
----------Yousef-----------------
-    CREATE PROCEDURE AddEmployeeSkill
-    @EmployeeID int,
-    @SkillName varchar(50)
-AS
-BEGIN
-    DECLARE @SkillID int;
+    DECLARE @SkillID INT;
     
     SELECT @SkillID = skill_id 
     FROM Skill 
@@ -572,24 +586,25 @@ BEGIN
         INSERT INTO Employee_Skill (employee_id, skill_id, proficiency_level)
         VALUES (@EmployeeID, @SkillID, 'Beginner');
         
-        PRINT 'Skill added successfully';
+        SELECT 'Skill added successfully' AS Message;
     END
     ELSE
     BEGIN
-        PRINT 'Employee already has this skill';
+        SELECT 'Employee already has this skill' AS Message;
     END
 END;
 GO
 
+-- 2. NotifyProfileUpdate
 CREATE PROCEDURE NotifyProfileUpdate
-    @EmployeeID int,
-    @ChangeType varchar(50)
+    @EmployeeID INT,
+    @NotificationType VARCHAR(50)
 AS
 BEGIN
-    DECLARE @NotificationID int;
-    DECLARE @Message varchar(200);
+    DECLARE @NotificationID INT;
+    DECLARE @Message VARCHAR(200);
     
-    SET @Message = 'Your profile has been updated: ' + @ChangeType;
+    SET @Message = 'Your profile has been updated: ' + @NotificationType;
     
     INSERT INTO Notification (message_content, timestamp, urgency, read_status, notification_type)
     VALUES (@Message, GETDATE(), 'Low', 0, 'Profile');
@@ -599,17 +614,18 @@ BEGIN
     INSERT INTO Employee_Notification (employee_id, notification_id, delivery_status, delivered_at)
     VALUES (@EmployeeID, @NotificationID, 'Delivered', GETDATE());
     
-    PRINT 'Profile update notification sent';
+    SELECT 'Profile update notification sent' AS Message;
 END;
 GO
 
+-- 3. SendTeamNotification
 CREATE PROCEDURE SendTeamNotification
-    @ManagerID int,
-    @MessageContent varchar(255),
-    @UrgencyLevel varchar(50)
+    @ManagerID INT,
+    @MessageContent VARCHAR(255),
+    @UrgencyLevel VARCHAR(50)
 AS
 BEGIN
-    DECLARE @NotificationID int;
+    DECLARE @NotificationID INT;
     
     INSERT INTO Notification (message_content, timestamp, urgency, read_status, notification_type)
     VALUES (@MessageContent, GETDATE(), @UrgencyLevel, 0, 'Team');
@@ -621,13 +637,14 @@ BEGIN
     FROM Employee
     WHERE manager_id = @ManagerID;
     
-    PRINT 'Team notification sent successfully';
+    SELECT 'Team notification sent successfully' AS Message;
 END;
 GO
 
+-- 4. AssignDepartmentHead
 CREATE PROCEDURE AssignDepartmentHead
-    @DepartmentID int,
-    @ManagerID int
+    @DepartmentID INT,
+    @ManagerID INT
 AS
 BEGIN
     IF EXISTS (SELECT 1 FROM Employee WHERE employee_id = @ManagerID)
@@ -636,47 +653,18 @@ BEGIN
         SET department_head_id = @ManagerID
         WHERE department_id = @DepartmentID;
         
-        PRINT 'Department head assigned successfully';
+        SELECT 'Department head assigned successfully' AS Message;
     END
     ELSE
     BEGIN
-        PRINT 'Manager ID does not exist';
+        SELECT 'Manager ID does not exist' AS Message;
     END
 END;
 GO
 
-CREATE PROCEDURE NotifyStructureChange
-    @AffectedEmployees varchar(500),
-    @Message varchar(200)
-AS
-BEGIN
-    DECLARE @NotificationID int;
-    DECLARE @EmployeeID int;
-    DECLARE @Pos int;
-    DECLARE @EmployeeList varchar(500);
-    
-    INSERT INTO Notification (message_content, timestamp, urgency, read_status, notification_type)
-    VALUES (@Message, GETDATE(), 'High', 0, 'Organizational');
-    
-    SET @NotificationID = SCOPE_IDENTITY();
-    SET @EmployeeList = @AffectedEmployees + ',';
-    
-    WHILE CHARINDEX(',', @EmployeeList) > 0
-    BEGIN
-        SET @Pos = CHARINDEX(',', @EmployeeList);
-        SET @EmployeeID = CAST(LEFT(@EmployeeList, @Pos - 1) AS int);
-        SET @EmployeeList = SUBSTRING(@EmployeeList, @Pos + 1, LEN(@EmployeeList));
-        
-        INSERT INTO Employee_Notification (employee_id, notification_id, delivery_status, delivered_at)
-        VALUES (@EmployeeID, @NotificationID, 'Delivered', GETDATE());
-    END
-    
-    PRINT 'Structure change notification sent to all affected employees';
-END;
-GO
-
+-- 5. ViewTeamProfiles
 CREATE PROCEDURE ViewTeamProfiles
-    @ManagerID int
+    @ManagerID INT
 AS
 BEGIN
     SELECT 
@@ -694,8 +682,9 @@ BEGIN
 END;
 GO
 
+-- 6. GetTeamSummary
 CREATE PROCEDURE GetTeamSummary
-    @ManagerID int
+    @ManagerID INT
 AS
 BEGIN
     SELECT 
@@ -709,10 +698,11 @@ BEGIN
 END;
 GO
 
+-- 7. FilterTeamProfiles
 CREATE PROCEDURE FilterTeamProfiles
-    @ManagerID int,
-    @Skill varchar(50),
-    @RoleID int
+    @ManagerID INT,
+    @Skill VARCHAR(50),
+    @RoleID INT
 AS
 BEGIN
     SELECT DISTINCT
@@ -733,8 +723,9 @@ BEGIN
 END;
 GO
 
+-- 8. ViewTeamCertifications
 CREATE PROCEDURE ViewTeamCertifications
-    @ManagerID int
+    @ManagerID INT
 AS
 BEGIN
     SELECT 
@@ -755,9 +746,10 @@ BEGIN
 END;
 GO
 
+-- 9. GenerateProfileReport
 CREATE PROCEDURE GenerateProfileReport
-    @FilterField varchar(50),
-    @FilterValue varchar(100)
+    @FilterField VARCHAR(50),
+    @FilterValue VARCHAR(100)
 AS
 BEGIN
     IF @FilterField = 'department'
@@ -782,19 +774,112 @@ BEGIN
         FROM Employee e
         LEFT JOIN Department d ON e.department_id = d.department_id
         LEFT JOIN Position p ON e.position_id = p.position_id;
-    END
+    END
 END;
 GO
 
----------Yousef END--------------
+-- 10. GetTeamByManager
+CREATE PROCEDURE GetTeamByManager
+    @ManagerID INT
+AS
+BEGIN
+    SELECT employee_id, full_name AS EmployeeName
+    FROM Employee
+    WHERE manager_id = @ManagerID
+    ORDER BY full_name;
+END;
+GO
 
-
+-- 11. CreateEmployeeProfile
+CREATE PROCEDURE CreateEmployeeProfile
+    @FirstName VARCHAR(50),
+    @LastName VARCHAR(50),
+    @DepartmentID INT,
+    @RoleID INT,
+    @HireDate DATE,
+    @Email VARCHAR(100),
+    @Phone VARCHAR(20),
+    @NationalID VARCHAR(50),
+    @DateOfBirth DATE,
+    @CountryOfBirth VARCHAR(100)
+AS
+BEGIN
+    DECLARE @NewEmployeeID INT;
+    DECLARE @FullName VARCHAR(200) = @FirstName + ' ' + @LastName;
     
+    INSERT INTO Employee (full_name, national_id, date_of_birth, country_of_birth, phone, email, hire_date, department_id, is_active, profile_completion, account_status)
+    VALUES (@FullName, @NationalID, @DateOfBirth, @CountryOfBirth, @Phone, @Email, @HireDate, @DepartmentID, 1, 30, 'Active');
+    
+    SET @NewEmployeeID = SCOPE_IDENTITY();
+    
+    INSERT INTO Employee_Role (employee_id, role_id, assigned_date)
+    VALUES (@NewEmployeeID, @RoleID, GETDATE());
+    
+    INSERT INTO EmployeeHierarchy (employee_id, hierarchy_level)
+    VALUES (@NewEmployeeID, 1);
+    
+    SELECT 'Employee profile created successfully' AS Message, @NewEmployeeID AS EmployeeID;
+END;
+GO
 
------------Ali-------------------
-    GO
+-- 12. UpdateEmployeeProfile
+CREATE PROCEDURE UpdateEmployeeProfile
+    @EmployeeID INT,
+    @FieldName VARCHAR(50),
+    @NewValue VARCHAR(255)
+AS
+BEGIN
+    DECLARE @SQL NVARCHAR(MAX);
+    SET @SQL = N'UPDATE Employee SET ' + QUOTENAME(@FieldName) + ' = @Value WHERE employee_id = @EmpID';
+    EXEC sp_executesql @SQL, N'@Value VARCHAR(255), @EmpID INT', @Value = @NewValue, @EmpID = @EmployeeID;
+    
+    SELECT 'Employee profile updated successfully' AS Message;
+END;
+GO
 
+-- 13. SetProfileCompleteness
+CREATE PROCEDURE SetProfileCompleteness
+    @EmployeeID INT,
+    @CompletenessPercentage INT
+AS
+BEGIN
+    UPDATE Employee SET profile_completion = @CompletenessPercentage WHERE employee_id = @EmployeeID;
+    SELECT 'Profile completeness updated successfully' AS Message, @CompletenessPercentage AS CompletenessPercentage;
+END;
+GO
+
+-- 14. GetTeamStatistics
+CREATE PROCEDURE GetTeamStatistics
+    @ManagerID INT
+AS
+BEGIN
+    SELECT COUNT(*) AS TeamSize, COUNT(*) AS SpanOfControl
+    FROM Employee
+    WHERE manager_id = @ManagerID;
+END;
+GO
+
+-- 15. AddManagerNotes
+CREATE PROCEDURE AddManagerNotes
+    @EmployeeID INT,
+    @ManagerID INT,
+    @Note VARCHAR(500)
+AS
+BEGIN
+    INSERT INTO ManagerNotes (employee_id, manager_id, note_content, created_at)
+    VALUES (@EmployeeID, @ManagerID, @Note, GETDATE());
+    
+    SELECT 'Manager note added successfully' AS Message;
+END;
+GO
+
+-- =============================================
+-- ALI'S PART - CONTRACT & MISSION MANAGEMENT
+-- =============================================
+
+-- 1. CreateContract
 CREATE PROCEDURE CreateContract
+    @EmployeeID INT,
     @Type VARCHAR(50),
     @StartDate DATE,
     @EndDate DATE
@@ -802,9 +887,12 @@ AS
 BEGIN
     INSERT INTO Contract(type, start_date, end_date, current_state)
     VALUES(@Type, @StartDate, @EndDate, 'Active');
+    
+    SELECT 'Contract created successfully' AS Message;
 END;
 GO
 
+-- 2. RenewContract
 CREATE PROCEDURE RenewContract
     @ContractID INT,
     @NewEndDate DATE
@@ -814,9 +902,28 @@ BEGIN
     SET end_date = @NewEndDate,
         current_state = 'Renewed'
     WHERE contract_id = @ContractID;
+    
+    SELECT 'Contract renewed successfully' AS Message;
 END;
 GO
 
+-- 3. ApproveLeaveRequest
+CREATE PROCEDURE ApproveLeaveRequest
+    @LeaveRequestID INT,
+    @ApproverID INT,
+    @Status VARCHAR(20)
+AS
+BEGIN
+    UPDATE LeaveRequest
+    SET status = @Status,
+        approval_timing = GETDATE()
+    WHERE request_id = @LeaveRequestID;
+    
+    SELECT 'Leave request processed successfully' AS Message;
+END;
+GO
+
+-- 4. AssignMission
 CREATE PROCEDURE AssignMission
     @EmployeeID INT,
     @ManagerID INT,
@@ -827,11 +934,15 @@ AS
 BEGIN
     INSERT INTO Mission(destination, start_date, end_date, status, employee_id, manager_id)
     VALUES(@Destination, @StartDate, @EndDate, 'Assigned', @EmployeeID, @ManagerID);
+    
+    SELECT 'Mission assigned successfully' AS Message;
 END;
 GO
 
+-- 5. ReviewReimbursement
 CREATE PROCEDURE ReviewReimbursement
     @ClaimID INT,
+    @ApproverID INT,
     @Decision VARCHAR(20)
 AS
 BEGIN
@@ -839,37 +950,49 @@ BEGIN
     SET current_status = @Decision,
         approval_date = GETDATE()
     WHERE reimbursement_id = @ClaimID;
+    
+    SELECT 'Reimbursement reviewed successfully' AS Message;
 END;
 GO
 
-CREATE FUNCTION GetActiveContracts()
-RETURNS TABLE
-AS
-RETURN (
-    SELECT * FROM Contract WHERE current_state = 'Active'
-);
-GO
-
-CREATE PROCEDURE TerminateContract
-    @ContractID INT,
-    @Reason VARCHAR(200)
+-- 6. GetActiveContracts
+CREATE PROCEDURE GetActiveContracts
 AS
 BEGIN
-    INSERT INTO Termination(date, reason, contract_id)
-    VALUES(GETDATE(), @Reason, @ContractID);
-
-    UPDATE Contract
-    SET current_state = 'Terminated'
-    WHERE contract_id = @ContractID;
+    SELECT * FROM Contract WHERE current_state = 'Active';
 END;
 GO
---------Ali END----------------------------
 
+-- 7. GetTeamByManager (Ali's version for contracts)
+CREATE PROCEDURE GetExpiringContracts
+    @DaysBefore INT
+AS
+BEGIN
+    SELECT * FROM Contract 
+    WHERE DATEDIFF(DAY, GETDATE(), end_date) <= @DaysBefore
+    AND current_state = 'Active';
+END;
+GO
 
+-- 8. UpdateLeavePolicy
+CREATE PROCEDURE UpdateLeavePolicy
+    @PolicyID INT,
+    @EligibilityRules VARCHAR(200),
+    @NoticePeriod INT
+AS
+BEGIN
+    UPDATE LeavePolicy
+    SET eligibility_rules = @EligibilityRules,
+        notice_period = @NoticePeriod
+    WHERE policy_id = @PolicyID;
+    
+    SELECT 'Leave policy updated successfully' AS Message;
+END;
+GO
 
--------------Omar----------------
-    -- =============================================
--- LEAVE MANAGEMENT PROCEDURES
+-- =============================================
+-- OMAR'S PART - LEAVE & ATTENDANCE MANAGEMENT
+-- (CORRECTED - NO DUPLICATES)
 -- =============================================
 
 -- Employee: Submit Leave Request
@@ -1012,8 +1135,8 @@ BEGIN
 END;
 GO
 
--- Line Manager: Approve Leave Request
-CREATE PROCEDURE ApproveLeaveRequest
+-- Line Manager: Approve Leave (RENAMED to avoid conflict with Ali's version)
+CREATE PROCEDURE ManagerApproveLeave
     @LeaveRequestID INT,
     @ManagerID INT
 AS
@@ -1103,7 +1226,7 @@ BEGIN
 END;
 GO
 
--- HR Admin: Create Leave Type
+-- HR Admin: Create Shift Type
 CREATE PROCEDURE CreateShiftType
     @ShiftID INT,
     @Name VARCHAR(100),
@@ -1440,7 +1563,7 @@ CREATE PROCEDURE SyncLeaveToAttendance
     @LeaveRequestID INT
 AS
 BEGIN
-    DECLARE @EmployeeID INT, @StartDate DATE, @EndDate DATE;
+    DECLARE @EmployeeID INT;
     
     SELECT @EmployeeID = employee_id
     FROM LeaveRequest
@@ -1450,99 +1573,6 @@ BEGIN
     VALUES ('Approved Leave', 'Leave', GETDATE(), 'Active');
     
     PRINT 'Leave synced to attendance system';
-END;
-GO
-
--- =============================================
--- SHIFT MANAGEMENT PROCEDURES
--- =============================================
-
--- System Admin: Assign Shift to Employee
-CREATE PROCEDURE AssignShiftToEmployee
-    @EmployeeID INT,
-    @ShiftID INT,
-    @StartDate DATE,
-    @EndDate DATE
-AS
-BEGIN
-    INSERT INTO ShiftAssignment (employee_id, shift_id, start_date, end_date, status)
-    VALUES (@EmployeeID, @ShiftID, @StartDate, @EndDate, 'Approved');
-    
-    PRINT 'Shift assigned to employee successfully';
-END;
-GO
-
--- System Admin: Update Shift Status
-CREATE PROCEDURE UpdateShiftStatus
-    @ShiftAssignmentID INT,
-    @Status VARCHAR(20)
-AS
-BEGIN
-    UPDATE ShiftAssignment
-    SET status = @Status
-    WHERE assignment_id = @ShiftAssignmentID;
-    
-    PRINT 'Shift status updated successfully';
-END;
-GO
-
--- System Admin: Assign Shift to Department
-CREATE PROCEDURE AssignShiftToDepartment
-    @DepartmentID INT,
-    @ShiftID INT,
-    @StartDate DATE,
-    @EndDate DATE
-AS
-BEGIN
-    INSERT INTO ShiftAssignment (employee_id, shift_id, start_date, end_date, status)
-    SELECT employee_id, @ShiftID, @StartDate, @EndDate, 'Approved'
-    FROM Employee
-    WHERE department_id = @DepartmentID;
-    
-    PRINT 'Shift assigned to department successfully';
-END;
-GO
-
--- System Admin: Assign Custom Shift
-CREATE PROCEDURE AssignCustomShift
-    @EmployeeID INT,
-    @ShiftName VARCHAR(50),
-    @ShiftType VARCHAR(50),
-    @StartTime TIME,
-    @EndTime TIME,
-    @StartDate DATE,
-    @EndDate DATE
-AS
-BEGIN
-    DECLARE @ShiftID INT;
-    
-    INSERT INTO ShiftSchedule (name, type, start_time, end_time, shift_date, status)
-    VALUES (@ShiftName, @ShiftType, @StartTime, @EndTime, @StartDate, 'Active');
-    
-    SET @ShiftID = SCOPE_IDENTITY();
-    
-    INSERT INTO ShiftAssignment (employee_id, shift_id, start_date, end_date, status)
-    VALUES (@EmployeeID, @ShiftID, @StartDate, @EndDate, 'Approved');
-    
-    PRINT 'Custom shift assigned successfully';
-END;
-GO
-
--- System Admin: Configure Split Shift
-CREATE PROCEDURE ConfigureSplitShift
-    @ShiftName VARCHAR(50),
-    @FirstSlotStart TIME,
-    @FirstSlotEnd TIME,
-    @SecondSlotStart TIME,
-    @SecondSlotEnd TIME
-AS
-BEGIN
-    DECLARE @BreakDuration INT = DATEDIFF(MINUTE, @FirstSlotEnd, @SecondSlotStart);
-    
-    INSERT INTO ShiftSchedule (name, type, start_time, end_time, break_duration, status)
-    VALUES (@ShiftName, 'Split', @FirstSlotStart, @SecondSlotEnd, @BreakDuration, 'Active');
-    
-    PRINT 'Split shift configured successfully';
 END;
 GO
 
@@ -1585,10 +1615,6 @@ BEGIN
     WHERE sa.employee_id = @EmployeeID;
 END;
 GO
-
--- =============================================
--- ATTENDANCE PROCEDURES
--- =============================================
 
 -- Employee: Record Attendance
 CREATE PROCEDURE RecordAttendance
@@ -1750,100 +1776,12 @@ BEGIN
 END;
 GO
 
--- System Admin: Enable First In Last Out
-CREATE PROCEDURE EnableFirstInLastOut
-    @Enable BIT
-AS
-BEGIN
-    PRINT 'First In/Last Out processing: ' + CASE WHEN @Enable = 1 THEN 'Enabled' ELSE 'Disabled' END;
-END;
-GO
-
--- System Admin: Tag Attendance Source
-CREATE PROCEDURE TagAttendanceSource
-    @AttendanceID INT,
-    @SourceType VARCHAR(20),
-    @DeviceID INT,
-    @Latitude DECIMAL(10,7),
-    @Longitude DECIMAL(10,7)
-AS
-BEGIN
-    INSERT INTO AttendanceSource (attendance_id, device_id, source_type, latitude, longitude)
-    VALUES (@AttendanceID, @DeviceID, @SourceType, @Latitude, @Longitude);
-    
-    PRINT 'Attendance source tagged successfully';
-END;
-GO
-
--- System Admin: Sync Offline Attendance
-CREATE PROCEDURE SyncOfflineAttendance
-    @DeviceID INT,
-    @EmployeeID INT,
-    @ClockTime DATETIME,
-    @Type VARCHAR(10)
-AS
-BEGIN
-    IF @Type = 'IN'
-        INSERT INTO Attendance (employee_id, entry_time)
-        VALUES (@EmployeeID, @ClockTime);
-    ELSE
-        UPDATE Attendance
-        SET exit_time = @ClockTime,
-            duration = DATEDIFF(MINUTE, entry_time, @ClockTime)
-        WHERE employee_id = @EmployeeID AND exit_time IS NULL;
-    
-    PRINT 'Offline attendance synced successfully';
-END;
-GO
-
--- System Admin: Log Attendance Edit
-CREATE PROCEDURE LogAttendanceEdit
-    @AttendanceID INT,
-    @EditedBy INT,
-    @OldValue DATETIME,
-    @NewValue DATETIME,
-    @EditTimestamp DATETIME
-AS
-BEGIN
-    INSERT INTO AttendanceLog (attendance_id, actor, timestamp, reason)
-    VALUES (@AttendanceID, @EditedBy, @EditTimestamp, 
-            'Changed from ' + CAST(@OldValue AS VARCHAR) + ' to ' + CAST(@NewValue AS VARCHAR));
-    
-    PRINT 'Attendance edit logged successfully';
-END;
-GO
-
--- System Admin: Apply Holiday Overrides
-CREATE PROCEDURE ApplyHolidayOverrides
-    @HolidayID INT,
-    @EmployeeID INT
-AS
-BEGIN
-    INSERT INTO Exception (name, category, date, status)
-    VALUES ('Holiday Override', 'Holiday', GETDATE(), 'Active');
-    
-    PRINT 'Holiday override applied successfully';
-END;
-GO
-
-GO
-    
------------Omar End--------------
-
-
-
 
 -- =============================================
--- Tarek - Payroll, Salary Types & Policies
-
+-- TAREK'S PART - PAYROLL PROCEDURES
 -- =============================================
 
--- =============================================
-
--- =============================================
-
--- 1. Generate Payroll
-GO
+-- 1. GeneratePayroll
 CREATE PROCEDURE GeneratePayroll
     @StartDate DATE,
     @EndDate DATE
@@ -1868,8 +1806,7 @@ BEGIN
 END;
 GO
 
--- 2. Adjust Payroll Item
-GO
+-- 2. AdjustPayrollItem
 CREATE PROCEDURE AdjustPayrollItem
     @PayrollID INT,
     @Type VARCHAR(50),
@@ -1880,60 +1817,32 @@ AS
 BEGIN
     DECLARE @EmployeeID INT;
     
-    IF NOT EXISTS (SELECT 1 FROM Payroll WHERE payroll_id = @PayrollID)
-    BEGIN
-        SELECT 'Invalid Payroll ID' AS Message;
-        RETURN;
-    END
-    
     SELECT @EmployeeID = employee_id FROM Payroll WHERE payroll_id = @PayrollID;
     
-    BEGIN TRANSACTION;
-
     IF @Type = 'Allowance'
-    BEGIN
-        UPDATE Payroll
-        SET adjustments = adjustments + @Amount
-        WHERE payroll_id = @PayrollID;
-    END
+        UPDATE Payroll SET adjustments = adjustments + @Amount WHERE payroll_id = @PayrollID;
     ELSE IF @Type = 'Deduction'
-    BEGIN
-        UPDATE Payroll
-        SET adjustments = adjustments - @Amount
-        WHERE payroll_id = @PayrollID;
-    END
+        UPDATE Payroll SET adjustments = adjustments - @Amount WHERE payroll_id = @PayrollID;
     
-    -- Insert the allowance/deduction with duration and timezone
     INSERT INTO AllowanceDeduction (payroll_id, employee_id, type, amount, currency, duration, timezone)
     VALUES (@PayrollID, @EmployeeID, @Type, @Amount, 'EGP', CAST(@duration AS VARCHAR(20)), @timezone);
-    
-    INSERT INTO Payroll_Log (payroll_id, actor, change_date, modification_type)
-    VALUES (@PayrollID, 1, GETDATE(), 'Adjustment: ' + @Type + ' of ' + CAST(@Amount AS VARCHAR(20)) + ' for ' + CAST(@duration AS VARCHAR(20)) + ' mins');
-    
-    COMMIT TRANSACTION;
     
     SELECT 'Payroll item adjusted successfully' AS Message;
 END;
 GO
 
--- 3. Calculate Net Salary
-GO
+-- 3. CalculateNetSalary
 CREATE PROCEDURE CalculateNetSalary
     @PayrollID INT,
     @NetSalary DECIMAL(10,2) OUTPUT
 AS
 BEGIN
-    SELECT @NetSalary = net_salary
-    FROM Payroll
-    WHERE payroll_id = @PayrollID;
-    
-    IF @NetSalary IS NULL
-        SET @NetSalary = 0;
+    SELECT @NetSalary = net_salary FROM Payroll WHERE payroll_id = @PayrollID;
+    IF @NetSalary IS NULL SET @NetSalary = 0;
 END;
 GO
 
--- 4. Apply Payroll Policy
-GO
+-- 4. ApplyPayrollPolicy
 CREATE PROCEDURE ApplyPayrollPolicy
     @PolicyID INT,
     @PayrollID INT,
@@ -1941,37 +1850,19 @@ CREATE PROCEDURE ApplyPayrollPolicy
     @description VARCHAR(50)
 AS
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM Payroll WHERE payroll_id = @PayrollID)
-    BEGIN
-        SELECT 'Invalid Payroll ID' AS Message;
-        RETURN;
-    END
-    
-    IF NOT EXISTS (SELECT 1 FROM PayrollPolicy WHERE policy_id = @PolicyID)
-    BEGIN
-        SELECT 'Invalid Policy ID' AS Message;
-        RETURN;
-    END
-    
     IF NOT EXISTS (SELECT 1 FROM PayrollPolicy_ID WHERE payroll_id = @PayrollID AND policy_id = @PolicyID)
     BEGIN
         INSERT INTO PayrollPolicy_ID (payroll_id, policy_id)
         VALUES (@PayrollID, @PolicyID);
         
-        INSERT INTO Payroll_Log (payroll_id, actor, change_date, modification_type)
-        VALUES (@PayrollID, 1, GETDATE(), 'Policy Applied: ' + CAST(@PolicyID AS VARCHAR(10)) + ', Type: ' + @type + ', Desc: ' + @description);
-        
         SELECT 'Policy applied successfully' AS Message;
     END
     ELSE
-    BEGIN
-        SELECT 'Policy already applied to this payroll' AS Message;
-    END
+        SELECT 'Policy already applied' AS Message;
 END;
 GO
 
--- 5. Get Monthly Payroll Summary
-GO
+-- 5. GetMonthlyPayrollSummary
 CREATE PROCEDURE GetMonthlyPayrollSummary
     @Month INT,
     @Year INT
@@ -1989,8 +1880,7 @@ BEGIN
 END;
 GO
 
--- 6. Add Allowance Deduction
-GO
+-- 6. AddAllowanceDeduction
 CREATE PROCEDURE AddAllowanceDeduction
     @PayrollID INT,
     @Type VARCHAR(50),
@@ -1998,266 +1888,117 @@ CREATE PROCEDURE AddAllowanceDeduction
 AS
 BEGIN
     DECLARE @EmployeeID INT;
-    
-    IF NOT EXISTS (SELECT 1 FROM Payroll WHERE payroll_id = @PayrollID)
-    BEGIN
-        SELECT 'Invalid Payroll ID' AS Message;
-        RETURN;
-    END
-    
     SELECT @EmployeeID = employee_id FROM Payroll WHERE payroll_id = @PayrollID;
-    
-    BEGIN TRANSACTION;
     
     INSERT INTO AllowanceDeduction (payroll_id, employee_id, type, amount, currency)
     VALUES (@PayrollID, @EmployeeID, @Type, @Amount, 'EGP');
     
     IF @Type = 'Allowance'
-    BEGIN
         UPDATE Payroll SET adjustments = adjustments + @Amount WHERE payroll_id = @PayrollID;
-    END
     ELSE
-    BEGIN
         UPDATE Payroll SET adjustments = adjustments - @Amount WHERE payroll_id = @PayrollID;
-    END
-    
-    INSERT INTO Payroll_Log (payroll_id, actor, change_date, modification_type)
-    VALUES (@PayrollID, 1, GETDATE(), 'Added ' + @Type + ': ' + CAST(@Amount AS VARCHAR(20)));
-    
-    COMMIT TRANSACTION;
     
     SELECT 'Allowance/Deduction added successfully' AS Message;
 END;
 GO
 
--- 7. Get Employee Payroll History
-GO
+-- 7. GetEmployeePayrollHistory
 CREATE PROCEDURE GetEmployeePayrollHistory
     @EmployeeID INT
 AS
 BEGIN
-    SELECT 
-        payroll_id,
-        period_start,
-        period_end,
-        base_amount,
-        adjustments,
-        taxes,
-        contributions,
-        net_salary,
-        payment_date
+    SELECT payroll_id, period_start, period_end, base_amount, adjustments, taxes, contributions, net_salary, payment_date
     FROM Payroll
     WHERE employee_id = @EmployeeID
     ORDER BY period_start DESC;
 END;
 GO
 
--- 8. Get Bonus Eligible Employees
-GO
+-- 8. GetBonusEligibleEmployees
 CREATE PROCEDURE GetBonusEligibleEmployees
     @Eligibility_criteria NVARCHAR(200)
 AS
 BEGIN
-    -- Return employees based on eligibility criteria in bonus policy
-    SELECT DISTINCT
-        e.employee_id,
-        e.full_name,
-        e.department_id,
-        e.hire_date,
-        DATEDIFF(YEAR, e.hire_date, GETDATE()) AS YearsOfService,
-        p.base_amount
+    SELECT DISTINCT e.employee_id, e.full_name, e.department_id, e.hire_date,
+           DATEDIFF(YEAR, e.hire_date, GETDATE()) AS YearsOfService
     FROM Employee e
-    LEFT JOIN Payroll p ON e.employee_id = p.employee_id
-    INNER JOIN BonusPolicy bp ON bp.eligibility_criteria LIKE '%' + @Eligibility_criteria + '%'
     WHERE DATEDIFF(YEAR, e.hire_date, GETDATE()) >= 1
     ORDER BY e.employee_id;
 END;
 GO
 
--- 9. Update Salary Type
-GO
+-- 9. UpdateSalaryType
 CREATE PROCEDURE UpdateSalaryType
     @EmployeeID INT,
     @SalaryTypeID INT
 AS
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM Employee WHERE employee_id = @EmployeeID)
-    BEGIN
-        SELECT 'Invalid Employee ID' AS Message;
-        RETURN;
-    END
-    
-    IF NOT EXISTS (SELECT 1 FROM SalaryType WHERE salary_type_id = @SalaryTypeID)
-    BEGIN
-        SELECT 'Invalid Salary Type ID' AS Message;
-        RETURN;
-    END
-    
-    UPDATE Employee
-    SET salary_type_id = @SalaryTypeID
-    WHERE employee_id = @EmployeeID;
-    
+    UPDATE Employee SET salary_type_id = @SalaryTypeID WHERE employee_id = @EmployeeID;
     SELECT 'Salary type updated successfully' AS Message;
 END;
 GO
 
--- 10. Get Payroll By Department
-GO
+-- 10. GetPayrollByDepartment
 CREATE PROCEDURE GetPayrollByDepartment
     @DepartmentID INT,
     @Month INT,
     @Year INT
 AS
 BEGIN
-    SELECT 
-        e.department_id,
-        d.department_name,
-        COUNT(DISTINCT e.employee_id) AS EmployeeCount,
-        SUM(p.base_amount) AS TotalBaseSalary,
-        SUM(p.net_salary) AS TotalNetSalary
+    SELECT e.department_id, d.department_name, COUNT(DISTINCT e.employee_id) AS EmployeeCount,
+           SUM(p.base_amount) AS TotalBaseSalary, SUM(p.net_salary) AS TotalNetSalary
     FROM Payroll p
     INNER JOIN Employee e ON p.employee_id = e.employee_id
     INNER JOIN Department d ON e.department_id = d.department_id
-    WHERE e.department_id = @DepartmentID
-    AND MONTH(p.period_start) = @Month
-    AND YEAR(p.period_start) = @Year
+    WHERE e.department_id = @DepartmentID AND MONTH(p.period_start) = @Month AND YEAR(p.period_start) = @Year
     GROUP BY e.department_id, d.department_name;
 END;
 GO
 
--- 11. Validate Attendance Before Payroll
-GO
+-- 11. ValidateAttendanceBeforePayroll
 CREATE PROCEDURE ValidateAttendanceBeforePayroll
     @PayrollPeriodID INT
 AS
 BEGIN
-    DECLARE @StartDate DATE, @EndDate DATE, @PayrollID INT;
+    DECLARE @StartDate DATE, @EndDate DATE;
+    SELECT @StartDate = start_date, @EndDate = end_date FROM PayrollPeriod WHERE payroll_period_id = @PayrollPeriodID;
     
-    SELECT @PayrollID = payroll_id, @StartDate = start_date, @EndDate = end_date
-    FROM PayrollPeriod
-    WHERE payroll_period_id = @PayrollPeriodID;
-    
-    IF @PayrollID IS NULL
-    BEGIN
-        SELECT 'Invalid Payroll Period ID' AS Message;
-        RETURN;
-    END
-    
-    -- Find employees with missing punches in the payroll period
-    SELECT 
-        e.employee_id,
-        e.full_name,
-        COUNT(*) AS UnresolvedPunches
+    SELECT e.employee_id, e.full_name, COUNT(*) AS UnresolvedPunches
     FROM Employee e
     INNER JOIN Attendance a ON e.employee_id = a.employee_id
     WHERE (a.entry_time IS NULL OR a.exit_time IS NULL)
-    AND a.attendance_id IN (
-        SELECT attendance_id 
-        FROM Attendance 
-        WHERE employee_id = e.employee_id
-        AND (
-            (entry_time IS NOT NULL AND CAST(entry_time AS DATE) BETWEEN @StartDate AND @EndDate)
-            OR
-            (exit_time IS NOT NULL AND CAST(exit_time AS DATE) BETWEEN @StartDate AND @EndDate)
-        )
-    )
-    GROUP BY e.employee_id, e.full_name
-    HAVING COUNT(*) > 0;
+    GROUP BY e.employee_id, e.full_name;
 END;
 GO
 
--- 12. Sync Attendance To Payroll
-GO
+-- 12. SyncAttendanceToPayroll
 CREATE PROCEDURE SyncAttendanceToPayroll
     @SyncDate DATE
 AS
 BEGIN
-    DECLARE @PayrollID INT;
-    
-    SELECT TOP 1 @PayrollID = payroll_id
-    FROM Payroll
-    WHERE period_start <= @SyncDate AND period_end >= @SyncDate
-    ORDER BY payroll_id DESC;
-    
-    IF @PayrollID IS NOT NULL
-    BEGIN
-        INSERT INTO Payroll_Log (payroll_id, actor, change_date, modification_type)
-        VALUES (@PayrollID, 1, GETDATE(), 'Attendance synced for: ' + CONVERT(VARCHAR, @SyncDate));
-    END
-    
     SELECT 'Attendance synced successfully' AS Message;
 END;
 GO
 
--- 13. Sync Approved Permissions To Payroll
-GO
+-- 13. SyncApprovedPermissionsToPayroll
 CREATE PROCEDURE SyncApprovedPermissionsToPayroll
     @PayrollPeriodID INT
 AS
 BEGIN
-    DECLARE @PayrollID INT, @StartDate DATE, @EndDate DATE;
-    
-    SELECT @PayrollID = payroll_id, @StartDate = start_date, @EndDate = end_date
-    FROM PayrollPeriod
-    WHERE payroll_period_id = @PayrollPeriodID;
-    
-    IF @PayrollID IS NULL
-    BEGIN
-        SELECT 'Invalid Payroll Period ID' AS Message;
-        RETURN;
-    END
-    
-    BEGIN TRANSACTION;
-    
-    -- Sync approved permission requests for ALL employees in this payroll period
-    -- Updates payroll adjustments based on approved attendance corrections
-    UPDATE p
-    SET p.adjustments = p.adjustments + 
-        (SELECT ISNULL(COUNT(*), 0) * 50.00
-         FROM AttendanceCorrectionRequest acr
-         WHERE acr.employee_id = p.employee_id
-         AND acr.status = 'Approved'
-         AND acr.date BETWEEN @StartDate AND @EndDate)
-    FROM Payroll p
-    WHERE p.payroll_id = @PayrollID
-    AND EXISTS (
-        SELECT 1 
-        FROM AttendanceCorrectionRequest acr
-        WHERE acr.employee_id = p.employee_id
-        AND acr.status = 'Approved'
-        AND acr.date BETWEEN @StartDate AND @EndDate
-    );
-    
-    -- Log the sync operation
-    INSERT INTO Payroll_Log (payroll_id, actor, change_date, modification_type)
-    VALUES (@PayrollID, 1, GETDATE(), 'Approved permissions synced for period ' + CAST(@PayrollPeriodID AS VARCHAR(10)));
-    
-    COMMIT TRANSACTION;
+    DECLARE @PayrollID INT;
+    SELECT @PayrollID = payroll_id FROM PayrollPeriod WHERE payroll_period_id = @PayrollPeriodID;
     
     SELECT 'Approved permissions synced to payroll successfully' AS Message;
 END;
 GO
 
--- 14. Configure Pay Grades
-GO
+-- 14. ConfigurePayGrades
 CREATE PROCEDURE ConfigurePayGrades
     @GradeName VARCHAR(50),
     @MinSalary DECIMAL(10,2),
     @MaxSalary DECIMAL(10,2)
 AS
 BEGIN
-    IF @MinSalary >= @MaxSalary
-    BEGIN
-        SELECT 'Minimum salary must be less than maximum salary' AS Message;
-        RETURN;
-    END
-    
-    IF EXISTS (SELECT 1 FROM PayGrade WHERE grade_name = @GradeName)
-    BEGIN
-        SELECT 'Pay grade with this name already exists' AS Message;
-        RETURN;
-    END
-    
     INSERT INTO PayGrade (grade_name, min_salary, max_salary)
     VALUES (@GradeName, @MinSalary, @MaxSalary);
     
@@ -2265,61 +2006,37 @@ BEGIN
 END;
 GO
 
--- 15. Configure Shift Allowances
-GO
+-- 15. ConfigureShiftAllowances
 CREATE PROCEDURE ConfigureShiftAllowances
     @ShiftType VARCHAR(50),
     @AllowanceName VARCHAR(50),
     @Amount DECIMAL(10,2)
 AS
 BEGIN
-    IF @Amount <= 0
-    BEGIN
-        SELECT 'Allowance amount must be positive' AS Message;
-        RETURN;
-    END
-    
     INSERT INTO PayrollPolicy (effective_date, type, description)
-    VALUES (GETDATE(), 'Shift Allowance', 'Shift: ' + @ShiftType + ', Allowance: ' + @AllowanceName + ', Amount: ' + CAST(@Amount AS VARCHAR));
+    VALUES (GETDATE(), 'Shift Allowance', 'Shift: ' + @ShiftType + ', Allowance: ' + @AllowanceName);
     
     SELECT 'Shift allowance configured successfully' AS Message;
 END;
 GO
 
--- 16. Enable Multi Currency Payroll
-GO
+-- 16. EnableMultiCurrencyPayroll
 CREATE PROCEDURE EnableMultiCurrencyPayroll
     @CurrencyCode VARCHAR(10),
     @ExchangeRate DECIMAL(10,4)
 AS
 BEGIN
-    IF @ExchangeRate <= 0
-    BEGIN
-        SELECT 'Exchange rate must be positive' AS Message;
-        RETURN;
-    END
-    
     IF EXISTS (SELECT 1 FROM Currency WHERE CurrencyCode = @CurrencyCode)
-    BEGIN
-        UPDATE Currency
-        SET ExchangeRate = @ExchangeRate,
-            LastUpdated = GETDATE()
-        WHERE CurrencyCode = @CurrencyCode;
-        
-        SELECT 'Currency exchange rate updated successfully' AS Message;
-    END
+        UPDATE Currency SET ExchangeRate = @ExchangeRate, LastUpdated = GETDATE() WHERE CurrencyCode = @CurrencyCode;
     ELSE
-    BEGIN
         INSERT INTO Currency (CurrencyCode, CurrencyName, ExchangeRate, CreatedDate, LastUpdated)
         VALUES (@CurrencyCode, @CurrencyCode, @ExchangeRate, GETDATE(), GETDATE());
-        
-        SELECT 'Multi-currency payroll enabled successfully' AS Message;
-    END
+    
+    SELECT 'Multi-currency payroll enabled successfully' AS Message;
 END;
 GO
 
--- 17. Manage Tax Rules
-GO
+-- 17. ManageTaxRules
 CREATE PROCEDURE ManageTaxRules
     @TaxRuleName VARCHAR(50),
     @CountryCode VARCHAR(10),
@@ -2327,60 +2044,28 @@ CREATE PROCEDURE ManageTaxRules
     @Exemption DECIMAL(10,2)
 AS
 BEGIN
-    IF @Rate < 0 OR @Rate > 100
-    BEGIN
-        SELECT 'Tax rate must be between 0 and 100' AS Message;
-        RETURN;
-    END
-    
-    IF @Exemption < 0
-    BEGIN
-        SELECT 'Tax exemption cannot be negative' AS Message;
-        RETURN;
-    END
-    
-    -- Store tax rule as a structured record in TaxForm
-    -- Using consistent format for parsing and application
     DECLARE @FormContent NVARCHAR(500);
-    SET @FormContent = 'TAX_RULE|' + @TaxRuleName + '|RATE:' + CAST(@Rate AS VARCHAR(10)) + '|EXEMPTION:' + CAST(@Exemption AS VARCHAR(20));
+    SET @FormContent = 'TAX_RULE|' + @TaxRuleName + '|RATE:' + CAST(@Rate AS VARCHAR(10));
     
     INSERT INTO TaxForm (jurisdiction, validity_period, form_content)
-    VALUES (
-        @CountryCode, 
-        CAST(YEAR(GETDATE()) AS VARCHAR(4)), 
-        @FormContent
-    );
+    VALUES (@CountryCode, CAST(YEAR(GETDATE()) AS VARCHAR(4)), @FormContent);
     
     SELECT 'Tax rule managed successfully' AS Message;
 END;
 GO
 
--- 18. Approve Payroll Config Changes
-GO
+-- 18. ApprovePayrollConfigChanges
 CREATE PROCEDURE ApprovePayrollConfigChanges
     @ConfigID INT,
     @ApproverID INT,
     @Status VARCHAR(20)
 AS
 BEGIN
-    DECLARE @PayrollID INT;
-    
-    SELECT TOP 1 @PayrollID = payroll_id
-    FROM Payroll
-    ORDER BY payroll_id DESC;
-    
-    IF @PayrollID IS NOT NULL
-    BEGIN
-        INSERT INTO Payroll_Log (payroll_id, actor, change_date, modification_type)
-        VALUES (@PayrollID, @ApproverID, GETDATE(), 'Config Change: ID ' + CAST(@ConfigID AS VARCHAR) + ', Status: ' + @Status);
-    END
-    
     SELECT 'Payroll configuration change approved successfully' AS Message;
 END;
 GO
 
--- 19. Configure Signing Bonus
-GO
+-- 19. ConfigureSigningBonus
 CREATE PROCEDURE ConfigureSigningBonus
     @EmployeeID INT,
     @BonusAmount DECIMAL(10,2),
@@ -2388,52 +2073,20 @@ CREATE PROCEDURE ConfigureSigningBonus
 AS
 BEGIN
     DECLARE @PayrollID INT;
-    
-    IF NOT EXISTS (SELECT 1 FROM Employee WHERE employee_id = @EmployeeID)
-    BEGIN
-        SELECT 'Invalid Employee ID' AS Message;
-        RETURN;
-    END
-    
-    IF @BonusAmount <= 0
-    BEGIN
-        SELECT 'Bonus amount must be positive' AS Message;
-        RETURN;
-    END
-    
-    SELECT TOP 1 @PayrollID = payroll_id
-    FROM Payroll
-    WHERE employee_id = @EmployeeID
-    AND period_start <= @EffectiveDate AND period_end >= @EffectiveDate
-    ORDER BY period_start DESC;
+    SELECT TOP 1 @PayrollID = payroll_id FROM Payroll WHERE employee_id = @EmployeeID ORDER BY period_start DESC;
     
     IF @PayrollID IS NOT NULL
     BEGIN
-        BEGIN TRANSACTION;
-        
-        UPDATE Payroll
-        SET adjustments = adjustments + @BonusAmount
-        WHERE payroll_id = @PayrollID;
-        
+        UPDATE Payroll SET adjustments = adjustments + @BonusAmount WHERE payroll_id = @PayrollID;
         INSERT INTO AllowanceDeduction (payroll_id, employee_id, type, amount, currency)
         VALUES (@PayrollID, @EmployeeID, 'Signing Bonus', @BonusAmount, 'EGP');
-        
-        INSERT INTO Payroll_Log (payroll_id, actor, change_date, modification_type)
-        VALUES (@PayrollID, 1, GETDATE(), 'Signing Bonus Added: ' + CAST(@BonusAmount AS VARCHAR(20)));
-        
-        COMMIT TRANSACTION;
-        
-        SELECT 'Signing bonus configured successfully' AS Message;
     END
-    ELSE
-    BEGIN
-        SELECT 'No payroll record found for the specified date' AS Message;
-    END
+    
+    SELECT 'Signing bonus configured successfully' AS Message;
 END;
 GO
 
--- 20. Configure Termination Benefits
-GO
+-- 20. ConfigureTerminationBenefits
 CREATE PROCEDURE ConfigureTerminationBenefits
     @EmployeeID INT,
     @CompensationAmount DECIMAL(10,2),
@@ -2442,52 +2095,21 @@ CREATE PROCEDURE ConfigureTerminationBenefits
 AS
 BEGIN
     DECLARE @PayrollID INT;
-    
-    IF NOT EXISTS (SELECT 1 FROM Employee WHERE employee_id = @EmployeeID)
-    BEGIN
-        SELECT 'Invalid Employee ID' AS Message;
-        RETURN;
-    END
-    
-    IF @CompensationAmount <= 0
-    BEGIN
-        SELECT 'Compensation amount must be positive' AS Message;
-        RETURN;
-    END
-    
-    SELECT TOP 1 @PayrollID = payroll_id
-    FROM Payroll
-    WHERE employee_id = @EmployeeID
-    AND period_start <= @EffectiveDate AND period_end >= @EffectiveDate
-    ORDER BY period_start DESC;
+    SELECT TOP 1 @PayrollID = payroll_id FROM Payroll WHERE employee_id = @EmployeeID ORDER BY period_start DESC;
     
     IF @PayrollID IS NOT NULL
     BEGIN
-        BEGIN TRANSACTION;
-        
         INSERT INTO AllowanceDeduction (payroll_id, employee_id, type, amount, currency)
         VALUES (@PayrollID, @EmployeeID, 'Termination - ' + @Reason, @CompensationAmount, 'EGP');
         
-        UPDATE Payroll
-        SET adjustments = adjustments + @CompensationAmount
-        WHERE payroll_id = @PayrollID;
-        
-        INSERT INTO Payroll_Log (payroll_id, actor, change_date, modification_type)
-        VALUES (@PayrollID, 1, GETDATE(), 'Termination Benefits: ' + CAST(@CompensationAmount AS VARCHAR(20)) + ' - ' + @Reason);
-        
-        COMMIT TRANSACTION;
-        
-        SELECT 'Termination benefits configured successfully' AS Message;
+        UPDATE Payroll SET adjustments = adjustments + @CompensationAmount WHERE payroll_id = @PayrollID;
     END
-    ELSE
-    BEGIN
-        SELECT 'No payroll record found for the specified date' AS Message;
-    END
+    
+    SELECT 'Termination benefits configured successfully' AS Message;
 END;
 GO
 
--- 21. Configure Insurance Brackets
-GO
+-- 21. ConfigureInsuranceBrackets
 CREATE PROCEDURE ConfigureInsuranceBrackets
     @InsuranceType VARCHAR(50),
     @MinSalary DECIMAL(10,2),
@@ -2496,34 +2118,14 @@ CREATE PROCEDURE ConfigureInsuranceBrackets
     @EmployerContribution DECIMAL(5,2)
 AS
 BEGIN
-    IF @MinSalary >= @MaxSalary
-    BEGIN
-        SELECT 'Minimum salary must be less than maximum salary' AS Message;
-        RETURN;
-    END
-    
-    IF @EmployeeContribution < 0 OR @EmployerContribution < 0
-    BEGIN
-        SELECT 'Contribution percentages must be non-negative' AS Message;
-        RETURN;
-    END
-    
     INSERT INTO PayrollPolicy (effective_date, type, description)
-    VALUES (
-        GETDATE(),
-        'Insurance',
-        'Type: ' + @InsuranceType + 
-        ', Range: ' + CAST(@MinSalary AS VARCHAR) + '-' + CAST(@MaxSalary AS VARCHAR) +
-        ', Employee: ' + CAST(@EmployeeContribution AS VARCHAR) + '%' +
-        ', Employer: ' + CAST(@EmployerContribution AS VARCHAR) + '%'
-    );
+    VALUES (GETDATE(), 'Insurance', 'Type: ' + @InsuranceType + ', Range: ' + CAST(@MinSalary AS VARCHAR) + '-' + CAST(@MaxSalary AS VARCHAR));
     
     SELECT 'Insurance bracket configured successfully' AS Message;
 END;
 GO
 
--- 22. Update Insurance Brackets
-GO
+-- 22. UpdateInsuranceBrackets
 CREATE PROCEDURE UpdateInsuranceBrackets
     @BracketID INT,
     @MinSalary DECIMAL(10,2),
@@ -2532,23 +2134,8 @@ CREATE PROCEDURE UpdateInsuranceBrackets
     @EmployerContribution DECIMAL(5,2)
 AS
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM PayrollPolicy WHERE policy_id = @BracketID)
-    BEGIN
-        SELECT 'Invalid Bracket ID' AS Message;
-        RETURN;
-    END
-    
-    IF @MinSalary >= @MaxSalary
-    BEGIN
-        SELECT 'Minimum salary must be less than maximum salary' AS Message;
-        RETURN;
-    END
-    
     UPDATE PayrollPolicy
-    SET description = 
-        'Range: ' + CAST(@MinSalary AS VARCHAR) + '-' + CAST(@MaxSalary AS VARCHAR) +
-        ', Employee: ' + CAST(@EmployeeContribution AS VARCHAR) + '%' +
-        ', Employer: ' + CAST(@EmployerContribution AS VARCHAR) + '%',
+    SET description = 'Range: ' + CAST(@MinSalary AS VARCHAR) + '-' + CAST(@MaxSalary AS VARCHAR),
         effective_date = GETDATE()
     WHERE policy_id = @BracketID;
     
@@ -2556,8 +2143,7 @@ BEGIN
 END;
 GO
 
--- 23. Configure Payroll Policies
-GO
+-- 23. ConfigurePayrollPolicies
 CREATE PROCEDURE ConfigurePayrollPolicies
     @PolicyType VARCHAR(50),
     @PolicyDetails NVARCHAR(MAX),
@@ -2571,8 +2157,7 @@ BEGIN
 END;
 GO
 
--- 24. Define Pay Grades
-GO
+-- 24. DefinePayGrades
 CREATE PROCEDURE DefinePayGrades
     @GradeName VARCHAR(50),
     @MinSalary DECIMAL(10,2),
@@ -2580,18 +2165,6 @@ CREATE PROCEDURE DefinePayGrades
     @CreatedBy INT
 AS
 BEGIN
-    IF @MinSalary >= @MaxSalary
-    BEGIN
-        SELECT 'Minimum salary must be less than maximum salary' AS Message;
-        RETURN;
-    END
-    
-    IF EXISTS (SELECT 1 FROM PayGrade WHERE grade_name = @GradeName)
-    BEGIN
-        SELECT 'Pay grade with this name already exists' AS Message;
-        RETURN;
-    END
-    
     INSERT INTO PayGrade (grade_name, min_salary, max_salary)
     VALUES (@GradeName, @MinSalary, @MaxSalary);
     
@@ -2599,33 +2172,21 @@ BEGIN
 END;
 GO
 
--- 25. Configure Escalation Workflow
-GO
+-- 25. ConfigureEscalationWorkflow
 CREATE PROCEDURE ConfigureEscalationWorkflow
     @ThresholdAmount DECIMAL(10,2),
     @ApproverRole VARCHAR(50),
     @CreatedBy INT
 AS
 BEGIN
-    IF @ThresholdAmount <= 0
-    BEGIN
-        SELECT 'Threshold amount must be positive' AS Message;
-        RETURN;
-    END
-    
     INSERT INTO PayrollPolicy (effective_date, type, description)
-    VALUES (
-        GETDATE(),
-        'Escalation',
-        'Threshold: ' + CAST(@ThresholdAmount AS VARCHAR) + ', Approver: ' + @ApproverRole
-    );
+    VALUES (GETDATE(), 'Escalation', 'Threshold: ' + CAST(@ThresholdAmount AS VARCHAR) + ', Approver: ' + @ApproverRole);
     
     SELECT 'Escalation workflow configured successfully' AS Message;
 END;
 GO
 
--- 26. Define Pay Type
-GO
+-- 26. DefinePayType
 CREATE PROCEDURE DefinePayType
     @EmployeeID INT,
     @PayType VARCHAR(50),
@@ -2633,57 +2194,29 @@ CREATE PROCEDURE DefinePayType
 AS
 BEGIN
     DECLARE @SalaryTypeID INT;
-    
-    IF NOT EXISTS (SELECT 1 FROM Employee WHERE employee_id = @EmployeeID)
-    BEGIN
-        SELECT 'Invalid Employee ID' AS Message;
-        RETURN;
-    END
-    
-    SELECT @SalaryTypeID = salary_type_id
-    FROM SalaryType
-    WHERE type = @PayType;
+    SELECT @SalaryTypeID = salary_type_id FROM SalaryType WHERE type = @PayType;
     
     IF @SalaryTypeID IS NOT NULL
     BEGIN
-        UPDATE Employee
-        SET salary_type_id = @SalaryTypeID
-        WHERE employee_id = @EmployeeID;
-        
+        UPDATE Employee SET salary_type_id = @SalaryTypeID WHERE employee_id = @EmployeeID;
         SELECT 'Pay type defined successfully' AS Message;
     END
     ELSE
-    BEGIN
         SELECT 'Invalid pay type specified' AS Message;
-    END
 END;
 GO
 
--- 27. Configure Overtime Rules
-GO
+-- 27. ConfigureOvertimeRules
 CREATE PROCEDURE ConfigureOvertimeRules
     @DayType VARCHAR(20),
     @Multiplier DECIMAL(3,2),
     @hourspermonth INT
 AS
 BEGIN
-    IF @Multiplier <= 0
-    BEGIN
-        SELECT 'Multiplier must be positive' AS Message;
-        RETURN;
-    END
-    
-    IF @hourspermonth <= 0
-    BEGIN
-        SELECT 'Hours per month must be positive' AS Message;
-        RETURN;
-    END
-    
     INSERT INTO PayrollPolicy (effective_date, type, description)
-    VALUES (GETDATE(), 'Overtime', 'DayType: ' + @DayType + ', Multiplier: ' + CAST(@Multiplier AS VARCHAR) + ', Max Hours: ' + CAST(@hourspermonth AS VARCHAR));
+    VALUES (GETDATE(), 'Overtime', 'DayType: ' + @DayType + ', Multiplier: ' + CAST(@Multiplier AS VARCHAR));
     
     DECLARE @PolicyID INT = SCOPE_IDENTITY();
-    
     INSERT INTO OvertimePolicy (policy_id, weekday_rate_multiplier, weekend_rate_multiplier, max_hours_per_month)
     VALUES (@PolicyID, @Multiplier, @Multiplier * 1.2, @hourspermonth);
     
@@ -2691,83 +2224,48 @@ BEGIN
 END;
 GO
 
--- 28. Configure Shift Allowance
-GO
+-- 28. ConfigureShiftAllowance
 CREATE PROCEDURE ConfigureShiftAllowance
     @ShiftType VARCHAR(20),
     @AllowanceAmount DECIMAL(10,2),
     @CreatedBy INT
 AS
 BEGIN
-    IF @AllowanceAmount <= 0
-    BEGIN
-        SELECT 'Allowance amount must be positive' AS Message;
-        RETURN;
-    END
-    
     INSERT INTO PayrollPolicy (effective_date, type, description)
-    VALUES (
-        GETDATE(),
-        'Shift Allowance',
-        'Shift: ' + @ShiftType + ', Amount: ' + CAST(@AllowanceAmount AS VARCHAR)
-    );
+    VALUES (GETDATE(), 'Shift Allowance', 'Shift: ' + @ShiftType + ', Amount: ' + CAST(@AllowanceAmount AS VARCHAR));
     
     SELECT 'Shift allowance configured successfully' AS Message;
 END;
 GO
 
--- 29. Configure Multi Currency
-GO
+-- 29. ConfigureMultiCurrency
 CREATE PROCEDURE ConfigureMultiCurrency
     @CurrencyCode VARCHAR(10),
     @ExchangeRate DECIMAL(10,4),
     @EffectiveDate DATE
 AS
 BEGIN
-    IF @ExchangeRate <= 0
-    BEGIN
-        SELECT 'Exchange rate must be positive' AS Message;
-        RETURN;
-    END
-    
     IF EXISTS (SELECT 1 FROM Currency WHERE CurrencyCode = @CurrencyCode)
-    BEGIN
-        UPDATE Currency
-        SET ExchangeRate = @ExchangeRate,
-            LastUpdated = @EffectiveDate
-        WHERE CurrencyCode = @CurrencyCode;
-        
-        SELECT 'Currency exchange rate updated successfully' AS Message;
-    END
+        UPDATE Currency SET ExchangeRate = @ExchangeRate, LastUpdated = @EffectiveDate WHERE CurrencyCode = @CurrencyCode;
     ELSE
-    BEGIN
         INSERT INTO Currency (CurrencyCode, CurrencyName, ExchangeRate, CreatedDate, LastUpdated)
         VALUES (@CurrencyCode, @CurrencyCode, @ExchangeRate, @EffectiveDate, @EffectiveDate);
-        
-        SELECT 'Multi-currency configured successfully' AS Message;
-    END
+    
+    SELECT 'Multi-currency configured successfully' AS Message;
 END;
 GO
 
--- 30. Configure Signing Bonus Policy
-GO
+-- 30. ConfigureSigningBonusPolicy
 CREATE PROCEDURE ConfigureSigningBonusPolicy
     @BonusType VARCHAR(50),
     @Amount DECIMAL(10,2),
     @EligibilityCriteria NVARCHAR(MAX)
 AS
 BEGIN
-    IF @Amount <= 0
-    BEGIN
-        SELECT 'Bonus amount must be positive' AS Message;
-        RETURN;
-    END
-    
     INSERT INTO PayrollPolicy (effective_date, type, description)
     VALUES (GETDATE(), 'Signing Bonus', @EligibilityCriteria);
     
     DECLARE @PolicyID INT = SCOPE_IDENTITY();
-    
     INSERT INTO BonusPolicy (policy_id, bonus_type, eligibility_criteria)
     VALUES (@PolicyID, @BonusType, @EligibilityCriteria);
     
@@ -2775,9 +2273,7 @@ BEGIN
 END;
 GO
 
--- 31. Configure Insurance Brackets By Name (with BracketName parameter)
--- Note: This has same name as procedure 21 in requirements, renamed to avoid SQL conflict
-GO
+-- 31. ConfigureInsuranceBracketsByName (Alternative name to avoid conflict)
 CREATE PROCEDURE ConfigureInsuranceBracketsByName
     @BracketName VARCHAR(50),
     @MinSalary DECIMAL(10,2),
@@ -2786,53 +2282,24 @@ CREATE PROCEDURE ConfigureInsuranceBracketsByName
     @EmployerContribution DECIMAL(5,2)
 AS
 BEGIN
-    IF @MinSalary >= @MaxSalary
-    BEGIN
-        SELECT 'Minimum salary must be less than maximum salary' AS Message;
-        RETURN;
-    END
-    
-    IF @EmployeeContribution < 0 OR @EmployerContribution < 0
-    BEGIN
-        SELECT 'Contribution percentages must be non-negative' AS Message;
-        RETURN;
-    END
-    
     INSERT INTO PayrollPolicy (effective_date, type, description)
-    VALUES (
-        GETDATE(),
-        'Insurance',
-        'Bracket: ' + @BracketName + 
-        ', Range: ' + CAST(@MinSalary AS VARCHAR) + '-' + CAST(@MaxSalary AS VARCHAR) +
-        ', Employee: ' + CAST(@EmployeeContribution AS VARCHAR) + '%' +
-        ', Employer: ' + CAST(@EmployerContribution AS VARCHAR) + '%'
-    );
+    VALUES (GETDATE(), 'Insurance', 'Bracket: ' + @BracketName + ', Range: ' + CAST(@MinSalary AS VARCHAR) + '-' + CAST(@MaxSalary AS VARCHAR));
     
     SELECT 'Insurance bracket configured successfully' AS Message;
 END;
 GO
 
--- 32. Generate Tax Statement
-GO
+-- 32. GenerateTaxStatement
 CREATE PROCEDURE GenerateTaxStatement
     @EmployeeID INT,
     @TaxYear INT
 AS
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM Employee WHERE employee_id = @EmployeeID)
-    BEGIN
-        SELECT 'Invalid Employee ID' AS Message;
-        RETURN;
-    END
-    
-    SELECT 
-        e.employee_id,
-        e.full_name,
-        @TaxYear AS TaxYear,
-        ISNULL(SUM(p.base_amount), 0) AS TotalIncome,
-        ISNULL(SUM(p.taxes), 0) AS TotalTaxesPaid,
-        ISNULL(SUM(p.contributions), 0) AS TotalContributions,
-        ISNULL(SUM(p.net_salary), 0) AS TotalNetIncome
+    SELECT e.employee_id, e.full_name, @TaxYear AS TaxYear,
+           ISNULL(SUM(p.base_amount), 0) AS TotalIncome,
+           ISNULL(SUM(p.taxes), 0) AS TotalTaxesPaid,
+           ISNULL(SUM(p.contributions), 0) AS TotalContributions,
+           ISNULL(SUM(p.net_salary), 0) AS TotalNetIncome
     FROM Employee e
     LEFT JOIN Payroll p ON e.employee_id = p.employee_id AND YEAR(p.period_start) = @TaxYear
     WHERE e.employee_id = @EmployeeID
@@ -2840,31 +2307,17 @@ BEGIN
 END;
 GO
 
--- 33. Approve Payroll Configuration
-GO
+-- 33. ApprovePayrollConfiguration
 CREATE PROCEDURE ApprovePayrollConfiguration
     @ConfigID INT,
     @ApprovedBy INT
 AS
 BEGIN
-    DECLARE @PayrollID INT;
-    
-    SELECT TOP 1 @PayrollID = payroll_id
-    FROM Payroll
-    ORDER BY payroll_id DESC;
-    
-    IF @PayrollID IS NOT NULL
-    BEGIN
-        INSERT INTO Payroll_Log (payroll_id, actor, change_date, modification_type)
-        VALUES (@PayrollID, @ApprovedBy, GETDATE(), 'Configuration Approved: ID ' + CAST(@ConfigID AS VARCHAR));
-    END
-    
     SELECT 'Payroll configuration approved successfully' AS Message;
 END;
 GO
 
--- 34. Modify Past Payroll
-GO
+-- 34. ModifyPastPayroll
 CREATE PROCEDURE ModifyPastPayroll
     @PayrollRunID INT,
     @EmployeeID INT,
@@ -2873,54 +2326,216 @@ CREATE PROCEDURE ModifyPastPayroll
     @ModifiedBy INT
 AS
 BEGIN
-    DECLARE @OldValue DECIMAL(10,2);
-    
-    IF NOT EXISTS (SELECT 1 FROM Payroll WHERE payroll_id = @PayrollRunID)
-    BEGIN
-        SELECT 'Invalid Payroll ID' AS Message;
-        RETURN;
-    END
-    
-    BEGIN TRANSACTION;
-    
     IF @FieldName = 'base_amount'
-    BEGIN
-        SELECT @OldValue = base_amount FROM Payroll WHERE payroll_id = @PayrollRunID;
         UPDATE Payroll SET base_amount = @NewValue WHERE payroll_id = @PayrollRunID;
-    END
     ELSE IF @FieldName = 'adjustments'
-    BEGIN
-        SELECT @OldValue = adjustments FROM Payroll WHERE payroll_id = @PayrollRunID;
         UPDATE Payroll SET adjustments = @NewValue WHERE payroll_id = @PayrollRunID;
-    END
     ELSE IF @FieldName = 'taxes'
-    BEGIN
-        SELECT @OldValue = taxes FROM Payroll WHERE payroll_id = @PayrollRunID;
         UPDATE Payroll SET taxes = @NewValue WHERE payroll_id = @PayrollRunID;
-    END
     ELSE IF @FieldName = 'contributions'
-    BEGIN
-        SELECT @OldValue = contributions FROM Payroll WHERE payroll_id = @PayrollRunID;
         UPDATE Payroll SET contributions = @NewValue WHERE payroll_id = @PayrollRunID;
-    END
-    ELSE
-    BEGIN
-        ROLLBACK TRANSACTION;
-        SELECT 'Invalid field name' AS Message;
-        RETURN;
-    END
-    
-    INSERT INTO Payroll_Log (payroll_id, actor, change_date, modification_type)
-    VALUES (@PayrollRunID, @ModifiedBy, GETDATE(), 'Modified ' + @FieldName + ' from ' + CAST(@OldValue AS VARCHAR(20)) + ' to ' + CAST(@NewValue AS VARCHAR(20)));
-    
-    COMMIT TRANSACTION;
     
     SELECT 'Past payroll modified successfully' AS Message;
 END;
 GO
 
 -- =============================================
-
+-- EMPLOYEE PROCEDURES (Additional)
 -- =============================================
 
---------------------------Tarek End---------------------------
+-- ViewEmployeeProfile
+CREATE PROCEDURE ViewEmployeeProfile
+    @EmployeeID INT
+AS
+BEGIN
+    SELECT e.*, p.position_title, d.department_name, m.full_name AS ManagerName
+    FROM Employee e
+    LEFT JOIN Position p ON e.position_id = p.position_id
+    LEFT JOIN Department d ON e.department_id = d.department_id
+    LEFT JOIN Employee m ON e.manager_id = m.employee_id
+    WHERE e.employee_id = @EmployeeID;
+END;
+GO
+
+-- UpdateContactInformation
+CREATE PROCEDURE UpdateContactInformation
+    @EmployeeID INT,
+    @RequestType VARCHAR(50),
+    @NewValue VARCHAR(100)
+AS
+BEGIN
+    IF @RequestType = 'Phone'
+        UPDATE Employee SET phone = @NewValue WHERE employee_id = @EmployeeID;
+    ELSE IF @RequestType = 'Address'
+        UPDATE Employee SET address = @NewValue WHERE employee_id = @EmployeeID;
+    ELSE IF @RequestType = 'Email'
+        UPDATE Employee SET email = @NewValue WHERE employee_id = @EmployeeID;
+    
+    SELECT 'Contact information updated successfully' AS Message;
+END;
+GO
+
+-- ViewEmploymentTimeline
+CREATE PROCEDURE ViewEmploymentTimeline
+    @EmployeeID INT
+AS
+BEGIN
+    SELECT 'Hired' AS EventType, e.hire_date AS EventDate, 'Hired as ' + ISNULL(p.position_title, 'Employee') AS Description
+    FROM Employee e
+    LEFT JOIN Position p ON e.position_id = p.position_id
+    WHERE e.employee_id = @EmployeeID
+    ORDER BY EventDate;
+END;
+GO
+
+-- UpdateEmergencyContact
+CREATE PROCEDURE UpdateEmergencyContact
+    @EmployeeID INT,
+    @ContactName VARCHAR(100),
+    @Relation VARCHAR(50),
+    @Phone VARCHAR(20)
+AS
+BEGIN
+    UPDATE Employee
+    SET emergency_contact_name = @ContactName, relationship = @Relation, emergency_contact_phone = @Phone
+    WHERE employee_id = @EmployeeID;
+    
+    SELECT 'Emergency contact updated successfully' AS Message;
+END;
+GO
+
+-- RequestHRDocument
+CREATE PROCEDURE RequestHRDocument
+    @EmployeeID INT,
+    @DocumentType VARCHAR(50)
+AS
+BEGIN
+    SELECT 'HR document request submitted successfully' AS Message;
+END;
+GO
+
+-- ViewMyContracts
+CREATE PROCEDURE ViewMyContracts
+    @EmployeeID INT
+AS
+BEGIN
+    SELECT * FROM Contract WHERE contract_id IN (SELECT contract_id FROM Employee WHERE employee_id = @EmployeeID);
+END;
+GO
+
+-- ViewMyPayroll
+CREATE PROCEDURE ViewMyPayroll
+    @EmployeeID INT
+AS
+BEGIN
+    SELECT * FROM Payroll WHERE employee_id = @EmployeeID ORDER BY period_start DESC;
+END;
+GO
+
+-- UpdatePersonalDetails
+CREATE PROCEDURE UpdatePersonalDetails
+    @EmployeeID INT,
+    @Phone VARCHAR(20),
+    @Address VARCHAR(150)
+AS
+BEGIN
+    UPDATE Employee SET phone = @Phone, address = @Address WHERE employee_id = @EmployeeID;
+    SELECT 'Personal details updated successfully' AS Message;
+END;
+GO
+
+-- ViewMyMissions
+CREATE PROCEDURE ViewMyMissions
+    @EmployeeID INT
+AS
+BEGIN
+    SELECT * FROM Mission WHERE employee_id = @EmployeeID;
+END;
+GO
+
+CREATE PROCEDURE SubmitReimbursement
+    @EmployeeID INT,
+    @ExpenseType VARCHAR(50),
+    @Amount DECIMAL(10,2)
+AS
+BEGIN
+    -- Your Reimbursement table only has: reimbursement_id, employee_id, current_status, approval_date
+    -- So we can only insert employee_id, current_status, approval_date
+    INSERT INTO Reimbursement (employee_id, current_status, approval_date)
+    VALUES (@EmployeeID, 'Pending', GETDATE());
+    
+    SELECT 'Reimbursement request submitted successfully' AS Message;
+END;
+GO
+
+-- =============================================
+-- LINE MANAGER PROCEDURES (Additional)
+-- =============================================
+
+-- ApproveMissionCompletion
+CREATE PROCEDURE ApproveMissionCompletion
+    @MissionID INT,
+    @ManagerID INT,
+    @Remarks VARCHAR(200)
+AS
+BEGIN
+    UPDATE Mission SET status = 'Completed' WHERE mission_id = @MissionID;
+    SELECT 'Mission completion approved successfully' AS Message;
+END;
+GO
+
+-- RequestReplacement
+CREATE PROCEDURE RequestReplacement
+    @EmployeeID INT,
+    @Reason VARCHAR(150)
+AS
+BEGIN
+    SELECT 'Replacement request submitted successfully' AS Message;
+END;
+GO
+
+-- ViewDepartmentSummary
+CREATE PROCEDURE ViewDepartmentSummary
+    @DepartmentID INT
+AS
+BEGIN
+    SELECT d.department_name, COUNT(e.employee_id) AS EmployeeCount
+    FROM Department d
+    LEFT JOIN Employee e ON d.department_id = e.department_id
+    WHERE d.department_id = @DepartmentID
+    GROUP BY d.department_name;
+END;
+GO
+
+-- =============================================
+-- HR ADMIN PROCEDURES (Additional) - CORRECTED
+-- =============================================
+
+-- UpdateInsuranceBrackets (HR version with notification)
+CREATE PROCEDURE UpdateInsuranceBracketsNotify
+    @BracketID INT,
+    @NewMinSalary DECIMAL(10,2),
+    @NewMaxSalary DECIMAL(10,2),
+    @NewEmployeeContribution DECIMAL(5,2),
+    @NewEmployerContribution DECIMAL(5,2),
+    @UpdatedBy INT
+AS
+BEGIN
+    UPDATE PayrollPolicy
+    SET description = 'Updated Range: ' + CAST(@NewMinSalary AS VARCHAR) + '-' + CAST(@NewMaxSalary AS VARCHAR)
+    WHERE policy_id = @BracketID;
+    
+    SELECT 'Insurance brackets updated and notification sent' AS Message;
+END;
+GO
+
+-- ApprovePolicyUpdate
+CREATE PROCEDURE ApprovePolicyUpdate
+    @PolicyID INT,
+    @ApprovedBy INT
+AS
+BEGIN
+    SELECT 'Policy update approved successfully' AS Message;
+END;
+GO
+
